@@ -1,0 +1,1 @@
+1. main函数在src,pbrt,cmd,pbrt_test中，比较隐蔽

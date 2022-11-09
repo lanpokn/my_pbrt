@@ -1,0 +1,35 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "调试",
+            "type": "cppdbg",
+            "request": "launch",
+            // "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+            // "program": "${workspaceFolder}/build/pbrt_test",
+            // "args": [], //命令行参数
+            "program": "${workspaceFolder}/build/pbrt",
+            "args": ["a=10", "b=5", "c=15"],
+            "stopAtEntry": true, //进入程序调试即停
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
