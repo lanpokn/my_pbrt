@@ -24,7 +24,7 @@
 
 #include <string>
 #include <vector>
-
+#include <iostream>
 using namespace pbrt;
 
 static void usage(const std::string &msg = {}) {
@@ -103,7 +103,7 @@ Reformatting options:
 int main(int argc, char *argv[]) {
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args = GetCommandLineArguments(argv);
-
+    std::cout<<argv<<"\n";
     // Declare variables for parsed command line
     PBRTOptions options;
     std::vector<std::string> filenames;

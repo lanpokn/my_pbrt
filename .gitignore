@@ -5,5 +5,6 @@ src/build
 .DS_Store
 .ipynb_checkpoints/
 build/
+scene/
 .cache/
 /Users/weihl/Coding/pbrt-v4/.gitmodules
