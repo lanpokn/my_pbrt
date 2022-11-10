@@ -20,7 +20,7 @@ option (PBRT_NVML "Use NVML for GPU performance measurement" OFF)
 option (PBRT_USE_PREGENERATED_RGB_TO_SPECTRUM_TABLES "Use pregenerated rgbspectrum_*.cpp files rather than running rgb2spec_opt to generate them at build time" OFF)
 set (CMAKE_CUDA_COMPILER $ENV{CUDA_HOME}/bin/nvcc)
 # set (PBRT_OPTIX7_PATH $ENV{PBRT_OPTIX7_PATH} CACHE PATH "Path to OptiX 7 SDK")
-set (PBRT_OPTIX7_PATH /home/lanpokn/Downloads/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64)
+set (PBRT_OPTIX7_PATH /home/lanpokn/Downloads/NVIDIA-OptiX-SDK-7.1.0-linux64-x86_64)
 message(STATUS ${PBRT_OPTIX7_PATH} )
 set (PBRT_GPU_SHADER_MODEL "" CACHE STRING "")
 
@@ -533,6 +533,8 @@ set (PBRT_SOURCE
   src/pbrt/textures.cpp
 
   src/pbrt/cmd/pspec_gpu.cpp
+
+  src/my_new/pbrt_func.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -557,6 +559,8 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/scene.h
   src/pbrt/shapes.h
   src/pbrt/textures.h
+
+  src/my_new/pbrt_func.h
   )  
 
 SET (PBRT_CPU_SOURCE

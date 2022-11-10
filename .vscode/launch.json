@@ -12,7 +12,8 @@
             // "program": "${workspaceFolder}/build/pbrt_test",
             // "args": [], //命令行参数
             "program": "${workspaceFolder}/build/pbrt",
-            "args": ["--display-server","localhost:14158","--gpu","${workspaceFolder}/scene/explosion/explosion.pbrt"],
+            // "args": ["--display-server","localhost:14158","--gpu","${workspaceFolder}/scene/explosion/explosion.pbrt"],
+            "args": ["--display-server","localhost:14158","${workspaceFolder}/scene/explosion/explosion.pbrt"],
             "stopAtEntry": true, //进入程序调试即停
             "cwd": "${fileDirname}",
             "environment": [],

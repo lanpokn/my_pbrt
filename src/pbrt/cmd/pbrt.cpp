@@ -197,7 +197,7 @@ int main(int argc, char *argv[]) {
             ParseArg(&iter, args.end(), "write-partial-images",
                      &options.writePartialImages, onError) ||
             ParseArg(&iter, args.end(), "upgrade", &options.upgrade, onError)) {
-            // success
+            // success, but do nothing, we have got all useful msg and put it into options
         } else if (*iter == "--help" || *iter == "-help" || *iter == "-h") {
             usage();
             return 0;
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
 
     // Initialize pbrt
     InitPBRT(options);
-
+    // pbrt就两种大功能，一种用来渲染图片，一种用来转化图片
     if (format || toPly || options.upgrade) {
         FormattingParserTarget formattingTarget(toPly, options.upgrade);
         ParseFiles(&formattingTarget, filenames);
