@@ -1,3 +1,5 @@
+#ifndef MY_RENDER_H
+#define MY_RENDER_H
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -72,3 +74,5 @@ class render{
     virtual bool run() = 0;
   
 };
+
+#endif
