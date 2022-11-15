@@ -41,7 +41,7 @@ struct BasicConfig{
     // pstd::optional<Point2i> pixelMaterial;
     // Float displacementEdgeScale = 1;
 
-    virtual std::string ToString() const;
+    virtual std::string ToString() const = 0;
 };
 /**
  * @brief totaly virtual class, won't have a instance

@@ -259,14 +259,15 @@ bool pbrt_render::init(string &str){
     this->cmd_input = str;
     return true;
 }
-bool pbrt_render::init(PbrtConfig &con){
+bool pbrt_render::init(BasicConfig &con){
 //this is a tiring but easy jobs
+    return true;
 }
 bool pbrt_render::run(){
     //借助strtok实现split
     //need to be test!
     //config varibles must be less than 100,and string openation won't cost too much
-    char *argv[100];
+    char *argv[300];
     char *s = this->cmd_input.data();
     const char *d = " ";
     char *p;
@@ -274,7 +275,11 @@ bool pbrt_render::run(){
     // there is no need to use _r, because we only need to split it with space
     p = strtok(s,d);
     /* 继续获取其他的子字符串 */
+    //would p point to the same memory?
     int i = 0;
+    argv[i] = p;
+    //the first argument is excutebale path, and it is useless now, so we can set an arbitary string
+    i++;
     argv[i] = p;
     while(p)
     {
@@ -282,5 +287,6 @@ bool pbrt_render::run(){
         p=strtok(NULL,d);
         argv[i] = p;
     }
+    //change the order, make it the same with the argv of the cmd input
     this->pbrt_main(argv);
 }

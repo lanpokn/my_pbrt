@@ -86,7 +86,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(PbrtConfig &con);
+    virtual bool init(BasicConfig &con);
     /**
      * @brief get a string from the user, then run() will change it to char *argv[] which can be understood by the pbrt_main
      * 
