@@ -11,6 +11,7 @@ using namespace std;
  */
 //config设计时要保证用户可以用最基本的操作对config进行设计，而不需要引入额外库，最简单的方法就是看这些pbrt自己定义的类的构造变量都用了哪些数据
 struct BasicConfig{
+    string scene_path;
     // int seed = 0;
     // bool quiet = false;
     // bool disablePixelJitter = false, disableWavelengthJitter = false;

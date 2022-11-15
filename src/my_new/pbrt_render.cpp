@@ -73,7 +73,13 @@ Reformatting options:
     exit(msg.empty() ? 0 : 1);
 }
 std::string PbrtConfig::ToString() const{
-    
+    //there is no better way, just add one by one?
+    string ret = "";
+    //此处有两种方法，一种是无脑一波流，全转成string，另一种是比较有哪一项发生了更改，再决定加什么，我推荐前者，这样也方便其他地方用这个函数debug
+
+    //TODO
+    ret.append(this->scene_path);
+    return ret;
 }
 int pbrt_render::pbrt_main(char *argv[]){
     // Convert command-line arguments to vector of strings
@@ -265,6 +271,11 @@ bool pbrt_render::init(string &&str){
 }
 bool pbrt_render::init(BasicConfig &con){
 //this is a tiring but easy jobs
+    if(" "== con.scene_path){
+        cout<<"you have not provide scene_path "<<endl;
+        return false;
+    }
+    this->cmd_input = con.ToString();
     return true;
 }
 bool pbrt_render::run(){

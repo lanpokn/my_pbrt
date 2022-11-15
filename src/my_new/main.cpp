@@ -9,5 +9,7 @@ int main(){
     string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
     render.init(cmd);
     render.init("--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt");
+    con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
+    render.init(con);
     render.run();
 }
