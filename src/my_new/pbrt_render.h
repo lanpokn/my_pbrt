@@ -104,6 +104,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
+    virtual bool init(string &&str);
     virtual bool run();
 };
 

@@ -66,6 +66,14 @@ class render{
      */
     virtual bool init(string &str) = 0;
     /**
+     * @brief almost the same with upper one
+     * 
+     * @param str 
+     * @return true 
+     * @return false 
+     */
+    virtual bool init(string &&str) = 0;
+    /**
      * @brief after init, use this function to render a picture
      * 
      * @return true 

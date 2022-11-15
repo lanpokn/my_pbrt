@@ -259,6 +259,10 @@ bool pbrt_render::init(string &str){
     this->cmd_input = str;
     return true;
 }
+bool pbrt_render::init(string &&str){
+    this->cmd_input = std::move(str);
+    return true;
+}
 bool pbrt_render::init(BasicConfig &con){
 //this is a tiring but easy jobs
     return true;

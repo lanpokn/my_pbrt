@@ -7,6 +7,7 @@ int main(){
     PbrtConfig con;
     cout<<render.init(con)<<endl;
     string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
-    cout<<render.init(cmd)<<endl;
+    render.init(cmd);
+    render.init("--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt");
     render.run();
 }
