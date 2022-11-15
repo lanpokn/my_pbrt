@@ -1,0 +1,12 @@
+*~
+.#*
+#*#
+src/my_new/build/
+src/my_new/html/
+src/my_new/latex/
+.DS_Store
+.ipynb_checkpoints/
+build/
+scene/
+.cache/
+/Users/weihl/Coding/pbrt-v4/.gitmodules
