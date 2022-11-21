@@ -4,7 +4,7 @@ using namespace pbrt;
 //initialize it , or cmake will throw erorr: undefined referrence
 // no extern is dingyi and shengming?
 Imf::FrameBuffer pbrt_render_h::EXRFrameBuffer;
-int pbrt_render_h::numscanlines = 1;
+Point2i pbrt_render_h::resolution;
 Imf::Header pbrt_render_h::header;
 
 static void usage(const std::string &msg = {}) {
@@ -315,12 +315,12 @@ bool pbrt_render::run(){
     // file.writePixels(resolution.y);
     // get the exr file:
     this->fb = pbrt_render_h::EXRFrameBuffer;
-    this->numscanlines = pbrt_render_h::numscanlines;
+    this->resolution = pbrt_render_h::resolution;
     this->header = pbrt_render_h::header;
     //test
-    string name = "done";
+    string name = "explosion";
     Imf::OutputFile file(name.c_str(), this->header);
     file.setFrameBuffer(this->fb);
-    file.writePixels(this->numscanlines);
+    file.writePixels(this->resolution.y);
 
 }

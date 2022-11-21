@@ -46,7 +46,7 @@ using namespace pbrt;
 //use extern to fix this problem!
 namespace pbrt_render_h{
 extern Imf::FrameBuffer EXRFrameBuffer;
-extern int numscanlines;
+extern Point2i resolution;
 extern Imf::Header header;
 }
 
@@ -103,7 +103,7 @@ class pbrt_render:render{
     int pbrt_main(char *argv[]);
   public:
     Imf::FrameBuffer fb;
-    int numscanlines = 1;
+    Point2i resolution;
     Imf::Header header;
     /**
      * @brief change config to string, and then call init(str)

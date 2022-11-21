@@ -106,4 +106,7 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
 
 注意定义和声明都不是初始化，定义的时候也要写int a = 1这样的关键字，不能缺省int!我建议复习声明与定义的关系，已经理解的不太好了。
 17. 新的问题： explosion.exr: error writing EXR: Cannot open image file "explosion.exr". Permission denied.以前没碰到过，这里为什么一定要打开这个文件？
-    
+    为什么生成的图片花了？数据应该没问题阿？另外，为什么image里做一次，外面做一次就有permision deny？怪问题，得看openexr
+    why the file will output to random location"though it's not my problem" and is it neccessary to have an exr suffix?
+    because: you have forgotten to make!
+    好像不是简单的int，建议还是传递resolution吧

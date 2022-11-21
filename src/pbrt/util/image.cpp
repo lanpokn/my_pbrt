@@ -1250,7 +1250,7 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
         // Imf::OutputFile file(name.c_str(), header);
         pbrt_render_h::header = header;
         pbrt_render_h::EXRFrameBuffer = fb;
-        pbrt_render_h::numscanlines = resolution.y;
+        pbrt_render_h::resolution = resolution;
         // file.setFrameBuffer(fb);
         // file.writePixels(resolution.y);
     } catch (const std::exception &exc) {
