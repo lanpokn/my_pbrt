@@ -23,10 +23,33 @@
 #include <pbrt/util/string.h>
 #include <pbrt/wavefront/wavefront.h>
 
+
+#include <ImfChannelList.h>
+#include <ImfChromaticitiesAttribute.h>
+#include <ImfFloatAttribute.h>
+#include <ImfFrameBuffer.h>
+#include <ImfHeader.h>
+#include <ImfInputFile.h>
+#include <ImfIntAttribute.h>
+#include <ImfMatrixAttribute.h>
+#include <ImfOutputFile.h>
+#include <ImfStringAttribute.h>
+#include <ImfStringVectorAttribute.h>
+
 #include <string>
 #include <vector>
 #include <iostream>
 using namespace pbrt;
+
+//use it to memory the exr data
+//use static to avoid multi defination
+//use extern to fix this problem!
+namespace pbrt_render_h{
+extern Imf::FrameBuffer EXRFrameBuffer;
+extern int numscanlines;
+extern Imf::Header header;
+}
+
 struct PbrtConfig:BasicConfig{
     int seed = 0;
     bool quiet = false;
@@ -79,6 +102,9 @@ class pbrt_render:render{
      */
     int pbrt_main(char *argv[]);
   public:
+    Imf::FrameBuffer fb;
+    int numscanlines = 1;
+    Imf::Header header;
     /**
      * @brief change config to string, and then call init(str)
      * 

@@ -50,6 +50,10 @@
 #define QOI_IMPLEMENTATION
 #include <qoi/qoi.h>
 
+//to give the parameter back
+#include <my_new/pbrt_render.h>
+
+
 namespace pbrt {
 
 std::string ToString(PixelFormat format) {
@@ -1243,9 +1247,12 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
             header.insert("chromaticities", Imf::ChromaticitiesAttribute(chromaticities));
         }
 
-        Imf::OutputFile file(name.c_str(), header);
-        file.setFrameBuffer(fb);
-        file.writePixels(resolution.y);
+        // Imf::OutputFile file(name.c_str(), header);
+        pbrt_render_h::header = header;
+        pbrt_render_h::EXRFrameBuffer = fb;
+        pbrt_render_h::numscanlines = resolution.y;
+        // file.setFrameBuffer(fb);
+        // file.writePixels(resolution.y);
     } catch (const std::exception &exc) {
         Error("%s: error writing EXR: %s", name.c_str(), exc.what());
         return false;

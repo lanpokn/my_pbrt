@@ -23,7 +23,6 @@
 #include <vector>
 
 namespace pbrt {
-
 // PixelFormat Definition
 enum class PixelFormat { U256, Half, Float };
 

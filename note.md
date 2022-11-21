@@ -91,3 +91,19 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
         file.writePixels(resolution.y);
       fb,resolution.y is all we need to create an exr file, this is method2
       method1: return metadata, and try to create a file by image.write()(need to be test!!)
+
+
+  
+  15. 难以理解的问题what():  Failed to write pixel data to image file "done". No frame buffer specified as pixel data source.
+   将文件输出成exr居然还涉及不同线程的问题？,已经确定了，fb在image.cpp中是好的，传到我的cpp中就变成空了。注意到之前有重定义的问题，我加了个static解决掉的，可能这样根本就
+   没有解决，首先查一查全局static的作用，然后看看会不会哪里重新初始化了。再找找有没有其他全局变量，看看为什么会重定义，重定义发生在哪一步骤，然后上网找答案。
+16. 
+头文件中应使用extern关键字声明全局变量（不定义），如果这个变量有多个文件用到，可以新建一个cpp，在其中定义，把这个cpp加入工程即可。头文件请不要定义任何变量，那是非常业余的行为……
+
+一般在头文件中申明，用extern,在cpp中定义。 如果在头文件中定义，如果这个头文件被多个cpp引用，会造成重复定义的链接错误。
+
+头文件只能申明全局变量（extern），不可定义（不推荐使用）    .cpp里，在最外层定义即可（int gi），直接引用
+
+注意定义和声明都不是初始化，定义的时候也要写int a = 1这样的关键字，不能缺省int!我建议复习声明与定义的关系，已经理解的不太好了。
+17. 新的问题： explosion.exr: error writing EXR: Cannot open image file "explosion.exr". Permission denied.以前没碰到过，这里为什么一定要打开这个文件？
+    

@@ -1,6 +1,12 @@
 #include<my_new/pbrt_render.h>
 using namespace pbrt;
 
+//initialize it , or cmake will throw erorr: undefined referrence
+// no extern is dingyi and shengming?
+Imf::FrameBuffer pbrt_render_h::EXRFrameBuffer;
+int pbrt_render_h::numscanlines = 1;
+Imf::Header pbrt_render_h::header;
+
 static void usage(const std::string &msg = {}) {
     if (!msg.empty())
         fprintf(stderr, "pbrt: %s\n\n", msg.c_str());
@@ -304,4 +310,17 @@ bool pbrt_render::run(){
     }
     //change the order, make it the same with the argv of the cmd input
     this->pbrt_main(argv);
+    // Imf::OutputFile file(name.c_str(), header);
+    // file.setFrameBuffer(fb);
+    // file.writePixels(resolution.y);
+    // get the exr file:
+    this->fb = pbrt_render_h::EXRFrameBuffer;
+    this->numscanlines = pbrt_render_h::numscanlines;
+    this->header = pbrt_render_h::header;
+    //test
+    string name = "done";
+    Imf::OutputFile file(name.c_str(), this->header);
+    file.setFrameBuffer(this->fb);
+    file.writePixels(this->numscanlines);
+
 }
