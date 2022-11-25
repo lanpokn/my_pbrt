@@ -44,6 +44,86 @@ struct BasicConfig{
 
     virtual std::string ToString() const = 0;
 };
+
+    // ProjectiveCamera(CameraBaseParameters baseParameters,
+    //                  const Transform &screenFromCamera, Bounds2f screenWindow,
+    //                  Float lensRadius, Float focalDistance)
+    //     : CameraBase(baseParameters),
+    //       screenFromCamera(screenFromCamera),
+    //       lensRadius(lensRadius),
+    //       focalDistance(focalDistance)
+struct CameraParam{
+    float shutteropen = 0;
+    float shutterclose = 1;
+    CameraParam(float shutteropen_input = 0,float shutterclose_input = 1){
+        shutteropen = shutteropen_input;
+        shutterclose = shutterclose_input;
+    }
+};
+struct RealisticCameraParam:CameraParam{
+    string lensfile = "";
+    float aperturediameter = 1.0;
+    float focusdistance = 10.0;
+    // Allows specifying the shape of the camera aperture, 
+    // which is circular by default. The values of "gaussian", "square", "pentagon", and "
+    // star" are associated with built-in aperture shapes; o
+    // ther values are interpreted as filenames specifying an image to be used to specify the shape.
+    string aperture = "circular";
+
+    RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+                        string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
+                        string aperture_input = "circular")
+                        :CameraParam(shutteropen_input,shutterclose_input)
+    {
+        lensfile = lensfile_input;
+        aperturediameter = aperdia_input;
+        focusdistance = focusd_input;
+        aperture = aperture_input;
+    }
+};
+struct PerspectiveCameraParam:CameraParam{
+    float frameaspectratio = -1;//no need to input 
+    float screenwindow = -1;//no need to input 
+    float lensradius = 1;
+    float focaldistance = 30;
+    float fov=90;
+    PerspectiveCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+                    float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
+                    float focaldistance_input = 30,float fov_input=90)
+                    :CameraParam(shutteropen_input,shutterclose_input)
+    {
+        frameaspectratio = frameaspectratio_input;
+        screenwindow = screenwindow_input;
+        lensradius = lensradius_input;
+        focaldistance = focaldistance_input;
+        fov = fov_input;
+    }
+};
+struct SphericalCameraParam:CameraParam{
+    string mapping = "equalarea";
+      SphericalCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+                    string mapping_input = "equalarea")
+                    :CameraParam(shutteropen_input,shutterclose_input)
+    {
+        mapping = mapping_input;
+    }
+};
+struct OrthographicParam:CameraParam{
+    float frameaspectratio;//no need to input 
+    float screenwindow;//no need to input 
+    float lensradius = 1;
+    float focaldistance = 30;
+    OrthographicParam(float shutteropen_input = 0,float shutterclose_input = 1,
+                    float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
+                    float focaldistance_input = 30)
+                    :CameraParam(shutteropen_input,shutterclose_input)
+    {
+        frameaspectratio = frameaspectratio_input;
+        screenwindow = screenwindow_input;
+        lensradius = lensradius_input;
+        focaldistance = focaldistance_input;
+    }
+};
 /**
  * @brief totaly virtual class, won't have a instance
  * 

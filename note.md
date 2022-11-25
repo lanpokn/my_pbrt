@@ -110,3 +110,12 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
     why the file will output to random location"though it's not my problem" and is it neccessary to have an exr suffix?
     because: you have forgotten to make!
     好像不是简单的int，建议还是传递resolution吧
+    does the name must be the same with the file .pbrt? not this problem
+    
+18. change resolution in .pbrt file
+    add fog:may be in jiezhi?media，explosion is a medium? it's better to change another scene
+    pbrt do not have original depth msg?
+    give depth image is a hard problem, original pbrt has not depth msg at all(need to rewrite a lot of code)
+19. camera等信息位于.pbrt文件中，如果想把接口留出来还需要改。具体留什么接口？使用何种相机？能否对.pbrt进行文件上的更改？
+    现在用的是投影相机，需要换成使用realistic的相机.由于cpu和gpu的不同，还不可以进入之后再做，必须保证scene中的camera信息是用户自己给定的。
+    所有事情都要自己试过再确认，之前就误以为camera一定在命令行里，结果不在，这下巨尴尬。

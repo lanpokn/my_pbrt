@@ -318,7 +318,7 @@ bool pbrt_render::run(){
     this->resolution = pbrt_render_h::resolution;
     this->header = pbrt_render_h::header;
     //test
-    string name = "explosion";
+    string name = "explosion2.exr";
     Imf::OutputFile file(name.c_str(), this->header);
     file.setFrameBuffer(this->fb);
     file.writePixels(this->resolution.y);

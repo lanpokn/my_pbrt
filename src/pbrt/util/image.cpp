@@ -1247,12 +1247,12 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
             header.insert("chromaticities", Imf::ChromaticitiesAttribute(chromaticities));
         }
 
-        // Imf::OutputFile file(name.c_str(), header);
+        Imf::OutputFile file(name.c_str(), header);
         pbrt_render_h::header = header;
         pbrt_render_h::EXRFrameBuffer = fb;
         pbrt_render_h::resolution = resolution;
-        // file.setFrameBuffer(fb);
-        // file.writePixels(resolution.y);
+        file.setFrameBuffer(fb);
+        file.writePixels(resolution.y);
     } catch (const std::exception &exc) {
         Error("%s: error writing EXR: %s", name.c_str(), exc.what());
         return false;
