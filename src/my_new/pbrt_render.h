@@ -51,6 +51,7 @@ extern Imf::Header header;
 }
 
 struct PbrtConfig:BasicConfig{
+    //cmd 
     int seed = 0;
     bool quiet = false;
     bool disablePixelJitter = false, disableWavelengthJitter = false;
@@ -80,6 +81,20 @@ struct PbrtConfig:BasicConfig{
     pstd::optional<Bounds2i> pixelBounds;
     pstd::optional<Point2i> pixelMaterial;
     Float displacementEdgeScale = 1;
+    
+    //it will be used when parsefile, if it is not null, we will create a new pbrt configfile(with a different name), and then delete it
+    //because original file is very conplex and only use a filename as input, do so can avoid change code
+    //为什么要生成新的文件：原本的源代码涉及到多个文件，而且最后应该是用的重定向输入流的方式进行读取，要改动就要涉及其底层逻辑
+    //而且要么改动一堆源文件，要么该文件会在其他地方出现难以预料的问题
+    //因此，我决定生成一个临时配置文件，至于是否需要运行后删除就看需求了
+    //所以接下来的任务：读取源文件，在保证源文件,修改其中特定的camera内容(可以考虑先把camera后边所有开头是空格的行，以及camera所在行“”的内容删除，再加），再生成到新的配置文件里，
+    //然后在parsefile前根据需求更改filevector（有理由认为原作者考虑过多相机，不然为什么要用vector?)
+    //记得跑一下有多个相机定义的文件，看看是怎么回事
+    *CameraParam = NULL;
+    //for the users to add new cameras, 
+    void AddCamera(){
+
+    }
     /**
      * @brief convert it to a cmd string
      * 
