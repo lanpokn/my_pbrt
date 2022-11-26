@@ -128,3 +128,7 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
     //所以接下来的任务：读取源文件，在保证源文件,修改其中特定的camera内容(可以考虑先把camera后边所有开头是空格的行，以及camera所在行“”的内容删除，再加），再生成到新的配置文件里，
     //然后在parsefile前根据需求更改filevector（有理由认为原作者考虑过多相机，不然为什么要用vector?)
     //记得跑一下有多个相机定义的文件，看看是怎么回事,run done,but no more image output, still need to be investigate
+21. 为图省事情，目前已经把render和pbrtrender之前的继承关系拆的差不多了，有空应该重新整理好这坨代码的结构
+    多相机生成完全可以在run里做，pbrt_main里只需要读一次相机参数即可。
+    确定pbrtmain中filenames的格式(正常就存了一个，读取出来即可），然后完成generatefile的函数，应该就初步实现相机封装了，记得除了Real以外的各种相机也要加上，以及代码的重构，都是苦力活
+    

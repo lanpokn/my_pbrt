@@ -88,6 +88,10 @@ std::string PbrtConfig::ToString() const{
     return ret;
 }
 
+string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames){
+    string newfilenames;
+    return newfilenames;
+}
 int pbrt_render::pbrt_main(char *argv[]){
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args = GetCommandLineArguments(argv);
@@ -254,7 +258,12 @@ int pbrt_render::pbrt_main(char *argv[]){
         // Parse provided scene description files
         BasicScene scene;
         BasicSceneBuilder builder(&scene);
-        // if(Cam)
+        if(RealCameraList.size()!= 0){
+            RealisticCameraParam RC = RealCameraList.back();
+            // std::vector<std::string> filenames;
+            // filenames = this->generatePbrtFile(RC,filenames);
+            RealCameraList.pop_back();
+        }
         ParseFiles(&builder, filenames);
 
         // Render the scene

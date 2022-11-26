@@ -122,6 +122,13 @@ class pbrt_render:render{
      * @return int 
      */
     int pbrt_main(char *argv[]);
+    /**
+     * @brief generate a new .pbrt file and renturn the new filename
+     * 
+     * @param RC 
+     * @param filenames 
+     */
+    string generatePbrtFile(RealisticCameraParam RC, string &filenames);
   public:
     Imf::FrameBuffer fb;
     Point2i resolution;
