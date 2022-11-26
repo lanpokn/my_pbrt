@@ -6,8 +6,11 @@ int main(){
     pbrt_render render;
     PbrtConfig con;
     cout<<render.init(con)<<endl;
-    string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
-    // string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/sanmiguel/sanmiguel-courtyard.pbrt";
+    con.AddRealCamera();
+    con.AddRealCamera(2,3);
+    cout<<con.RealCameraList.at(0).aperturediameter<<endl;
+    // string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
+    string cmd = "--display-server localhost:14158 /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/sanmiguel/sanmiguel-realistic-courtyard.pbrt";
     render.init(cmd);
     // con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
     // render.init(con);

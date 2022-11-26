@@ -127,4 +127,4 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
     //因此，我决定生成一个临时配置文件，至于是否需要运行后删除就看需求了
     //所以接下来的任务：读取源文件，在保证源文件,修改其中特定的camera内容(可以考虑先把camera后边所有开头是空格的行，以及camera所在行“”的内容删除，再加），再生成到新的配置文件里，
     //然后在parsefile前根据需求更改filevector（有理由认为原作者考虑过多相机，不然为什么要用vector?)
-    //记得跑一下有多个相机定义的文件，看看是怎么回事
+    //记得跑一下有多个相机定义的文件，看看是怎么回事,run done,but no more image output, still need to be investigate

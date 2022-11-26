@@ -90,10 +90,14 @@ struct PbrtConfig:BasicConfig{
     //所以接下来的任务：读取源文件，在保证源文件,修改其中特定的camera内容(可以考虑先把camera后边所有开头是空格的行，以及camera所在行“”的内容删除，再加），再生成到新的配置文件里，
     //然后在parsefile前根据需求更改filevector（有理由认为原作者考虑过多相机，不然为什么要用vector?)
     //记得跑一下有多个相机定义的文件，看看是怎么回事
-    *CameraParam = NULL;
-    //for the users to add new cameras, 
-    void AddCamera(){
-
+    //TODO
+    //vector<CheckInfo*> info;
+    vector<RealisticCameraParam> RealCameraList;
+    void AddRealCamera(float shutteropen = 1 ,float shutterclose = 0,string lensfile = "",float aperturediameter = 1.0,
+                       float focusdistance = 10.0, string aperture = "circular")
+    {
+        RealisticCameraParam t(shutteropen,shutterclose,lensfile,aperturediameter,focusdistance,aperture);
+        RealCameraList.push_back(t);
     }
     /**
      * @brief convert it to a cmd string

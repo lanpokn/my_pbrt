@@ -87,6 +87,7 @@ std::string PbrtConfig::ToString() const{
     ret.append(this->scene_path);
     return ret;
 }
+
 int pbrt_render::pbrt_main(char *argv[]){
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args = GetCommandLineArguments(argv);
