@@ -113,6 +113,8 @@ struct PbrtConfig:BasicConfig{
 class pbrt_render:render{
   private:
     string cmd_input = "";
+    //these params have to be add because they are not one of  command line
+    vector<RealisticCameraParam> RealCameraList;
     /**
      * @brief copy from the pbrt,
      * 
@@ -131,7 +133,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(BasicConfig &con);
+    virtual bool init(PbrtConfig &con);
     /**
      * @brief get a string from the user, then run() will change it to char *argv[] which can be understood by the pbrt_main
      * 

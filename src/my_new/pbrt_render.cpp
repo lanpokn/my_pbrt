@@ -254,6 +254,7 @@ int pbrt_render::pbrt_main(char *argv[]){
         // Parse provided scene description files
         BasicScene scene;
         BasicSceneBuilder builder(&scene);
+        // if(Cam)
         ParseFiles(&builder, filenames);
 
         // Render the scene
@@ -276,8 +277,9 @@ bool pbrt_render::init(string &&str){
     this->cmd_input = std::move(str);
     return true;
 }
-bool pbrt_render::init(BasicConfig &con){
+bool pbrt_render::init(PbrtConfig &con){
 //this is a tiring but easy jobs
+    RealCameraList = con.RealCameraList;
     if(" "== con.scene_path){
         cout<<"you have not provide scene_path "<<endl;
         return false;

@@ -130,14 +130,14 @@ struct OrthographicParam:CameraParam{
  */
 class render{
   public:
-    /**
-     * @brief set all the parameter with a config struct
-     * 
-     * @param con  set by the users
-     * @return true 
-     * @return false 
-     */
-    virtual bool init(BasicConfig &con) = 0;
+    // /**
+    //  * @brief set all the parameter with a config struct
+    //  * 
+    //  * @param con  set by the users
+    //  * @return true 
+    //  * @return false 
+    //  */
+    // virtual bool init(BasicConfig &con) = 0;
     /**
      * @brief set all the parameter with a string, such as a cmd in pbrt
      * 
