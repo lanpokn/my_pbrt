@@ -61,7 +61,7 @@ struct CameraParam{
     }
 };
 struct RealisticCameraParam:CameraParam{
-    string lensfile = "";
+    string lensfile = "";//use relative path
     float aperturediameter = 1.0;
     float focusdistance = 10.0;
     // Allows specifying the shape of the camera aperture, 
