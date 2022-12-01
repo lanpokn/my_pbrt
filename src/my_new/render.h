@@ -2,7 +2,6 @@
 #define MY_RENDER_H
 #include<iostream>
 #include<vector>
-using namespace std;
 
 //reference one config may have different ,we need to decompose!
 /**
@@ -11,7 +10,7 @@ using namespace std;
  */
 //config设计时要保证用户可以用最基本的操作对config进行设计，而不需要引入额外库，最简单的方法就是看这些pbrt自己定义的类的构造变量都用了哪些数据
 struct BasicConfig{
-    string scene_path;
+    std::string scene_path;
     // int seed = 0;
     // bool quiet = false;
     // bool disablePixelJitter = false, disableWavelengthJitter = false;
@@ -61,18 +60,18 @@ struct CameraParam{
     }
 };
 struct RealisticCameraParam:CameraParam{
-    string lensfile = "";//use relative path
+    std::string lensfile = "";//use relative path
     float aperturediameter = 1.0;
     float focusdistance = 10.0;
     // Allows specifying the shape of the camera aperture, 
     // which is circular by default. The values of "gaussian", "square", "pentagon", and "
     // star" are associated with built-in aperture shapes; o
     // ther values are interpreted as filenames specifying an image to be used to specify the shape.
-    string aperture = "circular";
+    std::string aperture = "circular";
 
     RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
-                        string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
-                        string aperture_input = "circular")
+                        std::string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
+                        std::string aperture_input = "circular")
                         :CameraParam(shutteropen_input,shutterclose_input)
     {
         lensfile = lensfile_input;
@@ -100,9 +99,9 @@ struct PerspectiveCameraParam:CameraParam{
     }
 };
 struct SphericalCameraParam:CameraParam{
-    string mapping = "equalarea";
+    std::string mapping = "equalarea";
       SphericalCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
-                    string mapping_input = "equalarea")
+                    std::string mapping_input = "equalarea")
                     :CameraParam(shutteropen_input,shutterclose_input)
     {
         mapping = mapping_input;
@@ -145,7 +144,7 @@ class render{
      * @return true 
      * @return false 
      */
-    virtual bool init(string &str) = 0;
+    virtual bool init(std::string &str) = 0;
     /**
      * @brief almost the same with upper one
      * 
@@ -153,7 +152,7 @@ class render{
      * @return true 
      * @return false 
      */
-    virtual bool init(string &&str) = 0;
+    virtual bool init(std::string &&str) = 0;
     /**
      * @brief after init, use this function to render a picture
      * 

@@ -92,9 +92,9 @@ struct PbrtConfig:BasicConfig{
     //记得跑一下有多个相机定义的文件，看看是怎么回事
     //TODO
     //vector<CheckInfo*> info;
-    vector<RealisticCameraParam> RealCameraList;
-    void AddRealCamera(float shutteropen = 1 ,float shutterclose = 0,string lensfile = "",float aperturediameter = 1.0,
-                       float focusdistance = 10.0, string aperture = "circular")
+    std::vector<RealisticCameraParam> RealCameraList;
+    void AddRealCamera(float shutteropen = 1 ,float shutterclose = 0,std::string lensfile = "",float aperturediameter = 1.0,
+                       float focusdistance = 10.0, std::string aperture = "circular")
     {
         RealisticCameraParam t(shutteropen,shutterclose,lensfile,aperturediameter,focusdistance,aperture);
         RealCameraList.push_back(t);
@@ -112,9 +112,9 @@ struct PbrtConfig:BasicConfig{
  */
 class pbrt_render:render{
   private:
-    string cmd_input = "";
+    std::string cmd_input = "";
     //these params have to be add because they are not one of  command line
-    vector<RealisticCameraParam> RealCameraList;
+    std::vector<RealisticCameraParam> RealCameraList;
     /**
      * @brief copy from the pbrt,
      * 
@@ -128,7 +128,7 @@ class pbrt_render:render{
      * @param RC 
      * @param filenames 
      */
-    string generatePbrtFile(RealisticCameraParam RC, string &filenames);
+   std:: string generatePbrtFile(RealisticCameraParam RC, std::string &filenames);
   public:
     Imf::FrameBuffer fb;
     Point2i resolution;
@@ -149,7 +149,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(string &str);
+    virtual bool init(std::string &str);
     /**
      * @brief just need to call the pbrt_main with current cmd_input(change to char*[])
      *        anytime before calling a run, there should be an init() before it
@@ -158,7 +158,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(string &&str);
+    virtual bool init(std::string &&str);
     virtual bool run();
 };
 

@@ -80,7 +80,7 @@ Reformatting options:
 }
 std::string PbrtConfig::ToString() const{
     //there is no better way, just add one by one?
-    string ret = "";
+    std::string ret = "";
     //此处有两种方法，一种是无脑一波流，全转成string，另一种是比较有哪一项发生了更改，再决定加什么，我推荐前者，这样也方便其他地方用这个函数debug
 
     //TODO
@@ -89,16 +89,16 @@ std::string PbrtConfig::ToString() const{
 }
 
 // this need to be overload to four version
-string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames){
-    string newfilenames;
+std::string pbrt_render::generatePbrtFile(RealisticCameraParam RC, std::string &filenames){
+    std::string newfilenames;
     newfilenames = filenames.substr(0, filenames.length()-5)+"_user.pbrt";
-    ifstream infile(filenames);//需要修改的文件。
-    ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
+    std::ifstream infile(filenames);//需要修改的文件。
+    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
 
     int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
     int lineAfterCamera = 0;
-    string temp;
-    string templast;
+    std::string temp;
+    std::string templast;
     while (!infile.eof())
     {
         getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
@@ -118,7 +118,7 @@ string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames)
 
         //then:output file
         if(0 ==findCamera or 2 == findCamera ){
-            outfile << temp << endl;
+            outfile << temp << std::endl;
         }
         else if(3 == findCamera){
             //do not output for now, because I don't know why there would be two Camera setting
@@ -133,11 +133,11 @@ string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames)
                 }
                 else if (1 == lineAfterCamera)
                 {
-                    temp = "    \"float shutteropen\" [ "+ to_string(RC.shutteropen)  +" ]";
+                    temp = "    \"float shutteropen\" [ "+ std::to_string(RC.shutteropen)  +" ]";
                 }
                 else if (2 == lineAfterCamera)
                 {
-                    temp = "    \"float shutterclose\" [ "+ to_string(RC.shutterclose)  +" ]";
+                    temp = "    \"float shutterclose\" [ "+ std::to_string(RC.shutterclose)  +" ]";
                 }
                 else if (3 == lineAfterCamera)
                 {
@@ -145,17 +145,17 @@ string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames)
                 }
                 else if (4 == lineAfterCamera)
                 {
-                    temp ="    \"float aperturediameter\" [ "+to_string(RC.aperturediameter)+" ]";
+                    temp ="    \"float aperturediameter\" [ "+std::to_string(RC.aperturediameter)+" ]";
                 }
                 else if (5 == lineAfterCamera)
                 {
-                    temp ="    \"float focusdistance\" [ "+to_string(RC.focusdistance)+" ]";
+                    temp ="    \"float focusdistance\" [ "+std::to_string(RC.focusdistance)+" ]";
                 }
                 else if (6 == lineAfterCamera)
                 {
                     if("circular"!=RC.aperture){
                         temp ="    \"string aperture\" [ "+RC.aperture+" ]";
-                        outfile << temp << endl;
+                        outfile << temp << std::endl;
                         break;
                     }
                     else{
@@ -163,7 +163,7 @@ string pbrt_render::generatePbrtFile(RealisticCameraParam RC, string &filenames)
                     }
                 }
                 lineAfterCamera++;
-                outfile << temp << endl;
+                outfile << temp << std::endl;
             }
             //after output, delete other lines until all the original Camera msg is removed 
             findCamera = 3;
@@ -342,7 +342,7 @@ int pbrt_render::pbrt_main(char *argv[]){
         if(RealCameraList.size()!= 0){
             //use user define .pbrt file instead of default one
             RealisticCameraParam RC = RealCameraList.back();
-            string new_filename;
+            std::string new_filename;
             new_filename = this->generatePbrtFile(RC,filenames.back());
             filenames.pop_back();
             filenames.push_back(new_filename);
@@ -362,11 +362,11 @@ int pbrt_render::pbrt_main(char *argv[]){
     }
     return 0;
 }
-bool pbrt_render::init(string &str){
+bool pbrt_render::init(std::string &str){
     this->cmd_input = str;
     return true;
 }
-bool pbrt_render::init(string &&str){
+bool pbrt_render::init(std::string &&str){
     this->cmd_input = std::move(str);
     return true;
 }
@@ -374,7 +374,7 @@ bool pbrt_render::init(PbrtConfig &con){
 //this is a tiring but easy jobs
     RealCameraList = con.RealCameraList;
     if(" "== con.scene_path){
-        cout<<"you have not provide scene_path "<<endl;
+        std::cout<<"you have not provide scene_path "<<std::endl;
         return false;
     }
     this->cmd_input = con.ToString();
@@ -414,7 +414,7 @@ bool pbrt_render::run(){
     this->resolution = pbrt_render_h::resolution;
     this->header = pbrt_render_h::header;
     //test
-    string name = "explosion2.exr";
+    std::string name = "explosion2.exr";
     Imf::OutputFile file(name.c_str(), this->header);
     file.setFrameBuffer(this->fb);
     file.writePixels(this->resolution.y);
