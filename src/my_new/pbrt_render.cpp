@@ -89,7 +89,7 @@ std::string PbrtConfig::ToString() const{
 }
 
 // this need to be overload to four version
-std::string pbrt_render::generatePbrtFile(RealisticCameraParam RC, std::string &filenames){
+std::string pbrt_render::generatePbrtFile(RealisticCameraParam RC, std::string filenames){
     std::string newfilenames;
     newfilenames = filenames.substr(0, filenames.length()-5)+"_user.pbrt";
     std::ifstream infile(filenames);//需要修改的文件。
@@ -373,6 +373,9 @@ bool pbrt_render::init(std::string &&str){
 bool pbrt_render::init(PbrtConfig &con){
 //this is a tiring but easy jobs
     RealCameraList = con.RealCameraList;
+    OrthographicCameraList = con.OrthographicCameraList;
+    PerspectiveCameraList = con.PerspectiveCameraList;
+    SphericalCameraList = con.SphericalCameraList;
     if(" "== con.scene_path){
         std::cout<<"you have not provide scene_path "<<std::endl;
         return false;
@@ -404,19 +407,23 @@ bool pbrt_render::run(){
         p=strtok(NULL,d);
         argv[i] = p;
     }
-    //change the order, make it the same with the argv of the cmd input
-    this->pbrt_main(argv);
-    // Imf::OutputFile file(name.c_str(), header);
-    // file.setFrameBuffer(fb);
-    // file.writePixels(resolution.y);
-    // get the exr file:
-    this->fb = pbrt_render_h::EXRFrameBuffer;
-    this->resolution = pbrt_render_h::resolution;
-    this->header = pbrt_render_h::header;
-    //test
-    std::string name = "explosion2.exr";
-    Imf::OutputFile file(name.c_str(), this->header);
-    file.setFrameBuffer(this->fb);
-    file.writePixels(this->resolution.y);
+    //change the order, make it the same with the argv of the cmd input    
+    while(!RealCameraList.empty() and !PerspectiveCameraList.empty() and !OrthographicCameraList.empty() and !SphericalCameraList.empty())
+    {
+        this->pbrt_main(argv);//camera will be poped here
+        // Imf::OutputFile file(name.c_str(), header);
+        // file.setFrameBuffer(fb);
+        // file.writePixels(resolution.y);
+        // get the exr file:
 
+        //TODO
+        this->fb = pbrt_render_h::EXRFrameBuffer;
+        this->resolution = pbrt_render_h::resolution;
+        this->header = pbrt_render_h::header;
+        // //test,name is whatever
+        // std::string name = "explosion2.exr";
+        // Imf::OutputFile file(name.c_str(), this->header);
+        // file.setFrameBuffer(this->fb);
+        // file.writePixels(this->resolution.y);
+    }
 }

@@ -43,20 +43,18 @@ struct BasicConfig{
 
     virtual std::string ToString() const = 0;
 };
-
-    // ProjectiveCamera(CameraBaseParameters baseParameters,
-    //                  const Transform &screenFromCamera, Bounds2f screenWindow,
-    //                  Float lensRadius, Float focalDistance)
-    //     : CameraBase(baseParameters),
-    //       screenFromCamera(screenFromCamera),
-    //       lensRadius(lensRadius),
-    //       focalDistance(focalDistance)
+/**
+ * @brief remember all param, label is to distingguish between different camera that user defined
+ * 
+ */
 struct CameraParam{
     float shutteropen = 0;
     float shutterclose = 1;
-    CameraParam(float shutteropen_input = 0,float shutterclose_input = 1){
+    std::string label = "";
+    CameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = ""){
         shutteropen = shutteropen_input;
         shutterclose = shutterclose_input;
+        label = label_input;
     }
 };
 struct RealisticCameraParam:CameraParam{
@@ -69,10 +67,10 @@ struct RealisticCameraParam:CameraParam{
     // ther values are interpreted as filenames specifying an image to be used to specify the shape.
     std::string aperture = "circular";
 
-    RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+    RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                         std::string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
                         std::string aperture_input = "circular")
-                        :CameraParam(shutteropen_input,shutterclose_input)
+                        :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         lensfile = lensfile_input;
         aperturediameter = aperdia_input;
@@ -86,10 +84,10 @@ struct PerspectiveCameraParam:CameraParam{
     float lensradius = 1;
     float focaldistance = 30;
     float fov=90;
-    PerspectiveCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+    PerspectiveCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = 30,float fov_input=90)
-                    :CameraParam(shutteropen_input,shutterclose_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         frameaspectratio = frameaspectratio_input;
         screenwindow = screenwindow_input;
@@ -100,22 +98,22 @@ struct PerspectiveCameraParam:CameraParam{
 };
 struct SphericalCameraParam:CameraParam{
     std::string mapping = "equalarea";
-      SphericalCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,
+      SphericalCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                     std::string mapping_input = "equalarea")
-                    :CameraParam(shutteropen_input,shutterclose_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         mapping = mapping_input;
     }
 };
-struct OrthographicParam:CameraParam{
+struct OrthographicCameraParam:CameraParam{
     float frameaspectratio;//no need to input 
     float screenwindow;//no need to input 
     float lensradius = 1;
     float focaldistance = 30;
-    OrthographicParam(float shutteropen_input = 0,float shutterclose_input = 1,
+    OrthographicCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = 30)
-                    :CameraParam(shutteropen_input,shutterclose_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         frameaspectratio = frameaspectratio_input;
         screenwindow = screenwindow_input;

@@ -132,3 +132,15 @@ can I add a parameter to edit imagewrite to update a paramter in pbrt(rather tha
     多相机生成完全可以在run里做，pbrt_main里只需要读一次相机参数即可。
     确定pbrtmain中filenames的格式(正常就存了一个，读取出来即可），然后完成generatefile的函数，应该就初步实现相机封装了，记得除了Real以外的各种相机也要加上，以及代码的重构，都是苦力活
     
+22. 接下来的工作：在pbrt_render里动工，支持多相机还要考虑支持多组返回数据的问题，所以注意相关图像数据的返回，也要分成四波。
+（1）PbrtConfig增加其他list
+（2）init时对这几种list都进行赋值
+（3）pbrt_main第342行判断相机是否为空的增加else if, 是其能够pop其他相机，注意每次循环只处理一次相机
+（4）run()支持多个相机生成多种图片，记得改了xx2这样简陋的做法
+（5）重载四种generatePbrtFile
+（6）把周报的git弄下来，学习一下gitlab
+,need better memory way, we can use vector instead and we need a way to show the Param of existence camera and it's label, intead of give it on our own
+we can add label to the CameraParam, make sure these labels are different and then use it to simplify the code
+可以把exr的数据也作为相机的基本数据，只是不进行初始化，作为公开变量，在完成之后给其赋值即可。（这个可以以后调整，好处是防止找不到）
+同时也可以考虑让用户指定标签？太麻烦了，慢慢加吧
+总之，今天的工作是进行了大量的重构，最后记得把uml图打出来给老师看

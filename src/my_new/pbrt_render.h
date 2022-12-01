@@ -93,11 +93,38 @@ struct PbrtConfig:BasicConfig{
     //TODO
     //vector<CheckInfo*> info;
     std::vector<RealisticCameraParam> RealCameraList;
+    std::vector<PerspectiveCameraParam> PerspectiveCameraList;
+    std::vector<SphericalCameraParam> SphericalCameraList;
+    std::vector<OrthographicCameraParam> OrthographicCameraList;
     void AddRealCamera(float shutteropen = 1 ,float shutterclose = 0,std::string lensfile = "",float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
-    {
-        RealisticCameraParam t(shutteropen,shutterclose,lensfile,aperturediameter,focusdistance,aperture);
+    { 
+        std::string label_input = "RealCamera_"+std::to_string(RealCameraList.size());
+        RealisticCameraParam t(shutteropen,shutterclose,label_input,lensfile,aperturediameter,focusdistance,aperture);
         RealCameraList.push_back(t);
+    }
+    void AddPerspectiveCamera(float shutteropen = 1 ,float shutterclose = 0, float frameaspectratio_input = -1,
+                              float screenwindow_input  = -1.0,float lensradius_input = 1,
+                              float focaldistance_input = 30,float fov_input=90)
+    {
+        std::string label_input = "PerspectiveCamera_"+std::to_string(PerspectiveCameraList.size());
+        PerspectiveCameraParam t(shutteropen,shutterclose,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input,fov_input);
+        PerspectiveCameraList.push_back(t);
+    }
+    void AddSphericalCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    std::string mapping_input = "equalarea")
+    {
+        std::string label_input = "SphericalCamera_"+std::to_string(SphericalCameraList.size());
+        SphericalCameraParam t(shutteropen_input,shutterclose_input,label_input,mapping_input);
+        SphericalCameraList.push_back(t);
+    }
+    void AddOrthographicCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
+                    float focaldistance_input = 30)
+    {
+        std::string label_input = "OrthographicCamera_"+std::to_string(OrthographicCameraList.size());
+        OrthographicCameraParam t(shutteropen_input,shutterclose_input,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input);
+        OrthographicCameraList.push_back(t);
     }
     /**
      * @brief convert it to a cmd string
@@ -115,6 +142,9 @@ class pbrt_render:render{
     std::string cmd_input = "";
     //these params have to be add because they are not one of  command line
     std::vector<RealisticCameraParam> RealCameraList;
+    std::vector<PerspectiveCameraParam> PerspectiveCameraList;
+    std::vector<SphericalCameraParam> SphericalCameraList;
+    std::vector<OrthographicCameraParam> OrthographicCameraList;
     /**
      * @brief copy from the pbrt,
      * 
@@ -128,7 +158,7 @@ class pbrt_render:render{
      * @param RC 
      * @param filenames 
      */
-   std:: string generatePbrtFile(RealisticCameraParam RC, std::string &filenames);
+   std:: string generatePbrtFile(RealisticCameraParam RC, std::string filenames);
   public:
     Imf::FrameBuffer fb;
     Point2i resolution;
