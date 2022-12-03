@@ -408,7 +408,7 @@ bool pbrt_render::run(){
         argv[i] = p;
     }
     //change the order, make it the same with the argv of the cmd input    
-    while(!RealCameraList.empty() and !PerspectiveCameraList.empty() and !OrthographicCameraList.empty() and !SphericalCameraList.empty())
+    while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
     {
         this->pbrt_main(argv);//camera will be poped here
         // Imf::OutputFile file(name.c_str(), header);

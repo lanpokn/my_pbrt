@@ -1246,7 +1246,6 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
                 Imath::V2f(cs.b.x, cs.b.y), Imath::V2f(cs.w.x, cs.w.y));
             header.insert("chromaticities", Imf::ChromaticitiesAttribute(chromaticities));
         }
-
         Imf::OutputFile file(name.c_str(), header);
         pbrt_render_h::header = header;
         pbrt_render_h::EXRFrameBuffer = fb;

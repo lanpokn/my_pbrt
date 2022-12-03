@@ -144,3 +144,31 @@ we can add label to the CameraParam, make sure these labels are different and th
 可以把exr的数据也作为相机的基本数据，只是不进行初始化，作为公开变量，在完成之后给其赋值即可。（这个可以以后调整，好处是防止找不到）
 同时也可以考虑让用户指定标签？太麻烦了，慢慢加吧
 总之，今天的工作是进行了大量的重构，最后记得把uml图打出来给老师看
+
+
+        for (const auto &iter : metadata.strings)
+            header.insert(iter.first, Imf::StringAttribute(iter.second));
+        for (const auto &iter : metadata.stringVectors)
+            header.insert(iter.first, Imf::StringVectorAttribute(iter.second));
+        这几个是空的，要小心，什么时候非空？
+        // Find any string or string vector attributes
+        for (auto iter = file.header().begin(); iter != file.header().end(); ++iter) {
+            if (strcmp(iter.attribute().typeName(), "string") == 0) {
+                Imf::StringAttribute &sv = (Imf::StringAttribute &)iter.attribute();
+                metadata.strings[iter.name()] = sv.value();
+            }
+            if (strcmp(iter.attribute().typeName(), "stringvector") == 0) {
+                Imf::StringVectorAttribute &sv =
+                    (Imf::StringVectorAttribute &)iter.attribute();
+                metadata.stringVectors[iter.name()] = sv.value();
+            }
+        }
+        应该是在读入exr文件时会记下他们的header，待验证
+pbrt自己额外insert的header的名字有：
+channels:B,G,R
+renderTimeSeconds
+worldToCamera
+worldToNDC
+samplesPerPixel
+MSE
+chromaticities
