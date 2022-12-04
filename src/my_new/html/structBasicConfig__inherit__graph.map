@@ -1,0 +1,4 @@
+<map id="BasicConfig" name="BasicConfig">
+<area shape="rect" id="node1" title="config locate a lot of settings and give it to the render，note thta there is no virtual varible" alt="" coords="5,5,99,32"/>
+<area shape="rect" id="node2" href="$structPbrtConfig.html" title=" " alt="" coords="10,80,94,107"/>
+</map>

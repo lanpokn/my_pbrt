@@ -1,0 +1,4 @@
+<map id="render" name="render">
+<area shape="rect" id="node1" title="totaly virtual class, won&#39;t have a instance" alt="" coords="19,5,78,32"/>
+<area shape="rect" id="node2" href="$classpbrt__render.html" title="render an image with pbrt method" alt="" coords="5,80,92,107"/>
+</map>
