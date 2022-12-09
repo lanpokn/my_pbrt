@@ -86,3 +86,18 @@ Radiance.C01
 1. 光谱的通道数要么是31，要么是16，不是非常可变，看看能不能改动
 2. zhenyi
 3. yizhi
+
+            if (NSpectrumSamples==31)
+            {
+                image.SetChannels(pOffset, radianceDesc, {L[0], L[1], L[2], L[3], L[4], L[5],
+                                L[6], L[7], L[8], L[9], L[10], L[11],
+                                L[12], L[13], L[14], L[15],L[16], L[17], L[18], L[19], L[20],
+                                L[21], L[22], L[23], L[24], L[25], L[26],
+                                L[27], L[28], L[29], L[30]});
+结果是0.32这种的，不知道是不是光子数
+iter.name @? bgppprrrrrrr
+initpbrt 会出大问题，可能这条路行不通，要学习如何动手改变参数了。
+InitBufferCaches会崩掉，还是老实做不重复读取场景的多相机吧
+似乎读取的大头都在integrator->Render();所以cpu和gpu还要分开做。
+总之多相机不是一个简单的事情。
+总之先把框架整理好，保证一个初版是正确的，并且避开initpbrt()

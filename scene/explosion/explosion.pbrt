@@ -8,7 +8,7 @@ Camera "perspective"
 Film "gbuffer"
 #  "integer xresolution" 1300
 #  "integer yresolution" 1800
-  "saveDepth" true
+  "bool saveDepth" true
   "integer xresolution" 130
   "integer yresolution" 180
   "string sensor" "nikon_d850"

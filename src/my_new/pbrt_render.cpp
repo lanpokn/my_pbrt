@@ -331,6 +331,7 @@ int pbrt_render::pbrt_main(char *argv[]){
 
     // Initialize pbrt
     InitPBRT(options);
+    //TODO, add here!
     // pbrt就两种大功能，一种用来渲染图片，一种用来转化图片
     if (format || toPly || options.upgrade) {
         FormattingParserTarget formattingTarget(toPly, options.upgrade);
@@ -407,23 +408,23 @@ bool pbrt_render::run(){
         p=strtok(NULL,d);
         argv[i] = p;
     }
-    //change the order, make it the same with the argv of the cmd input    
-    while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
-    {
-        this->pbrt_main(argv);//camera will be poped here
-        // Imf::OutputFile file(name.c_str(), header);
-        // file.setFrameBuffer(fb);
-        // file.writePixels(resolution.y);
-        // get the exr file:
+    // //change the order, make it the same with the argv of the cmd input    
+    // while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
+    // {
+    this->pbrt_main(argv);//camera will be poped here
+    // Imf::OutputFile file(name.c_str(), header);
+    // file.setFrameBuffer(fb);
+    // file.writePixels(resolution.y);
+    // get the exr file:
 
-        //TODO
-        this->fb = pbrt_render_h::EXRFrameBuffer;
-        this->resolution = pbrt_render_h::resolution;
-        this->header = pbrt_render_h::header;
-        // //test,name is whatever
-        // std::string name = "explosion2.exr";
-        // Imf::OutputFile file(name.c_str(), this->header);
-        // file.setFrameBuffer(this->fb);
-        // file.writePixels(this->resolution.y);
-    }
+    //TODO
+    this->fb = pbrt_render_h::EXRFrameBuffer;
+    this->resolution = pbrt_render_h::resolution;
+    this->header = pbrt_render_h::header;
+    // //test,name is whatever
+    // std::string name = "explosion2.exr";
+    // Imf::OutputFile file(name.c_str(), this->header);
+    // file.setFrameBuffer(this->fb);
+    // file.writePixels(this->resolution.y);
+    // }
 }
