@@ -8,9 +8,11 @@ Camera "realistic"
     "string lensfile" [ "lenses/wide.22mm.dat" ]
     "float aperturediameter" [ 2.000000 ]
     "float focusdistance" [ 10.000000 ]
-Film "rgb"
+# Film "rgb"
+Film "gbuffer"
 #  "integer xresolution" 1300
 #  "integer yresolution" 1800
+  "bool saveDepth" true
   "integer xresolution" 130
   "integer yresolution" 180
   "string sensor" "nikon_d850"

@@ -2,6 +2,7 @@
 #define MY_RENDER_H
 #include<iostream>
 #include<vector>
+#include<math.h>
 
 //reference one config may have different ,we need to decompose!
 /**
@@ -86,7 +87,7 @@ struct PerspectiveCameraParam:CameraParam{
     float fov=90;
     PerspectiveCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
-                    float focaldistance_input = 30,float fov_input=90)
+                    float focaldistance_input = -1,float fov_input=90)
                     :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         frameaspectratio = frameaspectratio_input;
@@ -112,7 +113,7 @@ struct OrthographicCameraParam:CameraParam{
     float focaldistance = 30;
     OrthographicCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
-                    float focaldistance_input = 30)
+                    float focaldistance_input = -1)
                     :CameraParam(shutteropen_input,shutterclose_input,label_input)
     {
         frameaspectratio = frameaspectratio_input;
