@@ -611,55 +611,59 @@ int pbrt_render::pbrt_main(char *argv[]){
         FormattingParserTarget formattingTarget(toPly, options.upgrade);
         ParseFiles(&formattingTarget, filenames);
     } else {
-        // Parse provided scene description files
-        BasicScene scene;
-        BasicSceneBuilder builder(&scene);
         //hhq
-        if(RealCameraList.size()!= 0){
-            //use user define .pbrt file instead of default one
-            RealisticCameraParam RC = RealCameraList.back();
-            std::string new_filename;
-            new_filename = this->generatePbrtFile(RC,filenames.back());
-            filenames.pop_back();
-            filenames.push_back(new_filename);
-            RealCameraList.pop_back();
-        }
-        else if(PerspectiveCameraList.size()!= 0){
-            PerspectiveCameraParam PC = PerspectiveCameraList.back();
-            std::string new_filename;
-            new_filename = this->generatePbrtFile(PC,filenames.back());
-            filenames.pop_back();
-            filenames.push_back(new_filename);
-            PerspectiveCameraList.pop_back();
-        }
-        else if(OrthographicCameraList.size()!= 0){
-            OrthographicCameraParam OC = OrthographicCameraList.back();
-            std::string new_filename;
-            new_filename = this->generatePbrtFile(OC,filenames.back());
-            filenames.pop_back();
-            filenames.push_back(new_filename);
-            OrthographicCameraList.pop_back();
-        }
-        else if(SphericalCameraList.size()!= 0){
-            SphericalCameraParam SC = SphericalCameraList.back();
-            std::string new_filename;
-            new_filename = this->generatePbrtFile(SC,filenames.back());
-            filenames.pop_back();
-            filenames.push_back(new_filename);
-            SphericalCameraList.pop_back();
-        }
-        ParseFiles(&builder, filenames);
+        while(true){
+            // Parse provided scene description files
+            BasicScene scene;
+            BasicSceneBuilder builder(&scene);
+            if(RealCameraList.size()!= 0){
+                //use user define .pbrt file instead of default one
+                RealisticCameraParam RC = RealCameraList.back();
+                std::string new_filename;
+                new_filename = this->generatePbrtFile(RC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                RealCameraList.pop_back();
+            }
+            else if(PerspectiveCameraList.size()!= 0){
+                PerspectiveCameraParam PC = PerspectiveCameraList.back();
+                std::string new_filename;
+                new_filename = this->generatePbrtFile(PC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                PerspectiveCameraList.pop_back();
+            }
+            else if(OrthographicCameraList.size()!= 0){
+                OrthographicCameraParam OC = OrthographicCameraList.back();
+                std::string new_filename;
+                new_filename = this->generatePbrtFile(OC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                OrthographicCameraList.pop_back();
+            }
+            else if(SphericalCameraList.size()!= 0){
+                SphericalCameraParam SC = SphericalCameraList.back();
+                std::string new_filename;
+                new_filename = this->generatePbrtFile(SC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                SphericalCameraList.pop_back();
+            } else{
+                break;
+            }
+            ParseFiles(&builder, filenames);
 
-        // Render the scene
-        if (Options->useGPU || Options->wavefront)
-            RenderWavefront(scene);
-        else
-            RenderCPU(scene);
+            // Render the scene
+            if (Options->useGPU || Options->wavefront)
+                RenderWavefront(scene);
+            else
+                RenderCPU(scene);
 
-        LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
-        // Clean up after rendering the scene
-        CleanupPBRT();
+            LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
+        }
     }
+    // Clean up after rendering the scene
+    CleanupPBRT();
     return 0;
 }
 bool pbrt_render::init(std::string &str){
