@@ -1761,7 +1761,7 @@ int convert(std::vector<std::string> args) {
     ImageAndMetadata imRead = Image::Read(inFile);
     Image image = std::move(imRead.image);
     ImageMetadata metadata = std::move(imRead.metadata);
-
+    //TODO there has exr to bin
     if (exr2bin) {
         Point2i res = image.Resolution();
         int nc = image.NChannels();
@@ -1785,6 +1785,8 @@ int convert(std::vector<std::string> args) {
         int mc = exr2mat_channels.size();
         size_t datasize = res.x * res.y;
 
+        //在这之前是确定输出的通道数，以拿到特定通道的数据，转成bin文件
+        //如果转成mat，考虑替换掉最后file.write()部分即可
         if (inFile.find(".exr") == inFile.npos ||
             inFile.find(".exr") != (inFile.size() - 4)) {
             fprintf(stderr, "Wrong input filename: %s  \n", inFile.c_str());
