@@ -1,5 +1,5 @@
 # pbrt-v4 top-level CMakeLists.txt
-
+# 有没有自动寻找matlab的办法？不过这也不急需
 cmake_minimum_required (VERSION 3.12)
 
 project (PBRT-V4 LANGUAGES CXX C)

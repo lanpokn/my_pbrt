@@ -1,0 +1,26 @@
+Film "gbuffer" "integer xresolution" [500] "integer yresolution" [500] "string filename" "output.exr" 
+"bool saveDepth" true 
+PixelFilter "box" "float xradius" [0.5] "float yradius" [0.5] 
+Accelerator "bvh" 
+"string splitmethod" "sah"
+"integer maxnodeprims" [4]
+Sampler "halton"
+"integer pixelsamples" [100]
+
+Integrator "path"
+"integer maxdepth" [10]
+
+Scale -1 1 1 #avoid the 'flipped image' bug..
+LookAt	0.0 0.0 5.0
+	0.0 0.0 4.0
+	-1.0 -4.371138828673793e-08 0.0
+
+Camera "perspective"
+"float fov" [53.1301017798049]
+
+
+WorldBegin
+
+Include "mcc_materials.pbrt"
+Include "mcc_texture.pbrt"
+Include "mcc_geometry.pbrt"
