@@ -332,3 +332,5 @@ end
 ieObject.metadata = otherData;
 
 end
+
+cmake -DIN

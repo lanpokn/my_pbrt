@@ -795,7 +795,7 @@ add_custom_target (pbrt_soa_generated DEPENDS ${PBRT_SOA_GENERATED})
 
 ######################
 # pbrt_lib
-
+link_directories("/home/lanpokn/Documents/MATLAB/bin/glnxa64/")
 add_library (pbrt_lib STATIC
   ${CMAKE_CURRENT_BINARY_DIR}/rgbspectrum_srgb.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/rgbspectrum_dci_p3.cpp
@@ -841,14 +841,20 @@ target_include_directories (pbrt_lib PUBLIC
   ${NANOVDB_INCLUDE}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+#要提前到pbrt——lib里进行？
 if (PBRT_CUDA_ENABLED AND PBRT_OPTIX7_PATH)
     target_include_directories (pbrt_lib SYSTEM PUBLIC ${PBRT_OPTIX7_PATH}/include)
 endif ()
 
 target_compile_options (pbrt_lib PUBLIC ${PBRT_CXX_FLAGS})
 
-target_link_libraries (pbrt_lib PRIVATE pbrt_warnings pbrt_opt $<$<BOOL:PBRT_CUDA_ENABLED>:cuda_build_configuration>)
+target_link_libraries (pbrt_lib PRIVATE pbrt_warnings pbrt_opt $<$<BOOL:PBRT_CUDA_ENABLED>:cuda_build_configuration>) 
 
+target_include_directories(pbrt_lib PRIVATE "/home/lanpokn/Documents/MATLAB/extern/include/")
+target_link_directories(pbrt_lib PRIVATE "/home/lanpokn/Documents/MATLAB/bin/glnxa64/")
+
+target_link_libraries (pbrt_lib PRIVATE libeng.so  libmx.so libmat.so libmex.so) 
 add_sanitizers (pbrt_lib)
 
 if (WIN32)
@@ -915,6 +921,7 @@ if (NOT PBRT_USE_PREGENERATED_RGB_TO_SPECTRUM_TABLES)
       DEPENDS rgb2spec_opt)
 endif ()
 
+link_directories(home/lanpokn/Documents/MATLAB/R2019b/bin/glnxa64/)
 ######################
 # Main renderer
 
@@ -926,7 +933,9 @@ add_executable (pbrt::pbrt_exe ALIAS pbrt_exe)
 target_compile_definitions (pbrt_exe PRIVATE ${PBRT_DEFINITIONS})
 target_compile_options (pbrt_exe PRIVATE ${PBRT_CXX_FLAGS})
 target_include_directories (pbrt_exe PRIVATE src src/ext)
+
 target_link_libraries (pbrt_exe PRIVATE ${ALL_PBRT_LIBS} pbrt_opt pbrt_warnings)
+
 
 set_target_properties (pbrt_exe PROPERTIES OUTPUT_NAME pbrt)
 
