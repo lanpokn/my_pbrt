@@ -3,8 +3,9 @@
 #include<string>
 #include<vector>
 
+//约定，多重vector,如双重photons(1)，对应phtons(1,:,:)
 using namespace std;
-
+//注意,虽然这里没有强行要求,但是photons之类的一定是强行对齐好的
 namespace MatDS{
 typedef vector<vector<vector<double>>> Photons;
 typedef vector<vector<double>> DepthMap;
@@ -34,9 +35,15 @@ struct Scene
     // [r,c] = size(photons(:,:,1)); depthMap = ones(r,c);
     // scene.depthMap = depthMap;
     DepthMap depthMap;
+    Scene(){
+        //
+    }
 };
 struct Spectrum{
     Wave wave;
+    Spectrum(){
+        wave = (Wave)"400:10:700";
+    }
 };
 
 struct Data
@@ -57,6 +64,9 @@ struct Illuminant
 struct Wave
 {
     vector<double> wave;
+    Wave(){
+
+    }
     //以下构造函数用于一步创建31通道的wave,因为要么31要么16,变化不大
     Wave(string& s){
         if(s == "400:10:700"){

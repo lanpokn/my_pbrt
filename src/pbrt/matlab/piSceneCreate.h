@@ -16,8 +16,5 @@ using namespace MatDS;
 // p.addParameter('meanluminance',100,@isscalar);
 // p.addParameter('wavelength', 400:10:700, @isvector);
 
-Scene piSceneCreate(Photons Photons, double fov = 40,double meanluminace = 100, Wave wavelength = (Wave)"400:10:700"){
-
-}
-
+Scene piSceneCreate(Photons photons_in, double fov = 40,double meanluminace = 100, Wave wavelength = (Wave)"400:10:700");
 #endif
