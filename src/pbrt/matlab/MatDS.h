@@ -8,6 +8,7 @@ using namespace std;
 //注意,虽然这里没有强行要求,但是photons之类的一定是强行对齐好的
 namespace MatDS{
 typedef vector<vector<vector<double>>> Photons;
+typedef vector<vector<vector<double>>> Energy;
 typedef vector<vector<double>> DepthMap;
 struct Scene
 {
