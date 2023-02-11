@@ -4,6 +4,7 @@
 #include<vector>
 using namespace std;
 
+#include"ieParamFormat.h"
 //用重载处理matlab中的多输入
 std::string ieParamFormat(std::string& s){
     string ret = s;
