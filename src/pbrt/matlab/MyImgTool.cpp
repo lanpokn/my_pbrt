@@ -2,7 +2,12 @@
 #include<vector>
 using namespace pbrt;
 
-allCHA MyImgTool(string inFile,string channnelName){
+//此处必须返回引用，保证不多次销毁，否则会让一个地方被多次销毁，引用传递可以防止同一内存的float储存在不同allCHA中
+//但这样还是比较蠢，自己定义一个拷贝构造函数才是正解
+//可以我在没有定义移动构造函数的情况下，依然不通过拷贝，难以理解，所以我用参数引用传递了
+void MyImgTool(string inFile,string channnelName,allCHA& ret){
+    cout<<inFile<<endl;
+    cout<<channnelName<<endl;
     ImageAndMetadata imRead = Image::Read(inFile);
     Image image = std::move(imRead.image);
     ImageMetadata metadata = std::move(imRead.metadata);
@@ -35,7 +40,6 @@ allCHA MyImgTool(string inFile,string channnelName){
     }
     int mc = exr2mat_channels.size();
     size_t datasize = res.x * res.y;
-    allCHA ret;
     ret.DataSize = datasize;
     //在这之前是确定输出的通道数，以拿到特定通道的数据，转成bin文件
     //如果转成mat，考虑替换掉最后file.write()部分即可
@@ -43,7 +47,7 @@ allCHA MyImgTool(string inFile,string channnelName){
     if (inFile.find(".exr") == inFile.npos ||
         inFile.find(".exr") != (inFile.size() - 4)) {
         fprintf(stderr, "Wrong input filename: %s  \n", inFile.c_str());
-        return ret;
+        return;
     }
     for (int c = 0; c < mc; ++c) {
         float *buf_exr = new float[datasize];
@@ -72,12 +76,7 @@ allCHA MyImgTool(string inFile,string channnelName){
         std::string binaryName = fileName + '_' +
                                 std::to_string(res.y) + '_' + std::to_string(res.x) +
                                 '_' + exrChannelNames.at(exr2mat_channels.at(c)-1);
-        //'_' + std::to_string(exr2mat_channels.at(c));
-        std::fstream file(binaryName, std::ios::out | std::ios::binary);
-        if (!file) {
-            fprintf(stderr, "Failed opening binary file.  \n");
-            return ret;
-        }
+
         ret.allData.push_back(buf_exr);
         ret.allname.push_back(binaryName);
         ret.height = res.y;
@@ -88,5 +87,5 @@ allCHA MyImgTool(string inFile,string channnelName){
         // buf_exr = NULL;
     }
     cout<<"exr2bin done.\n";
-    return ret;
+    return;
 }

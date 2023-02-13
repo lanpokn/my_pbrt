@@ -49,21 +49,45 @@ extern "C" {
 // p.addRequired('inputFile',@(x)(exist(x,'file')));
 // %p.addParameter('label','radiance',@(x)(ischar(x)||iscell(x)));
 // p.addParameter('pbrt_path',[],@(x)(ischar(x)));
+//1 - 31通道，没有32通道，datasize
 typedef struct channels_data{
     vector<string> allname;
     vector<float*> allData;
     int DataSize;
     int height;
     int width;
+    channels_data(){
+        DataSize = 0;
+        height = 0;
+        width = 0;
+        allname.clear();
+        allData.clear();
+    }
     ~channels_data(){
         //手动释放掉这些内存
-        for(int i = 0;i<DataSize;i++){
+        int size = allData.size();
+        for(int i = 0;i<size;i++){
             delete[] allData.at(i);
             allData.at(i)= NULL;
+        }
+        allname.clear();
+        allData.clear();
+    }
+    //复制构造函数
+    channels_data(const struct channels_data & c){
+        allname = c.allname;
+        DataSize = c.DataSize;
+        height = c.height;
+        width = c.width;
+        for(int j =0;j<c.allData.size();j++){
+            float *buf_exr = new float[c.DataSize];
+            for(int k=0;k<c.DataSize;k++){
+                buf_exr[k] = c.allData.at(j)[k];
+            }
         }
     }
 }allCHA;
 
-allCHA MyImgTool(string inFile,string channnelName = "");
+void MyImgTool(string inFile,string channnelName,allCHA& ret);
 
 #endif

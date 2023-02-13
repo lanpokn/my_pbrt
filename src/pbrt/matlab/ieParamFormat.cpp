@@ -9,6 +9,9 @@ using namespace std;
 std::string ieParamFormat(std::string& s){
     string ret = s;
     //LOWER case
+    if(s.empty()){
+        return s;
+    }
     transform(ret.begin(),ret.end(),ret.begin(),::tolower);
     //删除空格
     s.erase(std::remove_if(ret.begin(), ret.end(), ::isspace), ret.end());

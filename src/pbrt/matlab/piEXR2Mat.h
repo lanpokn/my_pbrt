@@ -11,6 +11,6 @@ using namespace std;
 using namespace MatDS;
 
 // function data = piEXR2Mat(infile, channelname)
-double piExr2Mat(string infile,string channelname);
+Energy piEXR2Mat(string infile,string channelname);
 
 #endif

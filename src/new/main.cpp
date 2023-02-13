@@ -8,10 +8,9 @@ int main(){
     // std::string str = "--display-server localhost:14158 /home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt";
     // RunPbrt(str);
 
+    // data = MyImgTool("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","Radiance");
 
     Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt");
-    // allCHA data;
-    // data = MyImgTool("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","Radiance");
-    // cout<<data.allname.at(5)<<endl;
-    // cout<<"hello world"<<endl;
+
+    cout<<"hello world"<<endl;
 }

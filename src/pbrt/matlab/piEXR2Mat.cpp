@@ -3,16 +3,11 @@
 #include <regex.h>
 //注意matlab都是height，width，1这样在c++中十分不方便，我一律存为1，height,width
 //radiance的存储也因此变成了： C0i,height,width,注意最后存的时候能对的上即可
-Energy piExr2Mat(string infile,string channelname){
+Energy piEXR2Mat(string infile,string channelname){
     //TOCHECK
     Energy data;
-    string::size_type iPos = (infile.find_last_of('\\') + 1) == 0 ?  infile.find_last_of('/') + 1: infile.find_last_of('\\') + 1 ;
-    string fnameTag = infile .substr(iPos, infile .length() - iPos);//获取带后缀的文件名
-    string indir = infile .substr(0,iPos);//获取文件路径
-    string fname = fnameTag.substr(0, fnameTag.rfind("."));//获取不带后缀的文件名
-    string Tag = fname.substr(fname.rfind("."),fname.length());//获取后缀名
     allCHA Metadata;
-    Metadata = MyImgTool(infile,channelname);
+    MyImgTool(infile,channelname,Metadata);
     if("Radiance" == channelname){
         //i表示第i通道
         for(int i=0;i<Metadata.allData.size();i++){

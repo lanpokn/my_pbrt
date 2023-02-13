@@ -9,10 +9,7 @@
 #include "piSceneCreate.h"
 #include "find_fov.h"
 double Exr2Scene(string inputFile,string pbrt_path,Wave wave){
-    inputFile = ieParamFormat(inputFile);
-    pbrt_path = ieParamFormat(pbrt_path);
-
-    Energy energy = piReadEXR(inputFile,"radiance");
+    Energy energy = piReadEXR(inputFile,"radiance");//seg fault
     bool Is_16 = false;
     if(energy.at(0).at(0).size()<17){
         Is_16 = true;

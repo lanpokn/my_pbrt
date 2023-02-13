@@ -2,19 +2,20 @@
 #include<cmath>
 //读取深度时如果读不到就cout，跳过，不输入深度
 #include"ieParamFormat.h"
+#include "piEXR2Mat.h"
 Energy piReadEXR(string filename, string datatype){
-    filename = ieParamFormat(filename);
+    // filename = ieParamFormat(filename); 这东西不能标准化，标准之后就找不到了
     datatype = ieParamFormat(datatype);
     //所有输出都可以先被统一成三通道，所以output就用energy了
     Energy output;
     if("radiance" == datatype){
-        output = piReadEXR(filename,"Radiance");
+        output = piEXR2Mat(filename,"Radiance");
     }else    if("zdepth" == datatype){
-        output = piReadEXR(filename,"Pz");
+        output = piEXR2Mat(filename,"Pz");
     }else     if("depth" == datatype){
-        Energy XDepthMap = piReadEXR(filename,"Px");
-        Energy YDepthMap = piReadEXR(filename,"Py");
-        Energy ZDepthMap = piReadEXR(filename,"Pz");
+        Energy XDepthMap = piEXR2Mat(filename,"Px");
+        Energy YDepthMap = piEXR2Mat(filename,"Py");
+        Energy ZDepthMap = piEXR2Mat(filename,"Pz");
         //if no PZ ,break
         if(ZDepthMap.size() == 0){
             cout<<"no PZ"<<endl;
