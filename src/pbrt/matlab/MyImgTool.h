@@ -49,6 +49,18 @@ extern "C" {
 // p.addRequired('inputFile',@(x)(exist(x,'file')));
 // %p.addParameter('label','radiance',@(x)(ischar(x)||iscell(x)));
 // p.addParameter('pbrt_path',[],@(x)(ischar(x)));
-double MyImgTool(string inFile,string channnelName = "");
+typedef struct channels_data{
+    vector<string> allname;
+    vector<float*> allData;
+    ~channels_data(){
+        //手动释放掉这些内存
+        for(int i = 0;i<allData.size();i++){
+            delete[] allData.at(i);
+            allData.at(i)= NULL;
+        }
+    }
+}allCHA;
+
+allCHA MyImgTool(string inFile,string channnelName = "");
 
 #endif

@@ -1,7 +1,7 @@
 #include"piReadEXR.h"
 #include<cmath>
 //读取深度时如果读不到就cout，跳过，不输入深度
-#include<ieParamFormat.h>
+#include"ieParamFormat.h"
 Energy piReadEXR(string filename, string datatype){
     filename = ieParamFormat(filename);
     datatype = ieParamFormat(datatype);

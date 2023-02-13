@@ -1,7 +1,8 @@
 #include"MyImgTool.h"
-
+#include<vector>
 using namespace pbrt;
-double MyImgTool(string inFile,string channnelName){
+
+allCHA MyImgTool(string inFile,string channnelName){
     ImageAndMetadata imRead = Image::Read(inFile);
     Image image = std::move(imRead.image);
     ImageMetadata metadata = std::move(imRead.metadata);
@@ -34,14 +35,14 @@ double MyImgTool(string inFile,string channnelName){
     }
     int mc = exr2mat_channels.size();
     size_t datasize = res.x * res.y;
-
+    allCHA ret;
     //在这之前是确定输出的通道数，以拿到特定通道的数据，转成bin文件
     //如果转成mat，考虑替换掉最后file.write()部分即可
     //问题:会无视第二个参数,一口气都输出出来
     if (inFile.find(".exr") == inFile.npos ||
         inFile.find(".exr") != (inFile.size() - 4)) {
         fprintf(stderr, "Wrong input filename: %s  \n", inFile.c_str());
-        return 1;
+        return ret;
     }
     for (int c = 0; c < mc; ++c) {
         float *buf_exr = new float[datasize];
@@ -74,13 +75,15 @@ double MyImgTool(string inFile,string channnelName){
         std::fstream file(binaryName, std::ios::out | std::ios::binary);
         if (!file) {
             fprintf(stderr, "Failed opening binary file.  \n");
-            return 1;
+            return ret;
         }
-        file.write((char *)buf_exr, datasize * sizeof(float));
-        file.close();
-        delete[] buf_exr;
-        buf_exr = NULL;
+        ret.allData.push_back(buf_exr);
+        ret.allname.push_back(binaryName);
+        // file.write((char *)buf_exr, datasize * sizeof(float));
+        // file.close();
+        // delete[] buf_exr;
+        // buf_exr = NULL;
     }
-    printf("exr2bin done.");
-    return 0;
+    printf("exr2bin done.\n");
+    return ret;
 }
