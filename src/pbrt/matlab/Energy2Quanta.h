@@ -5,7 +5,7 @@
 #include<algorithm>
 #include<iostream>
 using namespace std;
-#include<MatDS.h>
+#include"MatDS.h"
 using namespace MatDS;
 // function photons = Energy2Quanta(wavelength,energy)
 // % Convert energy (watts) to number of photons.

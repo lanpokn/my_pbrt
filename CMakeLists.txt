@@ -529,6 +529,18 @@ set (PBRT_SOURCE
   src/pbrt/cmd/pspec_gpu.cpp
   
   src/new/pbrt_render.cpp
+
+  src/pbrt/matlab/Energy2Quanta.cpp
+  src/pbrt/matlab/Exr2Scene.cpp
+  src/pbrt/matlab/find_fov.cpp
+  src/pbrt/matlab/ieParamFormat.cpp
+
+  src/pbrt/matlab/MyImgTool.cpp
+  src/pbrt/matlab/piEXR2ISET.cpp
+  src/pbrt/matlab/piEXR2Mat.cpp
+  src/pbrt/matlab/piReadEXR.cpp
+  src/pbrt/matlab/piSceneCreate.cpp
+  src/pbrt/matlab/vcConstants.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -555,6 +567,18 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/textures.h
 
   src/new/pbrt_render.h
+
+  src/pbrt/matlab/Energy2Quanta.h
+  src/pbrt/matlab/Exr2Scene.h
+  src/pbrt/matlab/find_fov.h
+  src/pbrt/matlab/ieParamFormat.h
+  src/pbrt/matlab/MatDS.h
+  src/pbrt/matlab/MyImgTool.h
+  src/pbrt/matlab/piEXR2ISET.h
+  src/pbrt/matlab/piEXR2Mat.h
+  src/pbrt/matlab/piReadEXR.h
+  src/pbrt/matlab/piSceneCreate.h
+  src/pbrt/matlab/vcConstants.h
   )  
 
 SET (PBRT_CPU_SOURCE

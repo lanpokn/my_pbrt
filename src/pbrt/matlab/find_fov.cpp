@@ -45,6 +45,7 @@ double find_fov(string pbrt_path){
     double ret;
     ss>>ret;
     return ret;
+}
 // fileID = fopen(pbrt_path);
 // tmp = textscan(fileID,'%s','Delimiter','\n','CommentStyle',{'#'});
 // txtLines = tmp{1};

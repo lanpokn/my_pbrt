@@ -45,6 +45,7 @@ Photons Energy2Quanta(Wave wavelength,Energy energy){
         }
     }
     return photons;
+    }
 }
 
     // wavelength(:,ones(1,n*m))

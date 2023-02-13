@@ -55,12 +55,14 @@ Scene piSceneCreate(Photons photons_in, double fov,double meanluminace , Wave wa
     int c = photons_in.at(0).size();
 
     //tocheck 确保不会过一轮之后之前的数据都丢了
+    vector<vector<double>> temp3;
     for(int i =0;i<r;i++){
-        vector<double> temp;
+        vector<double> temp4;
         for(int j = 0;j<c;j++){
-            temp.push_back(1);
+            temp4.push_back(1);
         }
-        scene.depthMap.push_back(temp);
+        temp3.push_back(temp4);
     }
+    scene.depthMap.push_back(temp3);
 
 }

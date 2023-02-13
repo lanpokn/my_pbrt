@@ -8,7 +8,7 @@
 #include "Energy2Quanta.h"
 #include "piSceneCreate.h"
 #include "find_fov.h"
-double Exr2Scene(string inputFile,string pbrt_path = "",Wave wave =(Wave) "400:10:700"){
+double Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     inputFile = ieParamFormat(inputFile);
     pbrt_path = ieParamFormat(pbrt_path);
 
