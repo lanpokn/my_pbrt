@@ -7,9 +7,10 @@
 using namespace std;
 //注意,虽然这里没有强行要求,但是photons之类的一定是强行对齐好的
 namespace MatDS{
+//为了兼容性，depthmat也变成三维，注意第一维度必须为1，即只有depth.at(0)
 typedef vector<vector<vector<double>>> Photons;
 typedef vector<vector<vector<double>>> Energy;
-typedef vector<vector<double>> DepthMap;
+typedef vector<vector<vector<double>>> DepthMap;
 struct Scene
 {
     // %% Set the photons into the scene
@@ -36,6 +37,7 @@ struct Scene
     // [r,c] = size(photons(:,:,1)); depthMap = ones(r,c);
     // scene.depthMap = depthMap;
     DepthMap depthMap;
+    string name;
     Scene(){
         //
     }
@@ -61,7 +63,7 @@ struct Illuminant
     Spectrum spectrum;
     Data data;
 };
-
+//默认16通道
 struct Wave
 {
     vector<double> wave;
@@ -74,12 +76,20 @@ struct Wave
             for(int i = 400;i<710;i = i+10){
                 wave.push_back(i);
             }
+        }else{
+            for(int i = 400;i<710;i = i+20){
+                wave.push_back(i);
+            }
         }
     }
     Wave(string&& sr){
         string s = move(sr);
         if(s == "400:10:700"){
             for(int i = 400;i<710;i = i+10){
+                wave.push_back(i);
+            }
+        }else{
+            for(int i = 400;i<710;i = i+20){
                 wave.push_back(i);
             }
         }

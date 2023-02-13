@@ -1,5 +1,5 @@
-#ifndef PIEXR2ISET
-#define PIEXR2ISET
+#ifndef MYIMGTOOL
+#define MYIMGTOOL
 
 #include<string>
 #include<algorithm>
@@ -13,6 +13,6 @@ using namespace MatDS;
 // p.addRequired('inputFile',@(x)(exist(x,'file')));
 // %p.addParameter('label','radiance',@(x)(ischar(x)||iscell(x)));
 // p.addParameter('pbrt_path',[],@(x)(ischar(x)));
-double piExr2ISET(string inputFile,string pbrt_path = "");
+double MyImgTool(string inputFile,string channnelName = "");
 
 #endif
