@@ -19,7 +19,9 @@ Energy piEXR2Mat(string infile,string channelname){
                 for(int x=0;x<Metadata.width;x++){
                     //                 buf_exr[x * res.y + y] =
                     // image.GetChannel({x, y}, exr2mat_channels.at(c) - 1);
-                    temp2.push_back(Metadata.allData.at(i)[x*Metadata.height+y]);
+                    //avoid delete we must use a left value
+                    double temp = Metadata.allData.at(i)[x*Metadata.height+y];
+                    temp2.push_back(temp);
                 }
                 temp1.push_back(temp2);
             }
@@ -36,13 +38,15 @@ Energy piEXR2Mat(string infile,string channelname){
                 for(int x=0;x<Metadata.width;x++){
                     //                 buf_exr[x * res.y + y] =
                     // image.GetChannel({x, y}, exr2mat_channels.at(c) - 1);
-                    temp2.push_back(Metadata.allData.at(i)[x*Metadata.height+y]);
+                    double temp = Metadata.allData.at(i)[x*Metadata.height+y];
+                    temp2.push_back(temp);
                 }
                 temp1.push_back(temp2);
             }
             data.push_back(temp1);
         }
     }
+    return data;
 }
 // [status,result] = system(dockercmd);
 

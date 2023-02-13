@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include<pbrt/matlab/Exr2Scene.h>
+#include<pbrt/matlab/WriteMat.h>
 using namespace pbrt;
 
 static void usage(const std::string &msg = {}) {
@@ -272,5 +274,14 @@ int main(int argc, char *argv[]) {
         // Clean up after rendering the scene
         CleanupPBRT();
     }
+    std::cout<<filenames.at(0)<<std::endl;
+    // Clean up after rendering the scene
+    // 在这里拿到pbrt位置，输入exr位置，获取结果，然后输出成mat
+    Scene scene;
+    std::cout<<pbrt_h::ExrName<<std::endl;
+    scene = Exr2Scene(pbrt_h::ExrName,filenames.at(0));
+    // options.
+    // CleanupPBRT();
+    WriteMat(scene);
     return 0;
 }

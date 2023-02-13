@@ -46,6 +46,11 @@ Scene piSceneCreate(Photons photons_in, double fov,double meanluminace , Wave wa
     vector<vector<double>> temp2;
     while(temp[i]>0){
         temp1.push_back(temp[i]);
+        i++;
+        if(i>1000){
+            break;
+        }
+        //之前这里写了个死循环。。。尽量不要写while,差点把电脑搞崩。
     }
     temp2.push_back(temp1);
     scene.illuminant.data.photons.push_back(temp2);
@@ -64,5 +69,6 @@ Scene piSceneCreate(Photons photons_in, double fov,double meanluminace , Wave wa
         temp3.push_back(temp4);
     }
     scene.depthMap.push_back(temp3);
+    return scene;
 
 }

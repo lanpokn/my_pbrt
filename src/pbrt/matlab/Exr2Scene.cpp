@@ -8,7 +8,7 @@
 #include "Energy2Quanta.h"
 #include "piSceneCreate.h"
 #include "find_fov.h"
-double Exr2Scene(string inputFile,string pbrt_path,Wave wave){
+Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     Energy energy = piReadEXR(inputFile,"radiance");//seg fault
     bool Is_16 = false;
     if(energy.at(0).at(0).size()<17){
@@ -87,4 +87,5 @@ double Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     // %此 MATLAB 函数 根据指定的文件夹和文件名构建完整的文件设定,不同系统的运作不同
     // save_path = fullfile(indir,mat_name);
     // save(save_path, 'scene', '-v7.3')
+    return ieObject;
 }

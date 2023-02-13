@@ -541,6 +541,7 @@ set (PBRT_SOURCE
   src/pbrt/matlab/piReadEXR.cpp
   src/pbrt/matlab/piSceneCreate.cpp
   src/pbrt/matlab/vcConstants.cpp
+  src/pbrt/matlab/WriteMat.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -579,6 +580,7 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/matlab/piReadEXR.h
   src/pbrt/matlab/piSceneCreate.h
   src/pbrt/matlab/vcConstants.h
+  src/pbrt/matlab/WriteMat.h
   )  
 
 SET (PBRT_CPU_SOURCE

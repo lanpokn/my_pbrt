@@ -37,11 +37,15 @@ Photons Energy2Quanta(Wave wavelength,Energy energy){
     int m = energy.at(0).size();
     int w = energy.at(0).at(0).size();
     Photons photons = energy;//先初始化一下，方便一会用at进行操作
+    //因为我的radiance
     for(int i =0;i<n;i++){
         for(int j = 0;j<m;j++){
             for(int k = 0;k<w;k++){
                 //这里似乎没有那么简单，是一部分不变，另一部分被转化
-                photons.at(n).at(m).at(w) = (energy.at(n).at(m).at(w))/(h*c)*(1e-9*wavelength.wave.at(w));
+                if(i==30){
+                    int q =0;
+                }
+                photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(h*c)*(1e-9*wavelength.wave.at(i));
         }
     }
     return photons;

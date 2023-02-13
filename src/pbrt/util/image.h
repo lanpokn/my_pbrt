@@ -21,6 +21,9 @@
 #include <map>
 #include <vector>
 
+namespace pbrt_h{
+extern std::string ExrName;
+}
 namespace pbrt {
 
 // PixelFormat Definition

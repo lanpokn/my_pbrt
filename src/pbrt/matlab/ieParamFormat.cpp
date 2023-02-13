@@ -5,6 +5,17 @@
 using namespace std;
 
 #include"ieParamFormat.h"
+
+string ClearAllSpace(string str) {
+    int index = 0;
+    if (!str.empty()) {
+        //string::npos 表示查找没有匹配
+        while((index = str.find(' ', index)) != string::npos) {
+            str.erase(index, 1);
+        }
+    }
+    return str;
+}
 //用重载处理matlab中的多输入
 std::string ieParamFormat(std::string& s){
     string ret = s;
@@ -14,7 +25,7 @@ std::string ieParamFormat(std::string& s){
     }
     transform(ret.begin(),ret.end(),ret.begin(),::tolower);
     //删除空格
-    s.erase(std::remove_if(ret.begin(), ret.end(), ::isspace), ret.end());
+    s = ClearAllSpace(s);
     return ret;
 }
 
