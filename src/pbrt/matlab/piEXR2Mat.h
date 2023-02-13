@@ -7,6 +7,7 @@
 #include<fstream>
 using namespace std;
 #include"MatDS.h"
+#include"MyImgTool.h"
 using namespace MatDS;
 
 // function data = piEXR2Mat(infile, channelname)

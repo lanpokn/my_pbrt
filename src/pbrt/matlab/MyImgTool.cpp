@@ -36,6 +36,7 @@ allCHA MyImgTool(string inFile,string channnelName){
     int mc = exr2mat_channels.size();
     size_t datasize = res.x * res.y;
     allCHA ret;
+    ret.DataSize = datasize;
     //在这之前是确定输出的通道数，以拿到特定通道的数据，转成bin文件
     //如果转成mat，考虑替换掉最后file.write()部分即可
     //问题:会无视第二个参数,一口气都输出出来
@@ -79,11 +80,13 @@ allCHA MyImgTool(string inFile,string channnelName){
         }
         ret.allData.push_back(buf_exr);
         ret.allname.push_back(binaryName);
+        ret.height = res.y;
+        ret.width = res.x;
         // file.write((char *)buf_exr, datasize * sizeof(float));
         // file.close();
         // delete[] buf_exr;
         // buf_exr = NULL;
     }
-    printf("exr2bin done.\n");
+    cout<<"exr2bin done.\n";
     return ret;
 }
