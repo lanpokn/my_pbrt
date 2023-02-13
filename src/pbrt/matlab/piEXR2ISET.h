@@ -1,6 +1,6 @@
 #ifndef PIEXR2ISET
 #define PIEXR2ISET
-
+//该文件暂时不用翻译
 #include<string>
 #include<algorithm>
 #include<iostream>
