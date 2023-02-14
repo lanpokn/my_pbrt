@@ -11,6 +11,6 @@ int main(){
     // data = MyImgTool("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","Radiance");
 
     // Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt");
-
+// /home/lanpokn/Documents/2022/xiaomi/pbrt-v4/发给海前/main/文件/mcc/mcc.pbrt
     cout<<"hello world"<<endl;
 }

@@ -1,3 +1,10 @@
+//未来目标：如果将来还想继续做这个，一定要把创建都封装成函数
+//前往别忘记最后全释放掉
+//重要教训：matlab不能使用c++malloc出来的东西，matlab无法正常读取，必须用mxMalloc，mxFree,但是即使用这个也不行
+// double * const data_temp = (double * const)mxMalloc(sizeof(double)*scene.spectrum.wave.wave.size());
+//memcopy后边那个参数，表示需要copy多少内存的东西进去，使用数组时就真的是所有的大小，使用指针的话必须指针长度乘以总共才对！
+//如果反了就在这里调整，就是在data赋值的时候排列组合即可，千万别去前边
+//don't forget Scene to scene
 #include </home/lanpokn/Documents/MATLAB/extern/include/mat.h>
 #include </home/lanpokn/Documents/MATLAB/extern/include/matrix.h>
 #include"MatDS.h"
@@ -20,7 +27,7 @@ int WriteMat(Scene scene){
     myInts.push_back(2);
     printf("Accessing a STL vector: %d\n", myInts[1]);
 
-    double data[9] = { 1.0, 4.0, 7.0, 2.0, 5.0, 8.0, 3.0, 6.0, 9.0 };
+    // double data[9] = { 1.0, 4.0, 7.0, 2.0, 5.0, 8.0, 3.0, 6.0, 9.0 };
     const char *file = "mattest.mat";
     char str[256];
     int status; 
@@ -39,8 +46,80 @@ int WriteMat(Scene scene){
     plhs  = mxCreateStructArray(2,dims,NUMBER_OF_FIELDS,field_names);
     int name_field = mxGetFieldNumber(plhs, "name");
     int type_field = mxGetFieldNumber(plhs, "type");
+    int spectrum_field = mxGetFieldNumber(plhs, "spectrum");
+    int distance_field = mxGetFieldNumber(plhs, "distance");
+    int magnification_field = mxGetFieldNumber(plhs, "magnification");
+    int data_field = mxGetFieldNumber(plhs, "data");
+    int illuminant_field = mxGetFieldNumber(plhs, "illuminant");
+    int wAngular_field = mxGetFieldNumber(plhs, "wAngular");
+    int depthMap_field = mxGetFieldNumber(plhs, "depthMap");
+
+    //把所有最终的scene,put进去
+    //没有那么简单，微信问老师，明天应该就有答案了，总之数组可以，指针不行,use[] first
     mxSetFieldByNumber(plhs, 0, name_field, mxCreateString(scene.name.c_str()));
     mxSetFieldByNumber(plhs, 0, type_field, mxCreateString(scene.type.c_str()));
+    mxSetFieldByNumber(plhs, 0, distance_field, mxCreateDoubleScalar(scene.distance));
+    mxSetFieldByNumber(plhs, 0, magnification_field, mxCreateDoubleScalar(scene.magnification));
+    mxSetFieldByNumber(plhs, 0, wAngular_field, mxCreateDoubleScalar(scene.wAngular));
+        //加入spectrum，这在某种意义上是递归加入的
+        mxArray *plhs_spec;
+        const char* spec_field_names[] = {"wave"};
+        int spec_num_of_field =  (sizeof(spec_field_names) / sizeof(*spec_field_names));
+        //该情况下dims应该都可以通用
+        mwSize dims_spec[2] = {1, 1};
+        plhs_spec  = mxCreateStructArray(2,dims_spec,spec_num_of_field,spec_field_names);
+        int spec_wave_field = mxGetFieldNumber(plhs_spec, "wave");
+            //对wave赋值
+            mxArray *plhs_spec_wave;
+            plhs_spec_wave = mxCreateDoubleMatrix(1,31,mxREAL);
+            //套了这么多主要是为了方便初始化，好像有5点蠢了。。
+            double *data_temp = (double*)mxMalloc(sizeof(double)*scene.spectrum.wave.wave.size());
+            // double data_temp[31];
+            for(int i= 0;i<scene.spectrum.wave.wave.size();i++){
+                data_temp[i] = scene.spectrum.wave.wave.at(i);
+            }
+            if (plhs_spec_wave == NULL) {
+                printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
+                printf("Unable to create mxArray.\n");
+                return(EXIT_FAILURE);
+            }
+            memcpy((void *)(mxGetPr(plhs_spec_wave)), (void *)data_temp, sizeof(double)*scene.spectrum.wave.wave.size());
+            //把数据都存到了temp里，就可以进一步存到wave里了
+            mxSetFieldByNumber(plhs_spec, 0, spec_wave_field, plhs_spec_wave);
+    mxSetFieldByNumber(plhs, 0, spectrum_field, plhs_spec);
+    mxFree(data_temp);
+
+
+    //add depth
+    //注意matlab都是height，width，1这样在c++中十分不方便，我一律存为1，height,width
+    //radiance的存储也因此变成了： C0i,height,width,注意最后存的时候能对的上即可
+    mxArray *plhs_depth;
+    int depth_height =  scene.depthMap.at(0).size();
+    int depth_width = scene.depthMap.at(0).at(0).size();
+    int depth_size = depth_height*depth_width ;
+    double *data_depth = (double*)mxMalloc(sizeof(double)*depth_size);
+    for(int x=0;x<depth_width;x++){
+        for(int y=0;y<depth_height;y++){
+            data_depth[x*depth_height+y] = scene.depthMap.at(0).at(y).at(x);
+        }
+    }
+    plhs_depth = mxCreateDoubleMatrix(depth_height,depth_width,mxREAL);
+    memcpy((void *)(mxGetPr(plhs_depth)), (void *)data_depth, sizeof(double)*depth_size);
+    mxSetFieldByNumber(plhs, 0, depthMap_field, plhs_depth);
+// it is ambigous
+//     for (int z = 0; z < 2; ++z) {
+//         // MATLAB按列优先存储
+//         for (int y = 0; y < 4; ++y) {
+//             for (int x = 0; x < 3; ++x) {
+//                 (*d++) = src[z * 3 * 4 + y * 4 + x];
+//             }
+//         }
+//     }
+
+
+
+
+
     status = matPutVariable(pmat, "Scene", plhs);
     if (status != 0) {
         printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
@@ -50,64 +129,35 @@ int WriteMat(Scene scene){
 
 
 
-    mxArray *pa1;
-    pa1 = mxCreateDoubleMatrix(3,3,mxREAL);
-    if (pa1 == NULL) {
-        printf("%s : Out of memory on line %d\n", __FILE__, __LINE__); 
-        printf("Unable to create mxArray.\n");
-        return(EXIT_FAILURE);
-    }
-    status = matPutVariable(pmat, "LocalDouble", pa1);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    }
-    /* clean up */
-    mxDestroyArray(pa1);
+    // mxArray *pa1;
+    // pa1 = mxCreateDoubleMatrix(3,3,mxREAL);
+    // if (pa1 == NULL) {
+    //     printf("%s : Out of memory on line %d\n", __FILE__, __LINE__); 
+    //     printf("Unable to create mxArray.\n");
+    //     return(EXIT_FAILURE);
+    // }
+    // status = matPutVariable(pmat, "LocalDouble", pa1);
+    // if (status != 0) {
+    //     printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+    //     return(EXIT_FAILURE);
+    // }
+    // /* clean up */
+    // mxDestroyArray(pa1);
     
-    mxArray *pa2;
-    pa2 = mxCreateDoubleMatrix(3,3,mxREAL);
-    if (pa2 == NULL) {
-        printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
-        printf("Unable to create mxArray.\n");
-        return(EXIT_FAILURE);
-    }
-    memcpy((void *)(mxGetPr(pa2)), (void *)data, sizeof(data));
-    status = matPutVariableAsGlobal(pmat, "GlobalDouble", pa2);
-    if (status != 0) {
-        printf("Error using matPutVariableAsGlobal\n");
-        return(EXIT_FAILURE);
-    }
-    mxDestroyArray(pa2);
-    
-    mxArray *pa_name;
-    pa_name = mxCreateString(scene.name.c_str());
-    if (pa_name == NULL) {
-        printf("%s :  Out of memory on line %d\n", __FILE__, __LINE__);
-        printf("Unable to create string mxArray.\n");
-        return(EXIT_FAILURE);
-    }
-    status = matPutVariable(pmat, "name", pa_name);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    }
-    mxDestroyArray(pa_name);   
-    
-    mxArray *pa_type;
-    pa_type = mxCreateString(scene.type.c_str());
-    if (pa_type == NULL) {
-        printf("%s :  Out of memory on line %d\n", __FILE__, __LINE__);
-        printf("Unable to create string mxArray.\n");
-        return(EXIT_FAILURE);
-    }
-    status = matPutVariable(pmat, "type", pa_type);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    }
-    mxDestroyArray(pa_name);   
-    
+    // mxArray *pa2;
+    // pa2 = mxCreateDoubleMatrix(3,3,mxREAL);
+    // if (pa2 == NULL) {
+    //     printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
+    //     printf("Unable to create mxArray.\n");
+    //     return(EXIT_FAILURE);
+    // }
+    // memcpy((void *)(mxGetPr(pa2)), (void *)data, sizeof(data));
+    // status = matPutVariableAsGlobal(pmat, "GlobalDouble", pa2);
+    // if (status != 0) {
+    //     printf("Error using matPutVariableAsGlobal\n");
+    //     return(EXIT_FAILURE);
+    // }
+    // mxDestroyArray(pa2);
     // /*
     // * Ooops! we need to copy data before writing the array.  (Well,
     // * ok, this was really intentional.) This demonstrates that

@@ -71,9 +71,9 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     //大小和energy对齐
     if(0 == depthmap.size()){
         vector<vector<double>> temp1;
-        for(int i= 0;i<energy.size();i++){
+        for(int i= 0;i<energy.at(0).size();i++){
             vector<double> temp2;
-            for(int j = 0;j<energy.size();j++){
+            for(int j = 0;j<energy.at(0).at(0).size();j++){
                 temp2.push_back(1);
             }
             temp1.push_back(temp2);
@@ -81,6 +81,11 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
         depthmap.push_back(temp1);
     }
     ieObject.depthMap = depthmap;
+    //在此处赋值默认值
+    ieObject.illuminant.data.photons = ieObject.data.photons;
+    ieObject.illuminant.spectrum= ieObject.spectrum;
+    ieObject.illuminant.name = "D65";
+    ieObject.illuminant.type = "illuminant"; 
     // 以下这些都需要在调用该函数的地方继续完成，不然太长，而且不好拿pbrt_file,最后记得删了exr即可
     // scene = ieObject;
     // mat_name = [fname, '.mat'];

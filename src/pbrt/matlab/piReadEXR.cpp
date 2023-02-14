@@ -30,7 +30,9 @@ Energy piReadEXR(string filename, string datatype){
                 double z = ZDepthMap.at(0).at(i).at(j);
                 temp2.push_back(sqrt(x*x+y*y+z*z));
             }
+            temp1.push_back(temp2);
         }
+        output.push_back(temp1);
     }else    if("3dcoordinates" == datatype){
         // output = piReadEXR(filename,"Radiance");
         //这个有点难做，暂时不实现，因为用不到
