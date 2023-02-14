@@ -6,8 +6,8 @@ using namespace pbrt;
 //但这样还是比较蠢，自己定义一个拷贝构造函数才是正解
 //可以我在没有定义移动构造函数的情况下，依然不通过拷贝，难以理解，所以我用参数引用传递了
 void MyImgTool(string inFile,string channnelName,allCHA& ret){
-    cout<<inFile<<endl;
-    cout<<channnelName<<endl;
+    // cout<<inFile<<endl;
+    // cout<<channnelName<<endl;
     ImageAndMetadata imRead = Image::Read(inFile);
     Image image = std::move(imRead.image);
     ImageMetadata metadata = std::move(imRead.metadata);
@@ -86,6 +86,6 @@ void MyImgTool(string inFile,string channnelName,allCHA& ret){
         // delete[] buf_exr;
         // buf_exr = NULL;
     }
-    cout<<"exr2bin done.\n";
+    // cout<<"exr2bin done.\n";
     return;
 }

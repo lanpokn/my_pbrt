@@ -1,4 +1,5 @@
 #include </home/lanpokn/Documents/MATLAB/extern/include/mat.h>
+#include </home/lanpokn/Documents/MATLAB/extern/include/matrix.h>
 #include"MatDS.h"
 #include"WriteMat.h"
 #include<iostream>
@@ -7,7 +8,7 @@
 using namespace std;
 using namespace MatDS;
 int WriteMat(Scene scene){
-
+    //can be load properly
     MATFile *pmat;
     mxArray *pa1, *pa2, *pa3;
     std::vector<int> myInts;
@@ -151,3 +152,44 @@ int WriteMat(Scene scene){
     return(EXIT_SUCCESS);
         return true;
 }
+
+// 可以创建三维数组的示例
+// int main() {
+//     // 填充测试数组
+//     double _3d_array[2][3][4];
+
+//     int sn = 1;
+//     for (int z = 0; z < 2; ++z) {
+//         for (int y = 0; y < 3; ++y) {
+//             for (int x = 0; x < 4; ++x) {
+//                 _3d_array[z][y][x] = sn++;
+//             }
+//         }
+//     }
+
+//     // 创建mat文件
+//     MATFile *mat_file = matOpen("d:\\test.mat", "w");
+    
+//     // 创建MATLAB三维数组。在传递指定维度大小的数组时，按 Y,X,Z的顺序设置。即矩阵为Y行，X列，共Z个矩阵
+//     size_t dims[3] = { 3, 4, 2 };
+//     mxArray *mat_array = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
+    
+//     double * dst = (double *)(mxGetPr(pMxArray));
+//     double * d = dst;
+//     for (int z = 0; z < 2; ++z) {
+//         // MATLAB按列优先存储
+//         for (int x = 0; x < 4; ++x) {
+//             for (int y = 0; y < 3; ++y) {
+//                 (*d++) = src[z * 3 * 4 + y * 4 + x];
+//             }
+//         }
+//     }
+
+//     // 保存三维数组
+//     matPutVariable(mat_file, "test_value", mat_array);
+    
+//     // 释放mat文件对象
+//     matClose(mat_file);
+    
+//     return 0;
+// }

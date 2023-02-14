@@ -20,7 +20,9 @@ double find_fov(string pbrt_path){
     {
         getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
         //先标准化，然后再看前八个是不是floatfov，最后提取数字
+        cout<<temp<<endl;
         temp = ieParamFormat(temp);
+        cout<<temp.substr(0,10)<<endl;
         //TOCHECK
 
         if(temp.substr(0,10) == "\"floatfov\""){

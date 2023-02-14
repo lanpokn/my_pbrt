@@ -25,7 +25,7 @@ std::string ieParamFormat(std::string& s){
     }
     transform(ret.begin(),ret.end(),ret.begin(),::tolower);
     //删除空格
-    s = ClearAllSpace(s);
+    ret = ClearAllSpace(ret);
     return ret;
 }
 
