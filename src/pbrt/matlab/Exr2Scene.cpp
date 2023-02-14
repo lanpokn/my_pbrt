@@ -49,7 +49,7 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     // %%
     // % Create a name for the ISET object
     // 为了方便我就随便来了
-    string ieObjName = inputFile.substr(0,inputFile.size()-4) + "ISET";
+    string ieObjName = inputFile.substr(0,inputFile.size()-4);
     string cameraType = "perspective";
     //这里虽然看起来像是要分开处理，但实际上realistic相机根本就没做
     Scene ieObject = piSceneCreate(photons,40,100,data_wave);

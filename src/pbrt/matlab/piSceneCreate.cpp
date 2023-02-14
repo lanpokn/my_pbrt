@@ -69,6 +69,7 @@ Scene piSceneCreate(Photons photons_in, double fov,double meanluminace , Wave wa
         temp3.push_back(temp4);
     }
     scene.depthMap.push_back(temp3);
+    scene.type = "scene";
     return scene;
 
 }

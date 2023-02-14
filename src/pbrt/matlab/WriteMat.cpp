@@ -5,12 +5,16 @@
 #include<iostream>
 #include<cstring>
 
+#define NUMBER_OF_STRUCTS 1
+#define NUMBER_OF_FIELDS (sizeof(field_names) / sizeof(*field_names))
+
 using namespace std;
 using namespace MatDS;
 int WriteMat(Scene scene){
     //can be load properly
+
+    //不是那么简单的！！要存一个结构体，
     MATFile *pmat;
-    mxArray *pa1, *pa2, *pa3;
     std::vector<int> myInts;
     myInts.push_back(1);
     myInts.push_back(2);
@@ -29,13 +33,39 @@ int WriteMat(Scene scene){
         return(EXIT_FAILURE);
     }
 
+    mxArray* plhs;
+    mwSize dims[2] = {1, NUMBER_OF_STRUCTS};
+    const char* field_names[] = {"type", "metadata","spectrum","distance","magnification","data","illuminant","wAngular","depthMap","name"};
+    plhs  = mxCreateStructArray(2,dims,NUMBER_OF_FIELDS,field_names);
+    int name_field = mxGetFieldNumber(plhs, "name");
+    int type_field = mxGetFieldNumber(plhs, "type");
+    mxSetFieldByNumber(plhs, 0, name_field, mxCreateString(scene.name.c_str()));
+    mxSetFieldByNumber(plhs, 0, type_field, mxCreateString(scene.type.c_str()));
+    status = matPutVariable(pmat, "Scene", plhs);
+    if (status != 0) {
+        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+        return(EXIT_FAILURE);
+    }
+
+
+
+
+    mxArray *pa1;
     pa1 = mxCreateDoubleMatrix(3,3,mxREAL);
     if (pa1 == NULL) {
         printf("%s : Out of memory on line %d\n", __FILE__, __LINE__); 
         printf("Unable to create mxArray.\n");
         return(EXIT_FAILURE);
     }
-
+    status = matPutVariable(pmat, "LocalDouble", pa1);
+    if (status != 0) {
+        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+        return(EXIT_FAILURE);
+    }
+    /* clean up */
+    mxDestroyArray(pa1);
+    
+    mxArray *pa2;
     pa2 = mxCreateDoubleMatrix(3,3,mxREAL);
     if (pa2 == NULL) {
         printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
@@ -43,114 +73,114 @@ int WriteMat(Scene scene){
         return(EXIT_FAILURE);
     }
     memcpy((void *)(mxGetPr(pa2)), (void *)data, sizeof(data));
-    
-    pa3 = mxCreateString("MATLAB: the language of technical computing");
-    if (pa3 == NULL) {
-        printf("%s :  Out of memory on line %d\n", __FILE__, __LINE__);
-        printf("Unable to create string mxArray.\n");
-        return(EXIT_FAILURE);
-    }
-
-    status = matPutVariable(pmat, "LocalDouble", pa1);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    }  
-    
     status = matPutVariableAsGlobal(pmat, "GlobalDouble", pa2);
     if (status != 0) {
         printf("Error using matPutVariableAsGlobal\n");
         return(EXIT_FAILURE);
-    } 
-    
-    status = matPutVariable(pmat, "LocalString", pa3);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    } 
-    
-    /*
-    * Ooops! we need to copy data before writing the array.  (Well,
-    * ok, this was really intentional.) This demonstrates that
-    * matPutVariable will overwrite an existing array in a MAT-file.
-    */
-    memcpy((void *)(mxGetPr(pa1)), (void *)data, sizeof(data));
-    status = matPutVariable(pmat, "LocalDouble", pa1);
-    if (status != 0) {
-        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
-        return(EXIT_FAILURE);
-    } 
-    
-    /* clean up */
-    mxDestroyArray(pa1);
+    }
     mxDestroyArray(pa2);
-    mxDestroyArray(pa3);
+    
+    mxArray *pa_name;
+    pa_name = mxCreateString(scene.name.c_str());
+    if (pa_name == NULL) {
+        printf("%s :  Out of memory on line %d\n", __FILE__, __LINE__);
+        printf("Unable to create string mxArray.\n");
+        return(EXIT_FAILURE);
+    }
+    status = matPutVariable(pmat, "name", pa_name);
+    if (status != 0) {
+        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+        return(EXIT_FAILURE);
+    }
+    mxDestroyArray(pa_name);   
+    
+    mxArray *pa_type;
+    pa_type = mxCreateString(scene.type.c_str());
+    if (pa_type == NULL) {
+        printf("%s :  Out of memory on line %d\n", __FILE__, __LINE__);
+        printf("Unable to create string mxArray.\n");
+        return(EXIT_FAILURE);
+    }
+    status = matPutVariable(pmat, "type", pa_type);
+    if (status != 0) {
+        printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+        return(EXIT_FAILURE);
+    }
+    mxDestroyArray(pa_name);   
+    
+    // /*
+    // * Ooops! we need to copy data before writing the array.  (Well,
+    // * ok, this was really intentional.) This demonstrates that
+    // * matPutVariable will overwrite an existing array in a MAT-file.
+    // */
+    // memcpy((void *)(mxGetPr(pa1)), (void *)data, sizeof(data));
+    // status = matPutVariable(pmat, "LocalDouble", pa1);
+    // if (status != 0) {
+    //     printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
+    //     return(EXIT_FAILURE);
+    // } 
 
     if (matClose(pmat) != 0) {
         printf("Error closing file %s\n",file);
         return(EXIT_FAILURE);
     }
 
-    /*
-    * Re-open file and verify its contents with matGetVariable
-    */
-    pmat = matOpen(file, "r");
-    if (pmat == NULL) {
-        printf("Error reopening file %s\n", file);
-        return(EXIT_FAILURE);
-    }
+    // /*
+    // * Re-open file and verify its contents with matGetVariable
+    // */
+    // pmat = matOpen(file, "r");
+    // if (pmat == NULL) {
+    //     printf("Error reopening file %s\n", file);
+    //     return(EXIT_FAILURE);
+    // }
 
-    /*
-    * Read in each array we just wrote
-    */
-    pa1 = matGetVariable(pmat, "LocalDouble");
-    if (pa1 == NULL) {
-        printf("Error reading existing matrix LocalDouble\n");
-        return(EXIT_FAILURE);
-    }
-    if (mxGetNumberOfDimensions(pa1) != 2) {
-        printf("Error saving matrix: result does not have two dimensions\n");
-        return(EXIT_FAILURE);
-    }
+    // /*
+    // * Read in each array we just wrote
+    // */
+    // pa1 = matGetVariable(pmat, "LocalDouble");
+    // if (pa1 == NULL) {
+    //     printf("Error reading existing matrix LocalDouble\n");
+    //     return(EXIT_FAILURE);
+    // }
+    // if (mxGetNumberOfDimensions(pa1) != 2) {
+    //     printf("Error saving matrix: result does not have two dimensions\n");
+    //     return(EXIT_FAILURE);
+    // }
 
-    pa2 = matGetVariable(pmat, "GlobalDouble");
-    if (pa2 == NULL) {
-        printf("Error reading existing matrix GlobalDouble\n");
-        return(EXIT_FAILURE);
-    }
-    if (!(mxIsFromGlobalWS(pa2))) {
-        printf("Error saving global matrix: result is not global\n");
-        return(EXIT_FAILURE);
-    }
+    // pa2 = matGetVariable(pmat, "GlobalDouble");
+    // if (pa2 == NULL) {
+    //     printf("Error reading existing matrix GlobalDouble\n");
+    //     return(EXIT_FAILURE);
+    // }
+    // if (!(mxIsFromGlobalWS(pa2))) {
+    //     printf("Error saving global matrix: result is not global\n");
+    //     return(EXIT_FAILURE);
+    // }
 
-    pa3 = matGetVariable(pmat, "LocalString");
-    if (pa3 == NULL) {
-        printf("Error reading existing matrix LocalString\n");
-        return(EXIT_FAILURE);
-    }
+    // pa_name = matGetVariable(pmat, "name");
+    // if (pa_name == NULL) {
+    //     printf("Error reading existing matrix name\n");
+    //     return(EXIT_FAILURE);
+    // }
     
-    status = mxGetString(pa3, str, sizeof(str));
-    if(status != 0) {
-        printf("Not enough space. String is truncated.");
-        return(EXIT_FAILURE);
-    }
-    if (strcmp(str, "MATLAB: the language of technical computing")) {
-        printf("Error saving string: result has incorrect contents\n");
-        return(EXIT_FAILURE);
-    }
+    // status = mxGetString(pa_name, str, sizeof(str));
+    // if(status != 0) {
+    //     printf("Not enough space. String is truncated.");
+    //     return(EXIT_FAILURE);
+    // }
 
-    /* clean up before exit */
-    mxDestroyArray(pa1);
-    mxDestroyArray(pa2);
-    mxDestroyArray(pa3);
+    // /* clean up before exit */
+    // mxDestroyArray(pa1);
+    // mxDestroyArray(pa2);
+    // mxDestroyArray(pa_name);
 
-    if (matClose(pmat) != 0) {
-        printf("Error closing file %s\n",file);
-        return(EXIT_FAILURE);
-    }
-    printf("Done\n");
-    return(EXIT_SUCCESS);
-        return true;
+    // if (matClose(pmat) != 0) {
+    //     printf("Error closing file %s\n",file);
+    //     return(EXIT_FAILURE);
+    // }
+    // printf("Done\n");
+    // return(EXIT_SUCCESS);
+    //     return true;
 }
 
 // 可以创建三维数组的示例
@@ -192,4 +222,79 @@ int WriteMat(Scene scene){
 //     matClose(mat_file);
     
 //     return 0;
+// }
+
+
+/*=================================================================
+ * mxcreatestructarray.c
+ *
+ * mxcreatestructarray illustrates how to create a MATLAB structure
+ * from a corresponding C structure.  It creates a 1-by-4 structure mxArray,
+ * which contains two fields, name and phone number where name is store as a
+ * string and phone number is stored as a double.  The structure that is
+ * passed back to MATLAB could be used as input to the phonebook.c example
+ * in $MATLAB/extern/examples/refbook.
+ *
+ * This is a MEX-file for MATLAB.
+ * Copyright 1984-2018 The MathWorks, Inc.
+ * All rights reserved.
+ *=================================================================*/
+
+// #include "mex.h"
+// #include <string.h>
+
+// #define NUMBER_OF_STRUCTS (sizeof(friends) / sizeof(struct phonebook))
+// #define NUMBER_OF_FIELDS (sizeof(field_names) / sizeof(*field_names))
+
+// struct phonebook {
+//     const char* name;
+//     double phone;
+// };
+
+// void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+//     const char* field_names[] = {"name", "phone"};
+//     struct phonebook friends[] = {{"Jordan Robert", 3386},
+//                                   {"Mary Smith", 3912},
+//                                   {"Stacy Flora", 3238},
+//                                   {"Harry Alpert", 3077}};
+//     mwSize dims[2] = {1, NUMBER_OF_STRUCTS};
+//     int name_field, phone_field;
+//     mwIndex i;
+
+//     (void)prhs;
+
+//     /* Check for proper number of input and  output arguments */
+//     if (nrhs != 0) {
+//         mexErrMsgIdAndTxt("MATLAB:mxcreatestructarray:maxrhs", "No input argument required.");
+//     }
+//     if (nlhs > 1) {
+//         mexErrMsgIdAndTxt("MATLAB:mxcreatestructarray:maxlhs", "Too many output arguments.");
+//     }
+
+//     /* Create a 1-by-n array of structs. */
+//     plhs[0] = mxCreateStructArray(2, dims, NUMBER_OF_FIELDS, field_names);
+
+//     /* This is redundant, but here for illustration.  Since we just
+//        created the structure and the field number indices are zero
+//        based, name_field will always be 0 and phone_field will always
+//        be 1 */
+//     name_field = mxGetFieldNumber(plhs[0], "name");
+//     phone_field = mxGetFieldNumber(plhs[0], "phone");
+
+//     /* Populate the name and phone fields of the phonebook structure. */
+//     for (i = 0; i < NUMBER_OF_STRUCTS; i++) {
+//         mxArray* field_value;
+//         /* Use mxSetFieldByNumber instead of mxSetField for efficiency
+//          * mxSetField(plhs[0],i,"name",mxCreateString(friends[i].name); */
+//         mxSetFieldByNumber(plhs[0], i, name_field, mxCreateString(friends[i].name));
+//         field_value = mxCreateDoubleMatrix(1, 1, mxREAL);
+// #if MX_HAS_INTERLEAVED_COMPLEX
+//         *mxGetDoubles(field_value) = friends[i].phone;
+// #else
+//         *mxGetPr(field_value) = friends[i].phone;
+// #endif
+//         /* Use mxSetFieldByNumber instead of mxSetField for efficiency
+//          * mxSetField(plhs[0],i,"name",mxCreateString(friends[i].name); */
+//         mxSetFieldByNumber(plhs[0], i, phone_field, field_value);
+//     }
 // }
