@@ -251,7 +251,7 @@ int pbrt_main(char *argv[]){
 
         LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
     }
-    std::cout<<filenames.at(0)<<std::endl;
+    // std::cout<<filenames.at(0)<<std::endl;
     // Clean up after rendering the scene
     // 在这里拿到pbrt位置，输入exr位置，获取结果，然后输出成mat
     Scene scene;

@@ -241,7 +241,7 @@ int WriteMat(Scene scene){
 //             }
 //         }
 //     }
-    status = matPutVariable(pmat, "Scene", plhs);
+    status = matPutVariable(pmat, "scene", plhs);
     if (status != 0) {
         printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
         return(EXIT_FAILURE);

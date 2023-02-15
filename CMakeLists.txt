@@ -581,6 +581,7 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/matlab/piSceneCreate.h
   src/pbrt/matlab/vcConstants.h
   src/pbrt/matlab/WriteMat.h
+  src/pbrt/matlab/matCore.h
   )  
 
 SET (PBRT_CPU_SOURCE
@@ -982,6 +983,8 @@ set_target_properties (my_test_exe PROPERTIES OUTPUT_NAME my_test)
 add_sanitizers (my_test_exe)
 
 set_property (TARGET my_test_exe PROPERTY FOLDER "cmd")
+
+
 ######################
 # imgtool
 

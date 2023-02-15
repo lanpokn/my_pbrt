@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
         // Clean up after rendering the scene
         CleanupPBRT();
     }
-    std::cout<<filenames.at(0)<<std::endl;
+    // std::cout<<filenames.at(0)<<std::endl;
     // Clean up after rendering the scene
     // 在这里拿到pbrt位置，输入exr位置，获取结果，然后输出成mat
     Scene scene;
