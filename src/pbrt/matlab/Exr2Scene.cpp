@@ -58,15 +58,15 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     ieObject.name = ieObjName;
 
     if(!pbrt_path.empty()){
-        // //59行这里，死活认不出来
-        // double hh = photons.size();
-        // double ww = photons.at(0).size();
-        // double cc = photons.at(0).at(0).size();
-        // double fov = find_fov(pbrt_path);
-        // //??TOCHECK why do ??twice
-        // double pi = 3.1415926535;
-        // double wAngular = atan(tan(fov*pi/(2*180))*ww/hh)/pi*180*2;
-        // ieObject.wAngular = wAngular;
+        //59行这里，死活认不出来
+        double hh = photons.size();
+        double ww = photons.at(0).size();
+        double cc = photons.at(0).at(0).size();
+        double fov = find_fov(pbrt_path);
+        //??TOCHECK why do ??twice
+        double pi = 3.1415926535;
+        double wAngular = atan(tan(fov*pi/(2*180))*ww/hh)/pi*180*2;
+        ieObject.wAngular = wAngular;
         ieObject.wAngular = 0;
     }
 
