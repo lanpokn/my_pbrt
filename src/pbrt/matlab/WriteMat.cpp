@@ -115,11 +115,132 @@ int WriteMat(Scene scene){
 //             }
 //         }
 //     }
+    //加入illuminant结构
+    mxArray *plhs_illu;
+    //加入spectrum，这在某种意义上是递归加入的
+    const char* illu_field_names[] = {"name","type","spectrum","data"};
+    int illu_num_of_field =  (sizeof(illu_field_names) / sizeof(*illu_field_names));
+    //该情况下dims应该都可以通用
+    mwSize dims_illu[2] = {1, 1};
+    plhs_illu  = mxCreateStructArray(2,dims_illu,illu_num_of_field,illu_field_names);
+    //添加name
+    int illu_name_field = mxGetFieldNumber(plhs_illu, "name");
+    mxSetFieldByNumber(plhs_illu, 0, illu_name_field, mxCreateString(scene.illuminant.name.c_str()));
+    //添加type
+    int illu_type_field = mxGetFieldNumber(plhs_illu, "type");
+    mxSetFieldByNumber(plhs_illu, 0, illu_type_field, mxCreateString(scene.illuminant.type.c_str()));
+    //添加spectrum，直接把过去的specturm拿过来用
+    int illu_spec_field = mxGetFieldNumber(plhs_illu, "spectrum");
+        //加入spectrum，这在某种意义上是递归加入的
+        mxArray *plhs_illu_spec;
+        const char* illu_spec_field_names[] = {"wave"};
+        int illu_spec_num_of_field =  (sizeof(illu_spec_field_names) / sizeof(*illu_spec_field_names));
+        //该情况下dims应该都可以通用
+        mwSize dims_illu_spec[2] = {1, 1};
+        plhs_illu_spec  = mxCreateStructArray(2,dims_illu_spec,illu_spec_num_of_field,illu_spec_field_names);
+        int illu_spec_wave_field = mxGetFieldNumber(plhs_illu_spec, "wave");
+            //对wave赋值
+            mxArray *plhs_illu_spec_wave;
+            plhs_illu_spec_wave = mxCreateDoubleMatrix(1,31,mxREAL);
+            //套了这么多主要是为了方便初始化，好像有5点蠢了。。
+            double *data_illu_spec = (double*)mxMalloc(sizeof(double)*scene.spectrum.wave.wave.size());
+            // double data_temp[31];
+            for(int i= 0;i<scene.spectrum.wave.wave.size();i++){
+                data_illu_spec[i] = scene.spectrum.wave.wave.at(i);
+            }
+            if (plhs_illu_spec_wave == NULL) {
+                printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
+                printf("Unable to create mxArray.\n");
+                return(EXIT_FAILURE);
+            }
+            memcpy((void *)(mxGetPr(plhs_illu_spec_wave)), (void *)data_illu_spec, sizeof(double)*scene.spectrum.wave.wave.size());
+            //把数据都存到了temp里，就可以进一步存到wave里了
+        mxSetFieldByNumber(plhs_illu_spec, 0, illu_spec_wave_field, plhs_illu_spec_wave);
+        //把数据都存到了temp里，就可以进一步存到wave里了
+        mxFree(data_illu_spec);
+    //把做好的spectrum加进去
+    mxSetFieldByNumber(plhs_illu, 0, illu_spec_field, plhs_illu_spec);
+    //photons应该也也一样，唯一的区别是31x1,值我就不管了
+    int illu_data_field = mxGetFieldNumber(plhs_illu, "data");
+        //加入data，这在某种意义上是递归加入的
+        mxArray *plhs_illu_data;
+        const char* illu_data_field_names[] = {"photons"};
+        int illu_data_num_of_field =  (sizeof(illu_data_field_names) / sizeof(*illu_data_field_names));
+        //该情况下dims应该都可以通用
+        mwSize dims_illu_data[2] = {1, 1};
+        plhs_illu_data  = mxCreateStructArray(2,dims_illu_data,illu_data_num_of_field,illu_data_field_names);
+        int illu_data_photons_field = mxGetFieldNumber(plhs_illu_data, "photons");
+            //对photons赋值
+            mxArray *plhs_illu_data_photons;
+            plhs_illu_data_photons = mxCreateDoubleMatrix(31,1,mxREAL);
+            //套了这么多主要是为了方便初始化，好像有5点蠢了。。
+            double *data_illu_data = (double*)mxMalloc(sizeof(double)*scene.spectrum.wave.wave.size());
+            // double data_temp[31];
+            for(int i= 0;i<scene.spectrum.wave.wave.size();i++){
+                data_illu_data[i] = scene.spectrum.wave.wave.at(i);
+            }
+            if (plhs_illu_data_photons == NULL) {
+                printf("%s : Out of memory on line %d\n", __FILE__, __LINE__);
+                printf("Unable to create mxArray.\n");
+                return(EXIT_FAILURE);
+            }
+            memcpy((void *)(mxGetPr(plhs_illu_data_photons)), (void *)data_illu_data, sizeof(double)*scene.spectrum.wave.wave.size());
+            //把数据都存到了temp里，就可以进一步存到wave里了
+        mxSetFieldByNumber(plhs_illu_data, 0, illu_data_photons_field, plhs_illu_data_photons);
+        //把数据都存到了temp里，就可以进一步存到wave里了
+        mxFree(data_illu_data);
+    //把做好的data加进去
+    mxSetFieldByNumber(plhs_illu, 0, illu_data_field, plhs_illu_data);
+    //将最终的illu放进去
+    mxSetFieldByNumber(plhs, 0, illuminant_field, plhs_illu);
+
+    //加入data结构
+    mxArray *plhs_data;
+    //加入spectrum，这在某种意义上是递归加入的
+    const char* data_field_names[] = {"photons","luminance"};
+    int data_num_of_field =  (sizeof(data_field_names) / sizeof(*data_field_names));
+    //该情况下dims应该都可以通用
+    mwSize dims_data[2] = {1, 1};
+    plhs_data = mxCreateStructArray(2,dims_data,data_num_of_field,data_field_names);
+    //luminance就是个[],不需要添加，放着就行
+    //添加三维的photons
+    //注意matlab都是height，width，1这样在c++中十分不方便，我一律存为1，height,width
+    //radiance的存储也因此变成了： C0i,height,width,而matlab中应该是height,width,C0i
+        long unsigned int data_photons_field = mxGetFieldNumber(plhs_data, "photons");
+        long unsigned int height_photons = scene.data.photons.at(0).size();
+        long unsigned int width_photons = scene.data.photons.at(0).at(0).size();
+        long unsigned int samples_photons = scene.data.photons.size();
+        mwSize dims_photons[3] = {height_photons,width_photons,samples_photons};
+        double *data_data_photons = (double*)mxMalloc(sizeof(double)*height_photons*width_photons*samples_photons);
+        mxArray *photons_array = mxCreateNumericArray(3,dims_photons,mxDOUBLE_CLASS, mxREAL);
+        //存储优先级：先y再x再z
+        for(int x=0;x<width_photons;x++){
+            for(int y = 0;y<height_photons;y++){
+                for(int z =0;z<samples_photons;z++){
+                    data_data_photons[z*width_photons*height_photons + x*height_photons+y] = scene.data.photons.at(z).at(y).at(x);
+                }
+            }
+        }
+        memcpy((void *)(mxGetPr(photons_array)), (void *)data_data_photons, sizeof(double)*height_photons*width_photons*samples_photons);
+        mxSetFieldByNumber(plhs_data, 0, data_photons_field, photons_array);
+        mxFree(data_data_photons);
+    mxSetFieldByNumber(plhs, 0, data_field, plhs_data);
 
 
-
-
-
+//     // 创建MATLAB三维数组。在传递指定维度大小的数组时，按 Y,X,Z的顺序设置。即矩阵为Y行，X列，共Z个矩阵
+//     size_t dims[3] = { 3, 4, 2 };
+//     mxArray *mat_array = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
+    
+//     double * dst = (double *)(mxGetPr(pMxArray));
+//     double * d = dst;
+//     for (int z = 0; z < 2; ++z) {
+//         // MATLAB按列优先存储
+//         for (int x = 0; x < 4; ++x) {
+//             for (int y = 0; y < 3; ++y) {
+//                 (*d++) = src[z * 3 * 4 + y * 4 + x];
+//             }
+//         }
+//     }
     status = matPutVariable(pmat, "Scene", plhs);
     if (status != 0) {
         printf("%s :  Error using matPutVariable on line %d\n", __FILE__, __LINE__);
@@ -174,7 +295,8 @@ int WriteMat(Scene scene){
         printf("Error closing file %s\n",file);
         return(EXIT_FAILURE);
     }
-
+    return(EXIT_SUCCESS);
+}
     // /*
     // * Re-open file and verify its contents with matGetVariable
     // */
@@ -231,7 +353,6 @@ int WriteMat(Scene scene){
     // printf("Done\n");
     // return(EXIT_SUCCESS);
     //     return true;
-}
 
 // 可以创建三维数组的示例
 // int main() {

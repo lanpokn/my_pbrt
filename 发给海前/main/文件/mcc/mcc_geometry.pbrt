@@ -182,7 +182,7 @@ AttributeBegin
 				AreaLightSource "diffuse"				
 				"rgb L" [ 1.0 1.0 1.0]				
 				"float scale" [ 30.0 ]				
-				"float spread" [ 90.0 ]				
+				# "float spread" [ 90.0 ]	该属性描述了光源发出的光的范围			
 				Shape "trianglemesh"
 				"point3 P" [
 				-2.5 -2.5 0.0 2.5 -2.5 0.0 2.5 2.5 0.0 -2.5 -2.5 0.0 2.5 2.5 0.0 -2.5 2.5 0.0				
