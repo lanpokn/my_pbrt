@@ -28,7 +28,7 @@ int WriteMat(Scene scene){
     printf("Accessing a STL vector: %d\n", myInts[1]);
 
     // double data[9] = { 1.0, 4.0, 7.0, 2.0, 5.0, 8.0, 3.0, 6.0, 9.0 };
-    const char *file = "mattest.mat";
+    const char *file = (scene.name+".mat").c_str();
     char str[256];
     int status; 
 
@@ -217,10 +217,17 @@ int WriteMat(Scene scene){
         for(int x=0;x<width_photons;x++){
             for(int y = 0;y<height_photons;y++){
                 for(int z =0;z<samples_photons;z++){
+                    double result_temp = scene.data.photons.at(z).at(y).at(x);
                     data_data_photons[z*width_photons*height_photons + x*height_photons+y] = scene.data.photons.at(z).at(y).at(x);
+                    // data_data_photons[z*width_photons*height_photons + y*height_photons+y] = scene.data.photons.at(z).at(y).at(x);
                 }
             }
         }
+        // for(int x=0;x<depth_width;x++){
+        // for(int y=0;y<depth_height;y++){
+        //     data_depth[x*depth_height+y] = scene.depthMap.at(0).at(y).at(x);
+        // }
+        // }
         memcpy((void *)(mxGetPr(photons_array)), (void *)data_data_photons, sizeof(double)*height_photons*width_photons*samples_photons);
         mxSetFieldByNumber(plhs_data, 0, data_photons_field, photons_array);
         mxFree(data_data_photons);

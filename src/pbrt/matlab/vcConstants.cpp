@@ -2,14 +2,14 @@
 #include<algorithm>
 #include<iostream>
 using namespace std;
-
+//这个版本的必须改动，不然e-34超了，用不了
 #include"ieParamFormat.h"
 #include"vcConstants.h"
 long double vcConstants(string con){
     con = ieParamFormat(con);
     long double val = 0;
     if(con == "planck" || con == "h" || con == "plancksconstant"){
-        val = 626176e-034;
+        val = 626176e-34;
     }else if("q" == con || "electroncharge" == con){
         val = 1.602177e-19;
     }else if("c" == con || "speedoflight" == con){
@@ -22,6 +22,7 @@ long double vcConstants(string con){
     else{
         cout<<"Unknown physical constant"<<endl;
     }
+    return val;
 }
 
 // switch lower(con)

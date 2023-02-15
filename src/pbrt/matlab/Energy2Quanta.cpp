@@ -45,7 +45,13 @@ Photons Energy2Quanta(Wave wavelength,Energy energy){
                 if(i==30){
                     int q =0;
                 }
-                photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(h*c)*(1e-9*wavelength.wave.at(i));
+                //hc instead h*c ,or it will break
+                //hc = 18.772284e-26
+                double hc = 18.772284e-26;
+                // double temp = energy.at(i).at(j).at(k);
+                double result_temp = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
+                photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
+                
         }
     }
     return photons;
