@@ -28,7 +28,8 @@ int WriteMat(Scene scene){
     printf("Accessing a STL vector: %d\n", myInts[1]);
 
     // double data[9] = { 1.0, 4.0, 7.0, 2.0, 5.0, 8.0, 3.0, 6.0, 9.0 };
-    const char *file = (scene.name+".mat").c_str();
+    string FIlename = scene.name+".mat";
+    const char *file = FIlename.c_str();
     char str[256];
     int status; 
 

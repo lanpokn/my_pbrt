@@ -38,24 +38,35 @@ Photons Energy2Quanta(Wave wavelength,Energy energy){
     int w = energy.at(0).at(0).size();
     Photons photons = energy;//先初始化一下，方便一会用at进行操作
     //因为我的radiance
-    for(int i =0;i<n;i++){
+    // for(int i =0;i<n;i++){
+    //     for(int j = 0;j<m;j++){
+    //         for(int k = 0;k<w;k++){
+    //             //hc instead h*c ,or it will break
+    //             //hc = 18.772284e-26
+    //             double hc = 18.772284e-26;/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/发给海前/main/文件/mcc
+    //             // double temp = energy.at(i).at(j).at(k);
+    //             double result_temp = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
+    //             photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
+                // }
+    //     }
+    // }
+    for(int k = 0;k<w;k++){
         for(int j = 0;j<m;j++){
-            for(int k = 0;k<w;k++){
-                //这里似乎没有那么简单，是一部分不变，另一部分被转化
-                if(i==30){
-                    int q =0;
-                }
+            for(int i =0;i<n;i++){
                 //hc instead h*c ,or it will break
-                //hc = 18.772284e-26
-                double hc = 18.772284e-26;
+                //hc = 19.864757e-26
+                double hc_bot = 19.864757;
+                double hc_up =1e-26;
                 // double temp = energy.at(i).at(j).at(k);
-                double result_temp = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
-                photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
-                
+                //此处必须优化计算，不然全是问题
+                double result_temp = (energy.at(i).at(j).at(k))/(hc_bot)*(1e17*wavelength.wave.at(i));
+                double e1 = energy.at(i).at(j).at(k);
+                double e2 = wavelength.wave.at(i);
+                photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(hc_bot)*(1e17*wavelength.wave.at(i));
+            }
         }
     }
     return photons;
-    }
 }
 
     // wavelength(:,ones(1,n*m))

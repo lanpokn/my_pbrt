@@ -56,9 +56,9 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     ieObject.name = ieObjName;
 
     if(!pbrt_path.empty()){
-        double hh = photons.size();
-        double ww = photons.at(0).size();
-        double cc = photons.at(0).at(0).size();
+        double cc = photons.size();
+        double hh = photons.at(0).size();
+        double ww = photons.at(0).at(0).size();
         double fov = find_fov(pbrt_path);
         //??TOCHECK why do ??twice
         double pi = 3.1415926535;
