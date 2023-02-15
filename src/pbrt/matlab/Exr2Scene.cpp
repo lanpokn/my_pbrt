@@ -9,6 +9,8 @@
 #include "piSceneCreate.h"
 #include "find_fov.h"
 Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
+    Scene scene;
+    return scene;
     Energy energy = piReadEXR(inputFile,"radiance");//seg fault
     bool Is_16 = false;
     if(energy.at(0).at(0).size()<17){
@@ -56,14 +58,16 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     ieObject.name = ieObjName;
 
     if(!pbrt_path.empty()){
-        double hh = photons.size();
-        double ww = photons.at(0).size();
-        double cc = photons.at(0).at(0).size();
-        double fov = find_fov(pbrt_path);
-        //??TOCHECK why do ??twice
-        double pi = 3.1415926535;
-        double wAngular = atan(tan(fov*pi/(2*180))*ww/hh)/pi*180*2;
-        ieObject.wAngular = wAngular;
+        // //59行这里，死活认不出来
+        // double hh = photons.size();
+        // double ww = photons.at(0).size();
+        // double cc = photons.at(0).at(0).size();
+        // double fov = find_fov(pbrt_path);
+        // //??TOCHECK why do ??twice
+        // double pi = 3.1415926535;
+        // double wAngular = atan(tan(fov*pi/(2*180))*ww/hh)/pi*180*2;
+        // ieObject.wAngular = wAngular;
+        ieObject.wAngular = 0;
     }
 
     //get depth,
@@ -86,11 +90,5 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     ieObject.illuminant.spectrum= ieObject.spectrum;
     ieObject.illuminant.name = "D65";
     ieObject.illuminant.type = "illuminant"; 
-    // 以下这些都需要在调用该函数的地方继续完成，不然太长，而且不好拿pbrt_file,最后记得删了exr即可
-    // scene = ieObject;
-    // mat_name = [fname, '.mat'];
-    // %此 MATLAB 函数 根据指定的文件夹和文件名构建完整的文件设定,不同系统的运作不同
-    // save_path = fullfile(indir,mat_name);
-    // save(save_path, 'scene', '-v7.3')
     return ieObject;
 }

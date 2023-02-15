@@ -73,19 +73,19 @@ typedef struct channels_data{
         allname.clear();
         allData.clear();
     }
-    //复制构造函数
-    channels_data(const struct channels_data & c){
-        allname = c.allname;
-        DataSize = c.DataSize;
-        height = c.height;
-        width = c.width;
-        for(int j =0;j<c.allData.size();j++){
-            float *buf_exr = new float[c.DataSize];
-            for(int k=0;k<c.DataSize;k++){
-                buf_exr[k] = c.allData.at(j)[k];
-            }
-        }
-    }
+    // //复制构造函数
+    // channels_data(const struct channels_data & c){
+    //     allname = c.allname;
+    //     DataSize = c.DataSize;
+    //     height = c.height;
+    //     width = c.width;
+    //     for(int j =0;j<c.allData.size();j++){
+    //         float *buf_exr = new float[c.DataSize];
+    //         for(int k=0;k<c.DataSize;k++){
+    //             buf_exr[k] = c.allData.at(j)[k];
+    //         }
+    //     }
+    // }
 }allCHA;
 
 void MyImgTool(string inFile,string channnelName,allCHA& ret);
