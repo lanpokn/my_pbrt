@@ -1,5 +1,6 @@
-#include<pbrt/matlab/Exr2Scene.h>
+#include"pbrt.hpp"
 
 int main(){
-    Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt");
+    RunPbrt("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/build/pbrt /home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt");
+    // Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/scene/explosion/explosion.pbrt");
 }

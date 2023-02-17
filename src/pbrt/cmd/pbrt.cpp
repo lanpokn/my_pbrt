@@ -25,8 +25,9 @@
 #include <string>
 #include <vector>
 
-#include<pbrt/matlab/Exr2Scene.h>
-#include<pbrt/matlab/WriteMat.h>
+// #include<pbrt/matlab/Exr2Scene.h>
+// #include<pbrt/matlab/WriteMat.h>
+#include<pbrt/matlab/matCore.h>
 using namespace pbrt;
 
 static void usage(const std::string &msg = {}) {
@@ -269,10 +270,9 @@ int main(int argc, char *argv[]) {
             RenderWavefront(scene);
         else
             RenderCPU(scene);
-
         LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
         // Clean up after rendering the scene
-        CleanupPBRT();
+        // CleanupPBRT();
     }
     // std::cout<<filenames.at(0)<<std::endl;
     // Clean up after rendering the scene
@@ -280,8 +280,8 @@ int main(int argc, char *argv[]) {
     Scene scene;
     std::cout<<pbrt_h::ExrName<<std::endl;
     scene = Exr2Scene(pbrt_h::ExrName,filenames.at(0));
-    // options.
-    // CleanupPBRT();
+    // // options.
+    CleanupPBRT();
     WriteMat(scene);
     return 0;
 }

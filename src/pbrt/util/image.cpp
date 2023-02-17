@@ -50,8 +50,8 @@
 #include <stdlib.h> /* For EXIT_FAILURE, EXIT_SUCCESS */
 #include <vector> /* For STL */
 //initial it
-
 std::string pbrt_h::ExrName;
+
 namespace pbrt {
 std::string ToString(PixelFormat format) {
     switch (format) {
@@ -1227,6 +1227,7 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
         Error("%s: error writing EXR: %s", name.c_str(), exc.what());
         return false;
     }
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -58,8 +58,15 @@ Photons Energy2Quanta(Wave wavelength,Energy energy){
                 double hc_bot = 19.864757;
                 double hc_up =1e-26;
                 // double temp = energy.at(i).at(j).at(k);
+                
+                // double hc = 1.9864757*1e-25;
+                // (energy.at(i).at(j).at(k))/(hc)*(1e-9*wavelength.wave.at(i));
+                
+                
                 //此处必须优化计算，不然全是问题
+
                 double result_temp = (energy.at(i).at(j).at(k))/(hc_bot)*(1e17*wavelength.wave.at(i));
+                
                 double e1 = energy.at(i).at(j).at(k);
                 double e2 = wavelength.wave.at(i);
                 photons.at(i).at(j).at(k) = (energy.at(i).at(j).at(k))/(hc_bot)*(1e17*wavelength.wave.at(i));

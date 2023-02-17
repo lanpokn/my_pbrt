@@ -19,6 +19,7 @@
 #include <pbrt/util/colorspace.h>
 #include <pbrt/util/parallel.h>
 
+#include <iostream>
 namespace pbrt {
 
 void RenderCPU(BasicScene &parsedScene) {
@@ -157,7 +158,7 @@ void RenderCPU(BasicScene &parsedScene) {
 
     // Render!
     integrator->Render();
-
+    std::cout<<"here1\n";
     LOG_VERBOSE("Memory used after rendering: %s", GetCurrentRSS());
 
     PtexTextureBase::ReportStats();

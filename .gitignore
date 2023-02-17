@@ -6,3 +6,4 @@ src/build
 .ipynb_checkpoints/
 build/
 .vscode
+test_scenes/

@@ -1,9 +1,5 @@
-#include<new/pbrt_render.h>
+// #include<new/pbrt_render.h>
 #include<iostream>
-// #include<pbrt/matlab/MyImgTool.h>
-// #include<pbrt/matlab/Exr2Scene.h>
-// #include<pbrt/matlab/MatDS.h>
-// #include<pbrt/matlab/WriteMat.h>
 #include<pbrt/matlab/matCore.h>
 using namespace std;
 using namespace MatDS;
