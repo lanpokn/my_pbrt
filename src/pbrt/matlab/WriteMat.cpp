@@ -218,7 +218,6 @@ int WriteMat(Scene scene){
         long unsigned int data_photons_field = mxGetFieldNumber(plhs_data, "photons");
         long unsigned int height_photons = scene.data.photons.at(0).size();
         long unsigned int width_photons = scene.data.photons.at(0).at(0).size();
-        cout<<"width_photons"<<width_photons<<endl;
         long unsigned int samples_photons = scene.data.photons.size();
         mwSize dims_photons[3] = {height_photons,width_photons,samples_photons};
         double *data_data_photons = (double*)mxMalloc(sizeof(double)*height_photons*width_photons*samples_photons);
