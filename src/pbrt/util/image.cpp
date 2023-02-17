@@ -1223,6 +1223,8 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
             header.insert("chromaticities", Imf::ChromaticitiesAttribute(chromaticities));
         }
 
+        pbrt_h::ExrName = name;
+        
         Imf::OutputFile file(name.c_str(), header);
         file.setFrameBuffer(fb);
         file.writePixels(resolution.y);
