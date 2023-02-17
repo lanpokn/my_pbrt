@@ -11,13 +11,13 @@
 Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     Energy energy = piReadEXR(inputFile,"radiance");//seg fault
     bool Is_16 = false;
-    if(energy.at(0).at(0).size()<17){
+    if(energy.size()<17){
         Is_16 = true;
     }else{
         Is_16 = true;
-        for(int i= 0;i<energy.size();i++){
-            for(int j = 0;j<energy.size();j++){
-                if(energy.at(i).at(j).at(16)!=0){
+        for(int i= 0;i<energy.at(0).size();i++){
+            for(int j = 0;j<energy.at(0).at(0).size();j++){
+                if(energy.at(16).at(i).at(j)!=0){
                     Is_16 = false;
                     break;
                 }
@@ -34,13 +34,16 @@ Scene Exr2Scene(string inputFile,string pbrt_path,Wave wave){
     //     }
     // }
      
-        for(int i= 0;i<energy.size();i++){
-            for(int j = 0;j<energy.size();j++){
-                while(energy.at(i).at(j).size()>16){
-                    energy.at(i).at(j).pop_back();
-                }
-            }
-        } 
+        // for(int i= 0;i<energy.size();i++){
+        //     for(int j = 0;j<energy.size();j++){
+        //         while(energy.at(i).at(j).size()>16){
+        //             energy.at(i).at(j).pop_back();
+        //         }
+        //     }
+        // } 
+        while(energy.size()>16){
+            energy.pop_back();
+        }
         Wave data_wave = (Wave)"400:20:700";
     }
     Photons photons = Energy2Quanta(data_wave, energy); 

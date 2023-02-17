@@ -8,7 +8,7 @@ int main(){
     // std::string str = "--display-server localhost:14158 /home/lanpokn/Documents/2022/xiaomi/pbrt-v4/发给海前/main/文件/mcc/mcc.pbrt";
     // RunPbrt(str);
     Scene scene;
-    scene = Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/output.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/发给海前/main/文件/mcc/mcc.pbrt");
+    scene = Exr2Scene("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/test_scenes/mirror_box/mirror_box.exr","/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/test_scenes/mirror_box/mirror_box.pbrt");
     WriteMat(scene);
     // data = MyImgTool("/home/lanpokn/Documents/2022/xiaomi/pbrt-v4/explosion.exr","Radiance");
 

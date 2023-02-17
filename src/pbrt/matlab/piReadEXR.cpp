@@ -10,6 +10,7 @@ Energy piReadEXR(string filename, string datatype){
     Energy output;
     if("radiance" == datatype){
         output = piEXR2Mat(filename,"Radiance");
+        cout<<output.at(0).at(0).size()<<endl;
     }else    if("zdepth" == datatype){
         output = piEXR2Mat(filename,"Pz");
     }else     if("depth" == datatype){
