@@ -1,0 +1,16 @@
+#ifndef PIEXR2MAT
+#define PIEXR2MAT
+
+#include<string>
+#include<algorithm>
+#include<iostream>
+#include<fstream>
+using namespace std;
+#include"MatDS.h"
+#include"MyImgTool.h"
+using namespace MatDS;
+
+// function data = piEXR2Mat(infile, channelname)
+Energy piEXR2Mat(string infile,string channelname);
+
+#endif
