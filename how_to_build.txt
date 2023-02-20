@@ -21,7 +21,7 @@ target_link_directories
 中出现matlab的路径即可
 
 （2）
-pbrt-v4-omni/src/pbrt/matlab/WriteMat.cpp中
+pbrt-v4-omni/src/pbrt/matlab/WriteMat.cpp 和WriteMat.h中
 #include </home/lanpokn/Documents/MATLAB/extern/include/mat.h>
 #include </home/lanpokn/Documents/MATLAB/extern/include/matrix.h>
 应该换成自己系统中的对应路径
