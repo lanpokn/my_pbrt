@@ -1,0 +1,27 @@
+1. 说明
+本工程主要是在原pbrt的基础上，增添了对于matlab的依赖，需要在安装了matlab的系统上使用
+2. 详细改动
+在可以编译原pbrt的基础上
+（以matlab安装在D盘为例为例)
+
+（1）
+在Cmakelist 的824行之后，对pbrt_lib进行如下操作
+附加包含目录
+D:\MATLAB\extern\include
+附加库目录:
+D:\MATLAB\extern\lib\win64\microsoft
+附加依赖库:
+libmat.lib
+libmx.lib
+libmex.lib
+libeng.lib
+只需要更改link_directories，
+target_include_directories
+target_link_directories
+中出现matlab的路径即可
+
+（2）
+pbrt-v4-omni/src/pbrt/matlab/WriteMat.cpp中
+#include </home/lanpokn/Documents/MATLAB/extern/include/mat.h>
+#include </home/lanpokn/Documents/MATLAB/extern/include/matrix.h>
+应该换成自己系统中的对应路径
