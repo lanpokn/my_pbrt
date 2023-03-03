@@ -529,6 +529,8 @@ set (PBRT_SOURCE
 
   src/pbrt/cmd/pspec_gpu.cpp
 
+  src/new/pbrt_render.cpp
+
   src/pbrt/matlab/Energy2Quanta.cpp
   src/pbrt/matlab/Exr2Scene.cpp
   src/pbrt/matlab/find_fov.cpp
@@ -565,6 +567,7 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/scene.h
   src/pbrt/shapes.h
   src/pbrt/textures.h
+  src/new/pbrt_render.h
 
   src/pbrt/matlab/Energy2Quanta.h
   src/pbrt/matlab/Exr2Scene.h
@@ -968,6 +971,23 @@ set_target_properties (pbrt_exe PROPERTIES OUTPUT_NAME pbrt)
 add_sanitizers (pbrt_exe)
 
 set_property (TARGET pbrt_exe PROPERTY FOLDER "cmd")
+
+######################
+# my test render
+
+add_executable (my_test_exe src/new/main.cpp)
+add_executable (pbrt::my_test_exe  ALIAS my_test_exe)
+
+target_compile_definitions (my_test_exe PRIVATE ${PBRT_DEFINITIONS})
+target_compile_options (my_test_exe PRIVATE ${PBRT_CXX_FLAGS})
+target_include_directories (my_test_exe PRIVATE src src/ext src/new)
+target_link_libraries (my_test_exe PRIVATE ${ALL_PBRT_LIBS} pbrt_opt pbrt_warnings)
+
+set_target_properties (my_test_exe PROPERTIES OUTPUT_NAME my_test)
+
+add_sanitizers (my_test_exe)
+
+set_property (TARGET my_test_exe PROPERTY FOLDER "cmd")
 
 ######################
 # imgtool
