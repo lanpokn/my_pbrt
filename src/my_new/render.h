@@ -13,16 +13,16 @@
 struct BasicConfig{
     std::string scene_path;
     // int seed = 0;
-    // bool quiet = false;
+    bool quiet = false;
     // bool disablePixelJitter = false, disableWavelengthJitter = false;
     // bool disableTextureFiltering = false;
     // bool forceDiffuse = false;
-    // bool useGPU = false;
-    // bool wavefront = false;
+    bool useGPU = false;
+    bool wavefront = false;
     // bool interactive = false;
     // RenderingCoordinateSystem renderingSpace = RenderingCoordinateSystem::CameraWorld;
     
-    // int nThreads = 0;
+    int nThreads = 0;
     // LogLevel logLevel = LogLevel::Error;
     // std::string logFile;
     // bool logUtilization = false;
@@ -31,7 +31,7 @@ struct BasicConfig{
     // bool printStatistics = false;
     // pstd::optional<int> pixelSamples;
     // pstd::optional<int> gpuDevice;
-    // bool quickRender = false;
+    bool quickRender = false;
     // bool upgrade = false;
     // std::string imageFile;
     // std::string mseReferenceImage, mseReferenceOutput;

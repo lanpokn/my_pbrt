@@ -151,7 +151,7 @@ class pbrt_render:render{
      * @param argv the input of the cmd
      * @return int 
      */
-    int pbrt_main(char *argv[]);
+    int pbrt_main(int argc, char *argv[]);
     /**
      * @brief generate a new .pbrt file and renturn the new filename
      * 

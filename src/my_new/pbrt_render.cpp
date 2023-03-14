@@ -1,4 +1,5 @@
 #include<my_new/pbrt_render.h>
+#include<fstream>
 using namespace pbrt;
 
 //initialize it , or cmake will throw erorr: undefined referrence
@@ -6,6 +7,14 @@ using namespace pbrt;
 Imf::FrameBuffer pbrt_render_h::EXRFrameBuffer;
 Point2i pbrt_render_h::resolution;
 Imf::Header pbrt_render_h::header;
+
+//use it to make sure the input is analysied correctly
+std::vector<std::string> My_GetCommandLineArguments(int argc_input,char* argv[]) {
+        std::vector<std::string> argStrings;
+        for (int i = 1; i < argc_input; ++i)
+            argStrings.push_back(argv[i]);
+        return argStrings;
+}
 
 static void usage(const std::string &msg = {}) {
     if (!msg.empty())
@@ -85,6 +94,21 @@ std::string PbrtConfig::ToString() const{
 
     //TODO
     ret.append(this->scene_path);
+    ret.append(" ");
+    if(true == this->useGPU){
+        ret.append("--gpu ");
+    }
+    if(true == this->quiet){
+        ret.append("--quiet ");
+    }
+    if(true == this->quickRender){
+        ret.append("--quick ");
+    }
+    if(0 != this->nThreads){
+        ret.append("--nthreads ");
+        ret.append(std::to_string(nThreads));
+        ret.append(" ");
+    }
     return ret;
 }
 
@@ -447,9 +471,9 @@ std::string pbrt_render::generatePbrtFile(SphericalCameraParam SC, std::string f
     outfile.close();
     return newfilenames;
 }
-int pbrt_render::pbrt_main(char *argv[]){
+int pbrt_render::pbrt_main(int argc, char *argv[]){
     // Convert command-line arguments to vector of strings
-    std::vector<std::string> args = GetCommandLineArguments(argv);
+    std::vector<std::string> args =  My_GetCommandLineArguments(argc,argv);
     std::cout<<argv<<"\n";
     // Declare variables for parsed command line
     PBRTOptions options;
@@ -714,7 +738,7 @@ bool pbrt_render::run(){
     // //change the order, make it the same with the argv of the cmd input    
     // while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
     // {
-    this->pbrt_main(argv);//camera will be poped here
+    this->pbrt_main(i,argv);//camera will be poped here
     // Imf::OutputFile file(name.c_str(), header);
     // file.setFrameBuffer(fb);
     // file.writePixels(resolution.y);
