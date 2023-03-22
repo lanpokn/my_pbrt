@@ -1,6 +1,20 @@
 //this is a interface document
 
 //config is a used to give paramter to runPbrt
+typedef struct myBound_struct{
+    float x0 = 0;
+    float x1 = 1;
+    float y0 = 0;
+    float y1 = 1;
+    myBound_struct(float x0_in = 0,float x1_in = 1,float y0_in = 0,float y1_in = 1){
+        x0 = x0_in;
+        x1 = x1_in;
+        y0 = y0_in;
+        y1 = y1_in;
+    }
+private:
+    bool changed = false;
+} myBound;
 struct PbrtConfig:BasicConfig{
     //cmd paramter in pbrt, they are not all used 
     std::string scene_path;
@@ -29,7 +43,7 @@ struct PbrtConfig:BasicConfig{
     // std::string mseReferenceImage, mseReferenceOutput;
     // std::string debugStart;
     // std::string displayServer;
-    // pstd::optional<Bounds2f> cropWindow;
+    myBound cropWindow;
     // pstd::optional<Bounds2i> pixelBounds;
     // pstd::optional<Point2i> pixelMaterial;
     // Float displacementEdgeScale = 1;
