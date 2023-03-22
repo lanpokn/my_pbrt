@@ -1,122 +1,46 @@
-#ifndef MY_PBRT_RENDER_H
-#define MY_PBRT_RENDER_H
-#include<my_new/render.h>
+//this is a interface document
 
-
-#include <pbrt/pbrt.h>
-
-#include <pbrt/cpu/render.h>
-#ifdef PBRT_BUILD_GPU_RENDERER
-#include <pbrt/gpu/memory.h>
-#endif  // PBRT_BUILD_GPU_RENDERER
-#include <pbrt/options.h>
-#include <pbrt/parser.h>
-#include <pbrt/scene.h>
-#include <pbrt/util/args.h>
-#include <pbrt/util/check.h>
-#include <pbrt/util/error.h>
-#include <pbrt/util/log.h>
-#include <pbrt/util/memory.h>
-#include <pbrt/util/parallel.h>
-#include <pbrt/util/print.h>
-#include <pbrt/util/spectrum.h>
-#include <pbrt/util/string.h>
-#include <pbrt/wavefront/wavefront.h>
-
-
-#include <ImfChannelList.h>
-#include <ImfChromaticitiesAttribute.h>
-#include <ImfFloatAttribute.h>
-#include <ImfFrameBuffer.h>
-#include <ImfHeader.h>
-#include <ImfInputFile.h>
-#include <ImfIntAttribute.h>
-#include <ImfMatrixAttribute.h>
-#include <ImfOutputFile.h>
-#include <ImfStringAttribute.h>
-#include <ImfStringVectorAttribute.h>
-
-#include <string>
-#include <vector>
-#include <iostream>
-using namespace pbrt;
-
-//use it to memory the exr data
-//use static to avoid multi defination
-//use extern to fix this problem!
-namespace pbrt_render_h{
-extern Imf::FrameBuffer EXRFrameBuffer;
-extern Point2i resolution;
-extern Imf::Header header;
-}
-/**
- * @brief all from 0 to 1
- * 
- */
-typedef struct myBound_struct{
-    float x0 = 0;
-    float x1 = 1;
-    float y0 = 0;
-    float y1 = 1;
-    myBound_struct(float x0_in = 0,float x1_in = 1,float y0_in = 0,float y1_in = 1){
-        x0 = x0_in;
-        x1 = x1_in;
-        y0 = y0_in;
-        y1 = y1_in;
-    }
-private:
-    bool changed = false;
-} myBound;
+//config is a used to give paramter to runPbrt
 struct PbrtConfig:BasicConfig{
-    //cmd 
-    int seed = 0;
+    //cmd paramter in pbrt, they are not all used 
+    std::string scene_path;
+    // int seed = 0;
     bool quiet = false;
-    bool disablePixelJitter = false, disableWavelengthJitter = false;
-    bool disableTextureFiltering = false;
-    bool forceDiffuse = false;
+    // bool disablePixelJitter = false, disableWavelengthJitter = false;
+    // bool disableTextureFiltering = false;
+    // bool forceDiffuse = false;
     bool useGPU = false;
-    bool wavefront = false;
-    bool interactive = false;
-    RenderingCoordinateSystem renderingSpace = RenderingCoordinateSystem::CameraWorld;
+    // bool wavefront = false;
+    // bool interactive = false;
+    // RenderingCoordinateSystem renderingSpace = RenderingCoordinateSystem::CameraWorld;
     
     int nThreads = 0;
-    LogLevel logLevel = LogLevel::Error;
-    std::string logFile;
-    bool logUtilization = false;
-    bool writePartialImages = false;
-    bool recordPixelStatistics = false;
-    bool printStatistics = false;
-    //changed
-    int pixelSamples = -1;
-    int gpuDevice =  -1;
+    // LogLevel logLevel = LogLevel::Error;
+    // std::string logFile;
+    // bool logUtilization = false;
+    // bool writePartialImages = false;
+    // bool recordPixelStatistics = false;
+    // bool printStatistics = false;
+    pstd::optional<int> pixelSamples;
+    pstd::optional<int> gpuDevice;
     bool quickRender = false;
-    bool upgrade = false;
-    std::string imageFile;
-    std::string mseReferenceImage, mseReferenceOutput;
-    std::string debugStart;
-    std::string displayServer;
-    //changed
-    myBound cropWindow;
-    // Bounds2f projRearBounds(Point2f(-1.5f * rearRadius, -1.5f * rearRadius),
-    //                         Point2f(1.5f * rearRadius, 1.5f * rearRadius));
-    pstd::optional<Bounds2i> pixelBounds;
-    pstd::optional<Point2i> pixelMaterial;
-    Float displacementEdgeScale = 1;
+    // bool upgrade = false;
+    // std::string imageFile;
+    // std::string mseReferenceImage, mseReferenceOutput;
+    // std::string debugStart;
+    // std::string displayServer;
+    // pstd::optional<Bounds2f> cropWindow;
+    // pstd::optional<Bounds2i> pixelBounds;
+    // pstd::optional<Point2i> pixelMaterial;
+    // Float displacementEdgeScale = 1;
     
-    //it will be used when parsefile, if it is not null, we will create a new pbrt configfile(with a different name), and then delete it
-    //because original file is very conplex and only use a filename as input, do so can avoid change code
-    //为什么要生成新的文件：原本的源代码涉及到多个文件，而且最后应该是用的重定向输入流的方式进行读取，要改动就要涉及其底层逻辑
-    //而且要么改动一堆源文件，要么该文件会在其他地方出现难以预料的问题
-    //因此，我决定生成一个临时配置文件，至于是否需要运行后删除就看需求了
-    //所以接下来的任务：读取源文件，在保证源文件,修改其中特定的camera内容(可以考虑先把camera后边所有开头是空格的行，以及camera所在行“”的内容删除，再加），再生成到新的配置文件里，
-    //然后在parsefile前根据需求更改filevector（有理由认为原作者考虑过多相机，不然为什么要用vector?)
-    //记得跑一下有多个相机定义的文件，看看是怎么回事
-    //TODO
-    //vector<CheckInfo*> info;
+
+    //locate camera parameters
     std::vector<RealisticCameraParam> RealCameraList;
     std::vector<PerspectiveCameraParam> PerspectiveCameraList;
     std::vector<SphericalCameraParam> SphericalCameraList;
     std::vector<OrthographicCameraParam> OrthographicCameraList;
+    //they are functions to add cameras
     void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,std::string lensfile = "",float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
     { 
@@ -154,6 +78,7 @@ struct PbrtConfig:BasicConfig{
      */
     virtual std::string ToString() const;
 };
+
 /**
  * @brief render an image with pbrt method
  * 
@@ -161,7 +86,7 @@ struct PbrtConfig:BasicConfig{
 class pbrt_render:render{
   private:
     std::string cmd_input = "";
-    //these params have to be add because they are not one of  command line
+    //these params have to be add manually because they are not one of  command line
     std::vector<RealisticCameraParam> RealCameraList;
     std::vector<PerspectiveCameraParam> PerspectiveCameraList;
     std::vector<SphericalCameraParam> SphericalCameraList;
@@ -185,9 +110,14 @@ class pbrt_render:render{
    std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames);
    std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames);
   public:
+    /**
+     * @brief they are output paramters, temporarily unavaluable
+     * 
+     */
     Imf::FrameBuffer fb;
     Point2i resolution;
     Imf::Header header;
+    //these init function should be called only once
     /**
      * @brief change config to string, and then call init(str)
      * 
@@ -214,7 +144,11 @@ class pbrt_render:render{
      * @return false 
      */
     virtual bool init(std::string &&str);
+    /**
+     * @brief after call the init , run() will run the pbrt main loop
+     * 
+     * @return true 
+     * @return false 
+     */
     virtual bool run();
 };
-
-#endif  //MY_PBRT_RENDER_H

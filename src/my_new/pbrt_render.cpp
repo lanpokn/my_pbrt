@@ -95,8 +95,23 @@ std::string PbrtConfig::ToString() const{
     //TODO
     ret.append(this->scene_path);
     ret.append(" ");
+    //crop windows --cropwindow <x0,x1,y0,y1>
+    ret.append("--cropwindow ");
+    ret.append(std::to_string(this->cropWindow.x0));
+    ret.append(",");
+    ret.append(std::to_string(this->cropWindow.x1));
+    ret.append(",");
+    ret.append(std::to_string(this->cropWindow.y0));
+    ret.append(",");
+    ret.append(std::to_string(this->cropWindow.y1));
+    ret.append(" ");
     if(true == this->useGPU){
         ret.append("--gpu ");
+    }
+    if(-1 != this->gpuDevice){
+        ret.append("--gpu-device ");
+        ret.append(std::to_string(this->gpuDevice));
+        ret.append(" ");
     }
     if(true == this->quiet){
         ret.append("--quiet ");
@@ -106,7 +121,12 @@ std::string PbrtConfig::ToString() const{
     }
     if(0 != this->nThreads){
         ret.append("--nthreads ");
-        ret.append(std::to_string(nThreads));
+        ret.append(std::to_string(this->nThreads));
+        ret.append(" ");
+    }
+    if(-1 != this->pixelSamples){
+        ret.append("--spp ");
+        ret.append(std::to_string(this->pixelSamples));
         ret.append(" ");
     }
     return ret;
