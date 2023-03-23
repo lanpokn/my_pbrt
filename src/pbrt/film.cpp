@@ -745,6 +745,10 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
                                     "Radiance.C21", "Radiance.C22", "Radiance.C23", "Radiance.C24", "Radiance.C25",
                                     "Radiance.C26", "Radiance.C27", "Radiance.C28", "Radiance.C29", "Radiance.C30",
                                     "Radiance.C31"};
+    //add by hhq
+    //output the intensity when output radiance
+    //use nm instead m when computing intensity, for numerical stability
+    string IntensityChannelNames[1] = {"intensity"};
     string BasisChannelNames[5] = {"Coef.C01", "Coef.C02", "Coef.C03", "Coef.C04", "Coef.C05"};
     string AlbedoChannelNames[3] = {"Albedo.R", "Albedo.G", "Albedo.B"};
     string PositionChannelNames[3] = {"Px", "Py", "Pz"};
@@ -761,6 +765,7 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
         for (int i = 0; i < 31; i++) {
             channelNames.push_back(RadianceChannelNames[i]);
         }
+        channelNames.push_back(IntensityChannelNames[0]);
     }
     if (writeBasis)
     {
@@ -917,6 +922,7 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
         if (writeRadiance)
         {
             ImageChannelDesc radianceDesc = image.GetChannelDesc(RadianceChannelNames);
+            ImageChannelDesc IntensityDesc = image.GetChannelDesc(IntensityChannelNames);
             if (NSpectrumSamples==31)
             {
                 image.SetChannels(pOffset, radianceDesc, {L[0], L[1], L[2], L[3], L[4], L[5],
@@ -924,12 +930,22 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
                                 L[12], L[13], L[14], L[15],L[16], L[17], L[18], L[19], L[20],
                                 L[21], L[22], L[23], L[24], L[25], L[26],
                                 L[27], L[28], L[29], L[30]});
+                float intensity = 0;
+                for(int iter= 0;iter<31;iter++){
+                    intensity+=10*L[iter];
+                }
+                image.SetChannels(pOffset,IntensityDesc,{intensity});
             }
             if (NSpectrumSamples==16)
             {
                 image.SetChannels(pOffset, radianceDesc, {L[0], L[1], L[2], L[3], L[4], L[5],
                                 L[6], L[7], L[8], L[9], L[10], L[11],
                                 L[12], L[13], L[14], L[15]});
+                float intensity = 0;
+                for(int iter= 0;iter<16;iter++){
+                    intensity+=10*L[iter];
+                }
+                image.SetChannels(pOffset,IntensityDesc,{intensity});
             }
 
         }

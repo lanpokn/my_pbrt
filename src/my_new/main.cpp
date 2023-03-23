@@ -13,7 +13,7 @@ int main(){
     con.AddRealCamera(0,3,"lenses/wide.22mm.dat",2.0);//可以添加多个camera
     con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
     con.nThreads = 4;
-    con.cropWindow = myBound(0,0.5,0,0.5);
+    // con.cropWindow = myBound(0,0.5,0,0.5);
     //set up render
     render.init(con);//init（con)将相机数据传入render
     //run the render
