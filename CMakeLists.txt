@@ -531,6 +531,7 @@ set (PBRT_SOURCE
 
   src/my_new/render.cpp
   src/my_new/pbrt_render.cpp
+  src/my_new/utilsFunc.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -555,9 +556,10 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/scene.h
   src/pbrt/shapes.h
   src/pbrt/textures.h
-
+  
   src/my_new/render.h
   src/my_new/pbrt_render.h
+  src/my_new/utilsFunc.h
   )
 
 SET (PBRT_CPU_SOURCE

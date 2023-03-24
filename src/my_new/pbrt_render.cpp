@@ -1,5 +1,6 @@
 #include<my_new/pbrt_render.h>
 #include<fstream>
+#include<my_new/utilsFunc.h>
 using namespace pbrt;
 
 //initialize it , or cmake will throw erorr: undefined referrence
@@ -133,369 +134,11 @@ std::string PbrtConfig::ToString() const{
         ret.append(std::to_string(this->pixelSamples));
         ret.append(" ");
     }
+    std::cout<<ret<<std::endl;
     return ret;
 }
 
-std::string pbrt_render::generateFilenames(std::string filenames,std::string suffix = "_user"){
-    std::string newfilenames = filenames.substr(0, filenames.length()-5)+suffix + ".pbrt";
-    return newfilenames;
-}
-// this need to be overload to different versions
-//hhq
-std::string pbrt_render::generatePbrtFile(RealisticCameraParam RC, std::string filenames){
-    std::string newfilenames;
-    // newfilenames = filenames.substr(0, filenames.length()-5)+"_user.pbrt";
-    newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
-
-    int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
-    int lineAfterCamera = 0;
-    std::string temp;
-    std::string templast;
-    //解释：后边几个类似，原理是找到camera的位置，然后变成自己的camera，在所有信息都结束之后break出来
-    //因为有些不好给默认值，所以缺省参数为-1，用浮点数比较，比-0.9大的时候认为是用户在输入，此时在写入，否则不写入，让系统用默认值
-    //因为这些数一定不是负数，所以这样做是有效的。
-    //注意了，label是我自己加的，想要区分不同相机的参数，不能输入到.pbrt中
-    while (!infile.eof())
-    {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
-        //first: judge the state,be sure findCamera will only be changed per line
-        if("Camera"==temp.substr(0,6)){
-            if(0 == findCamera){
-                findCamera = 1;
-            }
-            else if(2 == findCamera){
-                findCamera = 3;
-            }
-        }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
-        {
-            findCamera = 2;
-        }
-
-        //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
-            outfile << temp << std::endl;
-        }
-        else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
-            continue;
-        }
-        else if (1 == findCamera)
-        {
-            //TODO, if you need to overload
-            while(1){
-                if(0 == lineAfterCamera){
-                    temp = "Camera \"realistic\"";
-                }
-                else if (1 == lineAfterCamera)
-                {
-                    temp = "    \"float shutteropen\" [ "+ std::to_string(RC.shutteropen)  +" ]";
-                }
-                else if (2 == lineAfterCamera)
-                {
-                    temp = "    \"float shutterclose\" [ "+ std::to_string(RC.shutterclose)  +" ]";
-                }
-                else if (3 == lineAfterCamera)
-                {
-                    temp ="    \"string lensfile\" [ \""+RC.lensfile+"\" ]";
-                }
-                else if (4 == lineAfterCamera)
-                {
-                    temp ="    \"float aperturediameter\" [ "+std::to_string(RC.aperturediameter)+" ]";
-                }
-                else if (5 == lineAfterCamera)
-                {
-                    temp ="    \"float focusdistance\" [ "+std::to_string(RC.focusdistance)+" ]";
-                }
-                else if (6 == lineAfterCamera)
-                {
-                    if("circular"!=RC.aperture){
-                        temp ="    \"string aperture\" [ "+RC.aperture+" ]";
-                        outfile << temp << std::endl;
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-                lineAfterCamera++;
-                outfile << temp << std::endl;
-            }
-            //after output, delete other lines until all the original Camera msg is removed 
-            findCamera = 3;
-        }
-    }
-    infile.close();
-    outfile.close();
-    return newfilenames;
-}
-std::string pbrt_render::generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
-
-    std::string newfilenames;
-    newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
-
-    int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
-    int lineAfterCamera = 0;
-    std::string temp;
-    std::string templast;
-    while (!infile.eof())
-    {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
-        //first: judge the state,be sure findCamera will only be changed per line
-        if("Camera"==temp.substr(0,6)){
-            if(0 == findCamera){
-                findCamera = 1;
-            }
-            else if(2 == findCamera){
-                findCamera = 3;
-            }
-        }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
-        {
-            findCamera = 2;
-        }
-
-        //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
-            outfile << temp << std::endl;
-        }
-        else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
-            continue;
-        }
-        else if (1 == findCamera)
-        {
-            //TODO, if you need to overload
-            while(1){
-                if(0 == lineAfterCamera){
-                    temp = "Camera \"perspective\"";
-                }
-                else if (1 == lineAfterCamera)
-                {
-                    temp = "    \"float shutteropen\" [ "+ std::to_string(PC.shutteropen)  +" ]";
-                }
-                else if (2 == lineAfterCamera)
-                {
-                    temp = "    \"float shutterclose\" [ "+ std::to_string(PC.shutterclose)  +" ]";
-                }
-                else if (3 == lineAfterCamera)
-                {
-                temp ="    \"float fov\" [ "+std::to_string(PC.fov)+" ]";
-                }
-                else if (4 == lineAfterCamera)
-                {
-                    temp ="    \"float lensradius\" [ "+std::to_string(PC.lensradius)+" ]";
-                }
-                else if (5 == lineAfterCamera)
-                {   
-                    if(-0.9<PC.focaldistance){
-                        temp ="    \"float focaldistance\" [ "+std::to_string(PC.focaldistance)+" ]";
-                    }
-                    else{
-
-                    }
-                }
-                else if (6 == lineAfterCamera)
-                {
-                    if(-0.9<PC.frameaspectratio){
-                        temp ="    \"float frameaspectratio\" [ "+std::to_string(PC.frameaspectratio)+" ]";
-                    }
-                    else{
-                    }
-                }
-                else if (7 == lineAfterCamera)
-                {
-                    if(-0.9<PC.screenwindow){
-                        temp ="    \"float screenwindow\" [ "+std::to_string(PC.screenwindow)+" ]";
-                        outfile << temp << std::endl;
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-                lineAfterCamera++;
-                outfile << temp << std::endl;
-            }
-            //after output, delete other lines until all the original Camera msg is removed 
-            findCamera = 3;
-        }
-    }
-    infile.close();
-    outfile.close();
-    return newfilenames;
-}
-std::string pbrt_render::generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
-    std::string newfilenames;
-    newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
-
-    int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
-    int lineAfterCamera = 0;
-    std::string temp;
-    std::string templast;
-    while (!infile.eof())
-    {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
-        //first: judge the state,be sure findCamera will only be changed per line
-        if("Camera"==temp.substr(0,6)){
-            if(0 == findCamera){
-                findCamera = 1;
-            }
-            else if(2 == findCamera){
-                findCamera = 3;
-            }
-        }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
-        {
-            findCamera = 2;
-        }
-
-        //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
-            outfile << temp << std::endl;
-        }
-        else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
-            continue;
-        }
-        else if (1 == findCamera)
-        {
-            //TODO, if you need to overload
-            while(1){
-                if(0 == lineAfterCamera){
-                    temp = "Camera \"orthographic\"";
-                }
-                else if (1 == lineAfterCamera)
-                {
-                    temp = "    \"float shutteropen\" [ "+ std::to_string(OC.shutteropen)  +" ]";
-                }
-                else if (2 == lineAfterCamera)
-                {
-                    temp = "    \"float shutterclose\" [ "+ std::to_string(OC.shutterclose)  +" ]";
-                }
-                else if (3 == lineAfterCamera)
-                {
-                    temp ="    \"float lensradius\" [ "+std::to_string(OC.lensradius)+" ]";
-                }
-                else if (4 == lineAfterCamera)
-                {
-                    if(-0.9<OC.focaldistance){
-                        temp ="    \"float focaldistance\" [ "+std::to_string(OC.focaldistance)+" ]";
-                    }
-                    else{
-
-                    }
-                }
-                else if (5 == lineAfterCamera)
-                {
-                    if(-0.9<OC.frameaspectratio){
-                        temp ="    \"float frameaspectratio\" [ "+std::to_string(OC.frameaspectratio)+" ]";
-                    }
-                    else{
-                    }
-                }
-                else if (6 == lineAfterCamera)
-                {
-                    if(-0.9<OC.screenwindow){
-                        temp ="    \"float screenwindow\" [ "+std::to_string(OC.screenwindow)+" ]";
-                        outfile << temp << std::endl;
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-                lineAfterCamera++;
-                outfile << temp << std::endl;
-                temp = "";
-            }
-            //after output, delete other lines until all the original Camera msg is removed 
-            findCamera = 3;
-        }
-    }
-    infile.close();
-    outfile.close();
-    return newfilenames;
-}
-std::string pbrt_render::generatePbrtFile(SphericalCameraParam SC, std::string filenames){
-    std::string newfilenames;
-    newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
-
-    int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
-    int lineAfterCamera = 0;
-    std::string temp;
-    std::string templast;
-    while (!infile.eof())
-    {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
-        //first: judge the state,be sure findCamera will only be changed per line
-        if("Camera"==temp.substr(0,6)){
-            if(0 == findCamera){
-                findCamera = 1;
-            }
-            else if(2 == findCamera){
-                findCamera = 3;
-            }
-        }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
-        {
-            findCamera = 2;
-        }
-
-        //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
-            outfile << temp << std::endl;
-        }
-        else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
-            continue;
-        }
-        else if (1 == findCamera)
-        {
-            //TODO, if you need to overload
-            while(1){
-                if(0 == lineAfterCamera){
-                    temp = "Camera \"spherical\"";
-                }
-                else if (1 == lineAfterCamera)
-                {
-                    temp = "    \"float shutteropen\" [ "+ std::to_string(SC.shutteropen)  +" ]";
-                }
-                else if (2 == lineAfterCamera)
-                {
-                    temp = "    \"float shutterclose\" [ "+ std::to_string(SC.shutterclose)  +" ]";
-                }
-                else if (3 == lineAfterCamera)
-                {
-                    if("equalarea"< SC.mapping){
-                        temp ="    \"string mapping\" [ "+SC.mapping+" ]";
-                        outfile << temp << std::endl;
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-                lineAfterCamera++;
-                outfile << temp << std::endl;
-            }
-            //after output, delete other lines until all the original Camera msg is removed 
-            findCamera = 3;
-        }
-    }
-    infile.close();
-    outfile.close();
-    return newfilenames;
-}
-Imf::FrameBuffer pbrt_render::imageToFrameBuffer(const Image &image,
+Imf::FrameBuffer PbrtConfig::imageToFrameBuffer(const Image &image,
                                            const ImageChannelDesc &desc,
                                            const Imath::Box2i &dataWindow){
     size_t xStride = image.NChannels() * TexelBytes(image.Format());
@@ -526,11 +169,11 @@ Imf::FrameBuffer pbrt_render::imageToFrameBuffer(const Image &image,
     }
     return fb;
 }
-void pbrt_render::WriteExr(std::string name){
-    Imf::FrameBuffer fb = imageToFrameBuffer(pbrt_render::image,pbrt_render::desc,pbrt_render::dataWindow);
-    Imf::OutputFile file(name.c_str(), pbrt_render::header);
+void PbrtConfig::WriteExr(std::string name){
+    Imf::FrameBuffer fb = imageToFrameBuffer(this->image,this->desc,this->dataWindow);
+    Imf::OutputFile file(name.c_str(), this->header);
     file.setFrameBuffer(fb);
-    file.writePixels(pbrt_render::resolutiony);
+    file.writePixels(this->resolutiony);
 }
 int pbrt_render::pbrt_main(int argc, char *argv[]){
     // Convert command-line arguments to vector of strings
@@ -697,129 +340,145 @@ int pbrt_render::pbrt_main(int argc, char *argv[]){
         ParseFiles(&formattingTarget, filenames);
     } else {
         //hhq
-        while(true){
-            // Parse provided scene description files
+        // Parse provided scene description files
+        for(auto iter = Configlist.begin();iter!=Configlist.end();iter++){
             BasicScene scene;
             BasicSceneBuilder builder(&scene);
-            if(RealCameraList.size()!= 0){
-                //use user define .pbrt file instead of default one
-                RealisticCameraParam RC = RealCameraList.back();
-                std::string new_filename;
-                new_filename = this->generatePbrtFile(RC,filenames.back());
-                filenames.pop_back();
-                filenames.push_back(new_filename);
-                RealCameraList.pop_back();
-            }
-            else if(PerspectiveCameraList.size()!= 0){
-                PerspectiveCameraParam PC = PerspectiveCameraList.back();
-                std::string new_filename;
-                new_filename = this->generatePbrtFile(PC,filenames.back());
-                filenames.pop_back();
-                filenames.push_back(new_filename);
-                PerspectiveCameraList.pop_back();
-            }
-            else if(OrthographicCameraList.size()!= 0){
-                OrthographicCameraParam OC = OrthographicCameraList.back();
-                std::string new_filename;
-                new_filename = this->generatePbrtFile(OC,filenames.back());
-                filenames.pop_back();
-                filenames.push_back(new_filename);
-                OrthographicCameraList.pop_back();
-            }
-            else if(SphericalCameraList.size()!= 0){
-                SphericalCameraParam SC = SphericalCameraList.back();
-                std::string new_filename;
-                new_filename = this->generatePbrtFile(SC,filenames.back());
-                filenames.pop_back();
-                filenames.push_back(new_filename);
-                SphericalCameraList.pop_back();
-            } else{
-                break;
-            }
+            // if(RealCameraList.size()!= 0){
+            //     //use user define .pbrt file instead of default one
+            //     RealisticCameraParam RC = RealCameraList.back();
+            //     std::string new_filename;
+            //     new_filename = this->generatePbrtFile(RC,filenames.back());
+            //     filenames.pop_back();
+            //     filenames.push_back(new_filename);
+            //     RealCameraList.pop_back();
+            // }
+            // else if(PerspectiveCameraList.size()!= 0){
+            //     PerspectiveCameraParam PC = PerspectiveCameraList.back();
+            //     std::string new_filename;
+            //     new_filename = this->generatePbrtFile(PC,filenames.back());
+            //     filenames.pop_back();
+            //     filenames.push_back(new_filename);
+            //     PerspectiveCameraList.pop_back();
+            // }
+            // else if(OrthographicCameraList.size()!= 0){
+            //     OrthographicCameraParam OC = OrthographicCameraList.back();
+            //     std::string new_filename;
+            //     new_filename = this->generatePbrtFile(OC,filenames.back());
+            //     filenames.pop_back();
+            //     filenames.push_back(new_filename);
+            //     OrthographicCameraList.pop_back();
+            // }
+            // else if(SphericalCameraList.size()!= 0){
+            //     SphericalCameraParam SC = SphericalCameraList.back();
+            //     std::string new_filename;
+            //     new_filename = this->generatePbrtFile(SC,filenames.back());
+            //     filenames.pop_back();
+            //     filenames.push_back(new_filename);
+            //     SphericalCameraList.pop_back();
+            // } else{
+            //     break;
+            // }
+            filenames.clear();
+            filenames.push_back(iter->scene_path);
             ParseFiles(&builder, filenames);
-
             // Render the scene
             if (Options->useGPU || Options->wavefront)
                 RenderWavefront(scene);
             else
                 RenderCPU(scene);
-
-            LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
+        
+            iter->image = pbrt_render_h::image;
+            iter->desc = pbrt_render_h::desc;
+            iter->dataWindow = pbrt_render_h::dataWindow;
+            iter->resolutiony = pbrt_render_h::resolutiony;
+            iter->header = pbrt_render_h::header;
         }
+        // Clean up after rendering the scene
+        CleanupPBRT();
+        LOG_VERBOSE("Memory used after post-render cleanup: %s", GetCurrentRSS());
     }
-    // Clean up after rendering the scene
-    CleanupPBRT();
     return 0;
 }
-bool pbrt_render::init(std::string &str){
+bool pbrt_render::initWithCmd(std::string &str){
     this->cmd_input = str;
     return true;
 }
-bool pbrt_render::init(std::string &&str){
+bool pbrt_render::initWithCmd(std::string &&str){
     this->cmd_input = std::move(str);
     return true;
 }
-bool pbrt_render::init(PbrtConfig &con){
+bool pbrt_render::AddConfig(PbrtConfig& con){
 //this is a tiring but easy jobs
-    RealCameraList = con.RealCameraList;
-    OrthographicCameraList = con.OrthographicCameraList;
-    PerspectiveCameraList = con.PerspectiveCameraList;
-    SphericalCameraList = con.SphericalCameraList;
     if(" "== con.scene_path){
         std::cout<<"you have not provide scene_path "<<std::endl;
         return false;
     }
-    this->cmd_input = con.ToString();
+    Configlist.push_back(con);
+    // std::cout<<con.scene_path<<std::endl;
+    // this->cmd_input = con.ToString();
     return true;
 }
 bool pbrt_render::run(){
     //借助strtok实现split
     //need to be test!
     //config varibles must be less than 100,and string openation won't cost too much
-    char *argv[300];
-    char *s = this->cmd_input.data();
-    const char *d = " ";
-    char *p;
-    /* 获取第一个子字符串 */
-    // there is no need to use _r, because we only need to split it with space
-    p = strtok(s,d);
-    /* 继续获取其他的子字符串 */
-    //would p point to the same memory?
-    int i = 0;
-    argv[i] = p;
-    //the first argument is excutebale path, and it is useless now, so we can set an arbitary string
-    i++;
-    argv[i] = p;
-    while(p)
-    {
-        i++;
-        p=strtok(NULL,d);
+    if(true == Configlist.empty()){
+        char *argv[300];
+        char *s = (char *)(this->cmd_input).c_str();
+        const char *d = " ";
+        char *p;
+        /* 获取第一个子字符串 */
+        // there is no need to use _r, because we only need to split it with space
+        p = strtok(s,d);
+        /* 继续获取其他的子字符串 */
+        //would p point to the same memory?
+        int i = 0;
         argv[i] = p;
+        //the first argument is excutebale path, and it is useless now, so we can set an arbitary string
+        i++;
+        argv[i] = p;
+        while(p)
+        {
+            i++;
+            p=strtok(NULL,d);
+            argv[i] = p;
+        }
+        if(1 == i){
+            std::cout<<"no input"<<std::endl;
+            return false;
+        }
+        this->pbrt_main(i,argv);//camera will be poped here
     }
-    // //change the order, make it the same with the argv of the cmd input    
-    // while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
-    // {
-    this->pbrt_main(i,argv);//camera will be poped here
-    // Imf::OutputFile file(name.c_str(), header);
-    // file.setFrameBuffer(fb);
-    // file.writePixels(resolution.y);
-    // get the exr file:
-
-    //TODO
-    this->image = pbrt_render_h::image;
-    this->desc = pbrt_render_h::desc;
-    this->dataWindow = pbrt_render_h::dataWindow;
-    this->resolutiony = pbrt_render_h::resolutiony;
-    this->header = pbrt_render_h::header;
-    // this->fb = EXRFrameBuffer2;
-    // this->resolution = resolution2;
-    // this->header = header2;
-    // test,name is whatever
-    // std::string name = "explosion2.exr";
-    // pbrt_render::WriteExr(name);
-    // Imf::OutputFile file(name.c_str(), this->header);
-    // file.setFrameBuffer(this->fb);
-    // file.writePixels(this->resolution.y);
-    // }
+    else{
+        auto iter = Configlist.begin();
+        char *argv[300];
+        std::string cmd = iter->ToString();
+        char *s = cmd.data();
+        const char *d = " ";
+        char *p;
+        std::cout<<*s<<std::endl;
+        /* 获取第一个子字符串 */
+        // there is no need to use _r, because we only need to split it with space
+        p = strtok(s,d);
+        /* 继续获取其他的子字符串 */
+        //would p point to the same memory?
+        int i = 0;
+        argv[i] = p;
+        //the first argument is excutebale path, and it is useless now, so we can set an arbitary string
+        i++;
+        argv[i] = p;
+        while(p)
+        {
+            i++;
+            p=strtok(NULL,d);
+            argv[i] = p;
+        }
+        // //change the order, make it the same with the argv of the cmd input    
+        // while(!RealCameraList.empty() or !PerspectiveCameraList.empty() or !OrthographicCameraList.empty() or !SphericalCameraList.empty())
+        // {
+        //change pbrtfile in this function
+        this->pbrt_main(i,argv);//camera will be poped here
+    }
     return true;
 }

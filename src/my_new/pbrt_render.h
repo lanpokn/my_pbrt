@@ -142,6 +142,16 @@ struct PbrtConfig:BasicConfig{
     std::vector<PerspectiveCameraParam> PerspectiveCameraList;
     std::vector<SphericalCameraParam> SphericalCameraList;
     std::vector<OrthographicCameraParam> OrthographicCameraList;
+    //output
+    Image image;
+    ImageChannelDesc desc;
+    Imath::Box2i dataWindow;
+    int resolutiony;
+    Imf::Header header;
+    Imf::FrameBuffer imageToFrameBuffer(const Image &image,
+                                           const ImageChannelDesc &desc,
+                                           const Imath::Box2i &dataWindow);
+    void WriteExr(std::string name);
     void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,std::string lensfile = "",float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
     { 
@@ -183,14 +193,14 @@ struct PbrtConfig:BasicConfig{
  * @brief render an image with pbrt method
  * 
  */
-class pbrt_render:render{
+class pbrt_render{
   private:
     std::string cmd_input = "";
-    //these params have to be add because they are not one of  command line
-    std::vector<RealisticCameraParam> RealCameraList;
-    std::vector<PerspectiveCameraParam> PerspectiveCameraList;
-    std::vector<SphericalCameraParam> SphericalCameraList;
-    std::vector<OrthographicCameraParam> OrthographicCameraList;
+    // //these params have to be add because they are not one of  command line
+    // std::vector<RealisticCameraParam> RealCameraList;
+    // std::vector<PerspectiveCameraParam> PerspectiveCameraList;
+    // std::vector<SphericalCameraParam> SphericalCameraList;
+    // std::vector<OrthographicCameraParam> OrthographicCameraList;
     /**
      * @brief copy from the pbrt,
      * 
@@ -204,21 +214,13 @@ class pbrt_render:render{
      * @param RC 
      * @param filenames 
      */
-   std::string generateFilenames(std::string filenames,std::string suffix);
-   std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames);
-   std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames);
-   std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames);
-   std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames);
   public:
-    Image image;
-    ImageChannelDesc desc;
-    Imath::Box2i dataWindow;
-    int resolutiony;
-    Imf::Header header;
-    Imf::FrameBuffer imageToFrameBuffer(const Image &image,
-                                           const ImageChannelDesc &desc,
-                                           const Imath::Box2i &dataWindow);
-    void WriteExr(std::string name);
+    std::vector<PbrtConfig> Configlist;
+    // Image image;
+    // ImageChannelDesc desc;
+    // Imath::Box2i dataWindow;
+    // int resolutiony;
+    // Imf::Header header;
     /**
      * @brief change config to string, and then call init(str)
      * 
@@ -226,16 +228,16 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(PbrtConfig &con);
+    virtual bool AddConfig(PbrtConfig& con);
     /**
      * @brief get a string from the user, then run() will change it to char *argv[] which can be understood by the pbrt_main
-     * 
+     *        can add multi time, but these settings will all use the first con(except scene path) because initPBRT can only use once
      * @param str the str should be the same as the cmd input, such as --display-server localhost:14158 scene/explosion/explosion.pbrt
      *            these should be space between words
      * @return true 
      * @return false 
      */
-    virtual bool init(std::string &str);
+    virtual bool initWithCmd(std::string &str);
     /**
      * @brief just need to call the pbrt_main with current cmd_input(change to char*[])
      *        anytime before calling a run, there should be an init() before it
@@ -244,7 +246,7 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(std::string &&str);
+    virtual bool initWithCmd(std::string &&str);
     virtual bool run();
 };
 

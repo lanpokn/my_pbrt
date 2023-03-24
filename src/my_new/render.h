@@ -123,44 +123,45 @@ struct OrthographicCameraParam:CameraParam{
         focaldistance = focaldistance_input;
     }
 };
-/**
- * @brief totaly virtual class, won't have a instance
- * 
- */
-class render{
-  public:
-    // /**
-    //  * @brief set all the parameter with a config struct
-    //  * 
-    //  * @param con  set by the users
-    //  * @return true 
-    //  * @return false 
-    //  */
-    // virtual bool init(BasicConfig &con) = 0;
-    /**
-     * @brief set all the parameter with a string, such as a cmd in pbrt
-     * 
-     * @param str 
-     * @return true 
-     * @return false 
-     */
-    virtual bool init(std::string &str) = 0;
-    /**
-     * @brief almost the same with upper one
-     * 
-     * @param str 
-     * @return true 
-     * @return false 
-     */
-    virtual bool init(std::string &&str) = 0;
-    /**
-     * @brief after init, use this function to render a picture
-     * 
-     * @return true 
-     * @return false 
-     */
-    virtual bool run() = 0;
+// this class has no meaning at all
+// /**
+//  * @brief totaly virtual class, won't have a instance
+//  * 
+//  */
+// class render{
+//   public:
+//     // /**
+//     //  * @brief set all the parameter with a config struct
+//     //  * 
+//     //  * @param con  set by the users
+//     //  * @return true 
+//     //  * @return false 
+//     //  */
+//     // virtual bool init(BasicConfig &con) = 0;
+//     /**
+//      * @brief set all the parameter with a string, such as a cmd in pbrt
+//      * 
+//      * @param str 
+//      * @return true 
+//      * @return false 
+//      */
+//     virtual bool init(std::string &str) = 0;
+//     /**
+//      * @brief almost the same with upper one
+//      * 
+//      * @param str 
+//      * @return true 
+//      * @return false 
+//      */
+//     virtual bool init(std::string &&str) = 0;
+//     /**
+//      * @brief after init, use this function to render a picture
+//      * 
+//      * @return true 
+//      * @return false 
+//      */
+//     virtual bool run() = 0;
   
-};
+// };
 
 #endif

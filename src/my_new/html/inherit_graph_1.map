@@ -1,7 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structCameraParam.html" title="remember all param, label is to distingguish between different camera that user defined" alt="" coords="5,81,112,108"/>
-<area shape="rect" id="node2" href="$structOrthographicCameraParam.html" title=" " alt="" coords="160,5,340,32"/>
-<area shape="rect" id="node3" href="$structPerspectiveCameraParam.html" title=" " alt="" coords="163,56,337,83"/>
-<area shape="rect" id="node4" href="$structRealisticCameraParam.html" title=" " alt="" coords="171,107,329,133"/>
-<area shape="rect" id="node5" href="$structSphericalCameraParam.html" title=" " alt="" coords="170,157,330,184"/>
-</map>
