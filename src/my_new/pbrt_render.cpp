@@ -4,8 +4,12 @@ using namespace pbrt;
 
 //initialize it , or cmake will throw erorr: undefined referrence
 // no extern is dingyi and shengming?
-Imf::FrameBuffer pbrt_render_h::EXRFrameBuffer;
-Point2i pbrt_render_h::resolution;
+
+// Imf::FrameBuffer pbrt_render_h::EXRFrameBuffer;
+Image pbrt_render_h::image;
+ImageChannelDesc pbrt_render_h::desc;
+Imath::Box2i pbrt_render_h::dataWindow;
+int pbrt_render_h::resolutiony;
 Imf::Header pbrt_render_h::header;
 
 //use it to make sure the input is analysied correctly
@@ -491,6 +495,43 @@ std::string pbrt_render::generatePbrtFile(SphericalCameraParam SC, std::string f
     outfile.close();
     return newfilenames;
 }
+Imf::FrameBuffer pbrt_render::imageToFrameBuffer(const Image &image,
+                                           const ImageChannelDesc &desc,
+                                           const Imath::Box2i &dataWindow){
+    size_t xStride = image.NChannels() * TexelBytes(image.Format());
+    size_t yStride = image.Resolution().x * xStride;
+    // Would be nice to use PixelOffset(-dw.min.x, -dw.min.y) but
+    // it checks to make sure the coordinates are >= 0 (which
+    // usually makes sense...)
+    char *originPtr = (((char *)image.RawPointer({0, 0})) - dataWindow.min.x * xStride -
+                       dataWindow.min.y * yStride);
+
+    Imf::FrameBuffer fb;
+    std::vector<std::string> channelNames = image.ChannelNames();
+    switch (image.Format()) {
+    case PixelFormat::Half:
+        for (int channelIndex : desc.offset)
+            fb.insert(channelNames[channelIndex],
+                      Imf::Slice(Imf::HALF, originPtr + channelIndex * sizeof(Half),
+                                 xStride, yStride));
+        break;
+    case PixelFormat::Float:
+        for (int channelIndex : desc.offset)
+            fb.insert(channelNames[channelIndex],
+                      Imf::Slice(Imf::FLOAT, originPtr + channelIndex * sizeof(float),
+                                 xStride, yStride));
+        break;
+    default:
+        LOG_FATAL("Unexpected image format");
+    }
+    return fb;
+}
+void pbrt_render::WriteExr(std::string name){
+    Imf::FrameBuffer fb = imageToFrameBuffer(pbrt_render::image,pbrt_render::desc,pbrt_render::dataWindow);
+    Imf::OutputFile file(name.c_str(), pbrt_render::header);
+    file.setFrameBuffer(fb);
+    file.writePixels(pbrt_render::resolutiony);
+}
 int pbrt_render::pbrt_main(int argc, char *argv[]){
     // Convert command-line arguments to vector of strings
     std::vector<std::string> args =  My_GetCommandLineArguments(argc,argv);
@@ -765,11 +806,17 @@ bool pbrt_render::run(){
     // get the exr file:
 
     //TODO
-    this->fb = pbrt_render_h::EXRFrameBuffer;
-    this->resolution = pbrt_render_h::resolution;
+    this->image = pbrt_render_h::image;
+    this->desc = pbrt_render_h::desc;
+    this->dataWindow = pbrt_render_h::dataWindow;
+    this->resolutiony = pbrt_render_h::resolutiony;
     this->header = pbrt_render_h::header;
-    // //test,name is whatever
+    // this->fb = EXRFrameBuffer2;
+    // this->resolution = resolution2;
+    // this->header = header2;
+    // test,name is whatever
     // std::string name = "explosion2.exr";
+    // pbrt_render::WriteExr(name);
     // Imf::OutputFile file(name.c_str(), this->header);
     // file.setFrameBuffer(this->fb);
     // file.writePixels(this->resolution.y);

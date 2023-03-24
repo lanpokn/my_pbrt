@@ -5,6 +5,20 @@
 #ifndef PBRT_UTIL_IMAGE_H
 #define PBRT_UTIL_IMAGE_H
 
+// #ifndef PBRT_IS_GPU_CODE
+// #include <ImfChannelList.h>
+// #include <ImfChromaticitiesAttribute.h>
+// #include <ImfFloatAttribute.h>
+// #include <ImfFrameBuffer.h>
+// #include <ImfHeader.h>
+// #include <ImfInputFile.h>
+// #include <ImfIntAttribute.h>
+// #include <ImfMatrixAttribute.h>
+// #include <ImfOutputFile.h>
+// #include <ImfStringAttribute.h>
+// #include <ImfStringVectorAttribute.h>
+// #endif
+
 #include <pbrt/pbrt.h>
 
 #include <pbrt/util/check.h>
@@ -26,6 +40,12 @@ namespace pbrt {
 // PixelFormat Definition
 enum class PixelFormat { U256, Half, Float };
 
+// #ifndef exrOut
+// #define exrOut
+// class Imf::FrameBuffer EXRFrameBuffer2;
+// Point2i resolution2;
+// class Imf::Header header2;
+// #endif
 // PixelFormat Inline Functions
 PBRT_CPU_GPU inline bool Is8Bit(PixelFormat format) {
     return format == PixelFormat::U256;

@@ -53,7 +53,6 @@
 //to give the parameter back
 #include <my_new/pbrt_render.h>
 
-
 namespace pbrt {
 
 std::string ToString(PixelFormat format) {
@@ -1200,8 +1199,16 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
                           Imath::V2i(resolution.x - 1, resolution.y - 1)};
 
         Imf::FrameBuffer fb = imageToFrameBuffer(*this, AllChannelsDesc(), dataWindow);
-
         Imf::Header header(displayWindow, dataWindow);
+        pbrt_render_h::image = *this;
+        pbrt_render_h::desc = AllChannelsDesc();
+        pbrt_render_h::dataWindow = dataWindow;
+        
+        // pbrt_render_h::EXRFrameBuffer = imageToFrameBuffer(*this, AllChannelsDesc(), dataWindow);
+        // Imf::Header header(displayWindow, dataWindow);
+
+        // for (auto iter = fb.begin(); iter != fb.end(); ++iter)
+        //     header.channels().insert(iter.name(), iter.slice().type);
         for (auto iter = fb.begin(); iter != fb.end(); ++iter)
             header.channels().insert(iter.name(), iter.slice().type);
 
@@ -1246,12 +1253,16 @@ bool Image::WriteEXR(const std::string &name, const ImageMetadata &metadata) con
                 Imath::V2f(cs.b.x, cs.b.y), Imath::V2f(cs.w.x, cs.w.y));
             header.insert("chromaticities", Imf::ChromaticitiesAttribute(chromaticities));
         }
-        Imf::OutputFile file(name.c_str(), header);
         pbrt_render_h::header = header;
-        pbrt_render_h::EXRFrameBuffer = fb;
-        pbrt_render_h::resolution = resolution;
-        file.setFrameBuffer(fb);
-        file.writePixels(resolution.y);
+        // pbrt_render_h::EXRFrameBuffer = fb;
+        pbrt_render_h::resolutiony = resolution.y;
+        // // header2 = header;
+        // // EXRFrameBuffer2 = fb;
+        // // resolution2 = resolution;
+
+        // Imf::OutputFile file(name.c_str(), pbrt_render_h::header);
+        // file.setFrameBuffer(pbrt_render_h::EXRFrameBuffer);
+        // file.writePixels(pbrt_render_h::resolutiony);
     } catch (const std::exception &exc) {
         Error("%s: error writing EXR: %s", name.c_str(), exc.what());
         return false;

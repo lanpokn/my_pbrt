@@ -2,6 +2,26 @@
 #define MY_PBRT_RENDER_H
 #include<my_new/render.h>
 
+#ifdef PBRT_BUILD_GPU_RENDERER
+#include <pbrt/gpu/memory.h>
+#include <pbrt/gpu/util.h>
+#endif  // PBRT_BUILD_GPU_RENDERER
+#include <pbrt/options.h>
+#include <pbrt/shapes.h>
+#include <pbrt/util/check.h>
+#include <pbrt/util/color.h>
+#include <pbrt/util/colorspace.h>
+#include <pbrt/util/display.h>
+#include <pbrt/util/error.h>
+#include <pbrt/util/memory.h>
+#include <pbrt/util/parallel.h>
+#include <pbrt/util/print.h>
+#include <pbrt/util/spectrum.h>
+#include <pbrt/util/stats.h>
+
+#include <ImfThreading.h>
+
+#include <stdlib.h>
 
 #include <pbrt/pbrt.h>
 
@@ -22,6 +42,7 @@
 #include <pbrt/util/spectrum.h>
 #include <pbrt/util/string.h>
 #include <pbrt/wavefront/wavefront.h>
+#include <pbrt/util/image.h>
 
 
 #include <ImfChannelList.h>
@@ -45,10 +66,14 @@ using namespace pbrt;
 //use static to avoid multi defination
 //use extern to fix this problem!
 namespace pbrt_render_h{
-extern Imf::FrameBuffer EXRFrameBuffer;
-extern Point2i resolution;
-extern Imf::Header header;
+// extern class Imf::FrameBuffer  EXRFrameBuffer;
+extern Image image;
+extern ImageChannelDesc desc;
+extern Imath::Box2i dataWindow;
+extern int resolutiony;
+extern class Imf::Header header;
 }
+
 /**
  * @brief all from 0 to 1
  * 
@@ -185,9 +210,15 @@ class pbrt_render:render{
    std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames);
    std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames);
   public:
-    Imf::FrameBuffer fb;
-    Point2i resolution;
+    Image image;
+    ImageChannelDesc desc;
+    Imath::Box2i dataWindow;
+    int resolutiony;
     Imf::Header header;
+    Imf::FrameBuffer imageToFrameBuffer(const Image &image,
+                                           const ImageChannelDesc &desc,
+                                           const Imath::Box2i &dataWindow);
+    void WriteExr(std::string name);
     /**
      * @brief change config to string, and then call init(str)
      * 

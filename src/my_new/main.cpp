@@ -2,6 +2,9 @@
 #include<iostream>
 using namespace std;
 //TODO:给init增加右值引用的功能，否则无法直接输入一个字符串给函数，使用上有严重缺失
+//1 render should run only once
+//必须完成内部的多pbrt，否则是不可能完成结果的
+//目前版本不要同时出现多pbrt和相机设置
 int main(){
     //init a render to do the main loop
     pbrt_render render;
@@ -18,7 +21,7 @@ int main(){
     render.init(con);//init（con)将相机数据传入render
     //run the render
     render.run();
+    std::string name = "explosion.exr";
+    render.WriteExr(name);
     //if you needn't change camera, I suggest just do this:
-    render.init("pbrt /home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt");//init（con)将相机数据传入render
-    render.run();
 }
