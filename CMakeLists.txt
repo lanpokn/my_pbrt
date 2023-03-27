@@ -98,6 +98,15 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src/ext)
 
 find_package(GSL)
 include_directories(${GSL_INCLUDE_DIR})
+
+# 查找opencv的path
+find_package(OpenCV REQUIRED)
+# 打印opencv的相关信息
+message(STATUS "OpenCV library status:")
+message(STATUS "    version: ${OpenCV_VERSION}")
+message(STATUS "    libraries: ${OpenCV_LIBS}")
+message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+include_directories(${OpenCV_INCLUDE_DIRS})
 ########################################
 # os/compiler-specific stuff
 
@@ -532,6 +541,7 @@ set (PBRT_SOURCE
   src/my_new/render.cpp
   src/my_new/pbrt_render.cpp
   src/my_new/utilsFunc.cpp
+  src/my_new/event.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -560,6 +570,7 @@ set (PBRT_SOURCE_HEADERS
   src/my_new/render.h
   src/my_new/pbrt_render.h
   src/my_new/utilsFunc.h
+  src/my_new/event.h
   )
 
 SET (PBRT_CPU_SOURCE
@@ -848,6 +859,7 @@ target_include_directories (pbrt_lib PUBLIC
   ${NANOVDB_INCLUDE}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${GSL_INCLUDE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
   gsl
 )
 if (PBRT_CUDA_ENABLED AND PBRT_OPTIX7_PATH)
@@ -876,6 +888,7 @@ set (ALL_PBRT_LIBS
   double-conversion
   ${PBRT_CUDA_LIB}
   utf8proc
+  ${OpenCV_LIBS}
 )
 
 if (PBRT_CUDA_ENABLED)
