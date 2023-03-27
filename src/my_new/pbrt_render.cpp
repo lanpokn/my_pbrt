@@ -423,6 +423,10 @@ bool pbrt_render::run(){
     //借助strtok实现split
     //need to be test!
     //config varibles must be less than 100,and string openation won't cost too much
+    if(true == is_run){
+        return false;
+    }
+    is_run = true;
     if(true == Configlist.empty()){
         char *argv[300];
         char *s = (char *)(this->cmd_input).c_str();

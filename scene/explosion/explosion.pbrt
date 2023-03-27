@@ -9,8 +9,8 @@ Film "gbuffer"
 #  "integer xresolution" 1300
 #  "integer yresolution" 1800
   "bool saveDepth" true
-  "integer xresolution" 26
-  "integer yresolution" 36
+  "integer xresolution" 130
+  "integer yresolution" 180
   "string sensor" "nikon_d850"
   "float whitebalance" 6000
   "float iso" 100

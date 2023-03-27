@@ -216,6 +216,7 @@ class pbrt_render{
      */
   public:
     std::vector<PbrtConfig> Configlist;
+    bool is_run = false;
     // Image image;
     // ImageChannelDesc desc;
     // Imath::Box2i dataWindow;
