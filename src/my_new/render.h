@@ -64,6 +64,7 @@ struct CameraParam{
 };
 struct RealisticCameraParam:CameraParam{
     std::string lensfile = "";//use relative path
+    float diagonal = 35;
     float aperturediameter = 1.0;
     float focusdistance = 10.0;
     // Allows specifying the shape of the camera aperture, 
@@ -74,6 +75,7 @@ struct RealisticCameraParam:CameraParam{
 
     RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
                         std::string Look_at_input = "",
+                        float diagonal_input = 35,
                         std::string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
                         std::string aperture_input = "circular")
                         :CameraParam(shutteropen_input,shutterclose_input,label_input,Look_at_input)
@@ -82,6 +84,7 @@ struct RealisticCameraParam:CameraParam{
         aperturediameter = aperdia_input;
         focusdistance = focusd_input;
         aperture = aperture_input;
+        diagonal = diagonal_input;
     }
 };
 struct PerspectiveCameraParam:CameraParam{

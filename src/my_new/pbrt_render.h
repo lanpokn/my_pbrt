@@ -153,13 +153,13 @@ struct PbrtConfig:BasicConfig{
                                            const Imath::Box2i &dataWindow);
     void WriteExr(std::string name);
     void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,
-                     std::string lensfile = "",
+                     std::string lensfile = "",float diagonal_input = 35,
                      std::string Look_at = "",
                      float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
     { 
         std::string label_input = "RealCamera_"+std::to_string(RealCameraList.size());
-        RealisticCameraParam t(shutteropen,shutterclose,label_input,Look_at,lensfile,aperturediameter,focusdistance,aperture);
+        RealisticCameraParam t(shutteropen,shutterclose,label_input,Look_at,diagonal_input,lensfile,aperturediameter,focusdistance,aperture);
         RealCameraList.push_back(t);
     }
     void AddPerspectiveCamera(float shutteropen = 0 ,float shutterclose = 1,

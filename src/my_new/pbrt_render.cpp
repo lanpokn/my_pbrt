@@ -382,7 +382,11 @@ int pbrt_render::pbrt_main(int argc, char *argv[]){
                 filenames.clear();
                 filenames.push_back(iter->scene_path);
             }
+            std::cout<<filenames.at(0)<<std::endl;
             ParseFiles(&builder, filenames);
+            //avoid generate a lot pbrt
+            filenames.clear();
+            filenames.push_back(iter->scene_path);
             // Render the scene
             if (Options->useGPU || Options->wavefront)
                 RenderWavefront(scene);
