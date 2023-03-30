@@ -16,15 +16,14 @@ private:
     bool changed = false;
 } myBound;
 struct PbrtConfig:BasicConfig{
-    //cmd paramter in pbrt, they are not all used 
-    std::string scene_path;
+//cmd 
     // int seed = 0;
     bool quiet = false;
     // bool disablePixelJitter = false, disableWavelengthJitter = false;
     // bool disableTextureFiltering = false;
     // bool forceDiffuse = false;
     bool useGPU = false;
-    // bool wavefront = false;
+    bool wavefront = false;
     // bool interactive = false;
     // RenderingCoordinateSystem renderingSpace = RenderingCoordinateSystem::CameraWorld;
     
@@ -35,54 +34,76 @@ struct PbrtConfig:BasicConfig{
     // bool writePartialImages = false;
     // bool recordPixelStatistics = false;
     // bool printStatistics = false;
-    pstd::optional<int> pixelSamples;
-    pstd::optional<int> gpuDevice;
+    //changed
+    int pixelSamples = -1;
+    int gpuDevice =  -1;
     bool quickRender = false;
     // bool upgrade = false;
     // std::string imageFile;
     // std::string mseReferenceImage, mseReferenceOutput;
     // std::string debugStart;
     // std::string displayServer;
+    //changed
     myBound cropWindow;
+    // Bounds2f projRearBounds(Point2f(-1.5f * rearRadius, -1.5f * rearRadius),
+    //                         Point2f(1.5f * rearRadius, 1.5f * rearRadius));
     // pstd::optional<Bounds2i> pixelBounds;
     // pstd::optional<Point2i> pixelMaterial;
     // Float displacementEdgeScale = 1;
     
-
-    //locate camera parameters
+    //it will be used when parsefile, if it is not null, we will create a new pbrt configfile(with a different name), and then delete it
+    //because original file is very conplex and only use a filename as input, do so can avoid change code
+    //TODO
+    //vector<CheckInfo*> info;
     std::vector<RealisticCameraParam> RealCameraList;
     std::vector<PerspectiveCameraParam> PerspectiveCameraList;
     std::vector<SphericalCameraParam> SphericalCameraList;
     std::vector<OrthographicCameraParam> OrthographicCameraList;
-    //they are functions to add cameras
-    void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,std::string lensfile = "",float aperturediameter = 1.0,
+    //output
+    Image image;
+    ImageChannelDesc desc;
+    Imath::Box2i dataWindow;
+    int resolutiony;
+    Imf::Header header;
+    Imf::FrameBuffer imageToFrameBuffer(const Image &image,
+                                           const ImageChannelDesc &desc,
+                                           const Imath::Box2i &dataWindow);
+    void WriteExr(std::string name);
+    void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,
+                     std::string lensfile = "",float diagonal_input = 35,
+                     std::string Look_at = "",
+                     float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
     { 
         std::string label_input = "RealCamera_"+std::to_string(RealCameraList.size());
-        RealisticCameraParam t(shutteropen,shutterclose,label_input,lensfile,aperturediameter,focusdistance,aperture);
+        RealisticCameraParam t(shutteropen,shutterclose,label_input,Look_at,diagonal_input,lensfile,aperturediameter,focusdistance,aperture);
         RealCameraList.push_back(t);
     }
-    void AddPerspectiveCamera(float shutteropen = 0 ,float shutterclose = 1, float frameaspectratio_input = -1,
+    void AddPerspectiveCamera(float shutteropen = 0 ,float shutterclose = 1,
+                              std::string Look_at = "",
+                              float frameaspectratio_input = -1,
                               float screenwindow_input  = -1.0,float lensradius_input = 1,
                               float focaldistance_input =-1,float fov_input=90)
     {
         std::string label_input = "PerspectiveCamera_"+std::to_string(PerspectiveCameraList.size());
-        PerspectiveCameraParam t(shutteropen,shutterclose,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input,fov_input);
+        PerspectiveCameraParam t(shutteropen,shutterclose,label_input,Look_at,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input,fov_input);
         PerspectiveCameraList.push_back(t);
     }
     void AddSphericalCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    std::string Look_at = "",
                     std::string mapping_input = "equalarea")
     {
         std::string label_input = "SphericalCamera_"+std::to_string(SphericalCameraList.size());
-        SphericalCameraParam t(shutteropen_input,shutterclose_input,label_input,mapping_input);
+        SphericalCameraParam t(shutteropen_input,shutterclose_input,Look_at,label_input,mapping_input);
         SphericalCameraList.push_back(t);
     }
     void AddOrthographicCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    std::string Look_at = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = -1)
     {
         std::string label_input = "OrthographicCamera_"+std::to_string(OrthographicCameraList.size());
-        OrthographicCameraParam t(shutteropen_input,shutterclose_input,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input);
+        OrthographicCameraParam t(shutteropen_input,shutterclose_input,Look_at,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input);
         OrthographicCameraList.push_back(t);
     }
     /**
@@ -98,13 +119,8 @@ struct PbrtConfig:BasicConfig{
  * 
  */
 class pbrt_render:render{
-  private:
+private:
     std::string cmd_input = "";
-    //these params have to be add manually because they are not one of  command line
-    std::vector<RealisticCameraParam> RealCameraList;
-    std::vector<PerspectiveCameraParam> PerspectiveCameraList;
-    std::vector<SphericalCameraParam> SphericalCameraList;
-    std::vector<OrthographicCameraParam> OrthographicCameraList;
     /**
      * @brief copy from the pbrt,
      * 
@@ -118,20 +134,9 @@ class pbrt_render:render{
      * @param RC 
      * @param filenames 
      */
-   std::string generateFilenames(std::string filenames,std::string suffix);
-   std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames);
-   std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames);
-   std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames);
-   std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames);
   public:
-    /**
-     * @brief they are output paramters, temporarily unavaluable
-     * 
-     */
-    Imf::FrameBuffer fb;
-    Point2i resolution;
-    Imf::Header header;
-    //these init function should be called only once
+    std::vector<PbrtConfig> Configlist;
+    bool is_run = false;
     /**
      * @brief change config to string, and then call init(str)
      * 
@@ -139,16 +144,16 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(PbrtConfig &con);
+    virtual bool AddConfig(PbrtConfig& con);
     /**
      * @brief get a string from the user, then run() will change it to char *argv[] which can be understood by the pbrt_main
-     * 
+     *        can add multi time, but these settings will all use the first con(except scene path) because initPBRT can only use once
      * @param str the str should be the same as the cmd input, such as --display-server localhost:14158 scene/explosion/explosion.pbrt
      *            these should be space between words
      * @return true 
      * @return false 
      */
-    virtual bool init(std::string &str);
+    virtual bool initWithCmd(std::string &str);
     /**
      * @brief just need to call the pbrt_main with current cmd_input(change to char*[])
      *        anytime before calling a run, there should be an init() before it
@@ -157,12 +162,6 @@ class pbrt_render:render{
      * @return true 
      * @return false 
      */
-    virtual bool init(std::string &&str);
-    /**
-     * @brief after call the init , run() will run the pbrt main loop
-     * 
-     * @return true 
-     * @return false 
-     */
+    virtual bool initWithCmd(std::string &&str);
     virtual bool run();
 };
