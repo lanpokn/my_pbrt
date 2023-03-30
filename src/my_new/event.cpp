@@ -15,7 +15,7 @@ void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps){
     cv::Mat img(row, column, CV_32F, cv::Scalar(128,0,0));// 参数(int rows, int cols, int type, const Scalar& s)
     // cout << "MM = " << endl << " " << MM << endl;
  
-	writer.open("intensity1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, img.size(), false);
+	// writer.open("intensity1.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, img.size(), false);
  
 	cv::namedWindow("intensity", cv::WINDOW_NORMAL);
 	cv::namedWindow("intensity", cv::WINDOW_AUTOSIZE);
@@ -46,7 +46,7 @@ void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps){
     //     }
         cv::imshow("intensity", img);
         cv::imwrite("exploasin.jpg",img);
-		writer.write(img);
+		// writer.write(img);
 	}/**/
 	return;
 }

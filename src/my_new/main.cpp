@@ -13,10 +13,10 @@ int main(){
     PbrtConfig con;
     PbrtConfig con2;
     //give msg to config
-    con.AddRealCamera(0,3,"lenses/wide.22mm.dat",2.0);//可以添加多个camera
+    con.AddRealCamera(0,3,"lenses/wide.22mm.dat","LookAt 00 400 0       -20 0 150   0 0 1");//可以添加多个camera
     con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
     con.nThreads = 4;
-    con2.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion_user.pbrt";
+    con2.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/explosion/explosion.pbrt";
     //set up render
     render.AddConfig(con);//init（con)将相机数据传入render
     render.AddConfig(con2);//init（con)将相机数据传入render
@@ -29,6 +29,6 @@ int main(){
     render.Configlist.at(0).WriteExr(name);
     std::string name2 = "explosion2.exr";
     render.Configlist.at(1).WriteExr(name2);
-    //if you needn't change camera, I suggest just do this:
+
     GenerateIntensityVideo(render,180,130);
 }

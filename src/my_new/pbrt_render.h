@@ -152,34 +152,41 @@ struct PbrtConfig:BasicConfig{
                                            const ImageChannelDesc &desc,
                                            const Imath::Box2i &dataWindow);
     void WriteExr(std::string name);
-    void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,std::string lensfile = "",float aperturediameter = 1.0,
+    void AddRealCamera(float shutteropen = 0 ,float shutterclose = 1,
+                     std::string lensfile = "",
+                     std::string Look_at = "",
+                     float aperturediameter = 1.0,
                        float focusdistance = 10.0, std::string aperture = "circular")
     { 
         std::string label_input = "RealCamera_"+std::to_string(RealCameraList.size());
-        RealisticCameraParam t(shutteropen,shutterclose,label_input,lensfile,aperturediameter,focusdistance,aperture);
+        RealisticCameraParam t(shutteropen,shutterclose,label_input,Look_at,lensfile,aperturediameter,focusdistance,aperture);
         RealCameraList.push_back(t);
     }
-    void AddPerspectiveCamera(float shutteropen = 0 ,float shutterclose = 1, float frameaspectratio_input = -1,
+    void AddPerspectiveCamera(float shutteropen = 0 ,float shutterclose = 1,
+                              std::string Look_at = "",
+                              float frameaspectratio_input = -1,
                               float screenwindow_input  = -1.0,float lensradius_input = 1,
                               float focaldistance_input =-1,float fov_input=90)
     {
         std::string label_input = "PerspectiveCamera_"+std::to_string(PerspectiveCameraList.size());
-        PerspectiveCameraParam t(shutteropen,shutterclose,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input,fov_input);
+        PerspectiveCameraParam t(shutteropen,shutterclose,label_input,Look_at,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input,fov_input);
         PerspectiveCameraList.push_back(t);
     }
     void AddSphericalCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    std::string Look_at = "",
                     std::string mapping_input = "equalarea")
     {
         std::string label_input = "SphericalCamera_"+std::to_string(SphericalCameraList.size());
-        SphericalCameraParam t(shutteropen_input,shutterclose_input,label_input,mapping_input);
+        SphericalCameraParam t(shutteropen_input,shutterclose_input,Look_at,label_input,mapping_input);
         SphericalCameraList.push_back(t);
     }
     void AddOrthographicCamera(float shutteropen_input = 0,float shutterclose_input = 1,
+                    std::string Look_at = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = -1)
     {
         std::string label_input = "OrthographicCamera_"+std::to_string(OrthographicCameraList.size());
-        OrthographicCameraParam t(shutteropen_input,shutterclose_input,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input);
+        OrthographicCameraParam t(shutteropen_input,shutterclose_input,Look_at,label_input,frameaspectratio_input,screenwindow_input,lensradius_input,focaldistance_input);
         OrthographicCameraList.push_back(t);
     }
     /**

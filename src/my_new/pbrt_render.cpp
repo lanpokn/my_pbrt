@@ -344,43 +344,44 @@ int pbrt_render::pbrt_main(int argc, char *argv[]){
         for(auto iter = Configlist.begin();iter!=Configlist.end();iter++){
             BasicScene scene;
             BasicSceneBuilder builder(&scene);
-            // if(RealCameraList.size()!= 0){
-            //     //use user define .pbrt file instead of default one
-            //     RealisticCameraParam RC = RealCameraList.back();
-            //     std::string new_filename;
-            //     new_filename = this->generatePbrtFile(RC,filenames.back());
-            //     filenames.pop_back();
-            //     filenames.push_back(new_filename);
-            //     RealCameraList.pop_back();
-            // }
-            // else if(PerspectiveCameraList.size()!= 0){
-            //     PerspectiveCameraParam PC = PerspectiveCameraList.back();
-            //     std::string new_filename;
-            //     new_filename = this->generatePbrtFile(PC,filenames.back());
-            //     filenames.pop_back();
-            //     filenames.push_back(new_filename);
-            //     PerspectiveCameraList.pop_back();
-            // }
-            // else if(OrthographicCameraList.size()!= 0){
-            //     OrthographicCameraParam OC = OrthographicCameraList.back();
-            //     std::string new_filename;
-            //     new_filename = this->generatePbrtFile(OC,filenames.back());
-            //     filenames.pop_back();
-            //     filenames.push_back(new_filename);
-            //     OrthographicCameraList.pop_back();
-            // }
-            // else if(SphericalCameraList.size()!= 0){
-            //     SphericalCameraParam SC = SphericalCameraList.back();
-            //     std::string new_filename;
-            //     new_filename = this->generatePbrtFile(SC,filenames.back());
-            //     filenames.pop_back();
-            //     filenames.push_back(new_filename);
-            //     SphericalCameraList.pop_back();
-            // } else{
-            //     break;
-            // }
-            filenames.clear();
-            filenames.push_back(iter->scene_path);
+            if(iter->RealCameraList.size()!= 0){
+                //use user define .pbrt file instead of default one
+                RealisticCameraParam RC = iter->RealCameraList.back();
+                std::string new_filename;
+                new_filename = generatePbrtFile(RC,filenames.back());
+                // std::cout<<new_filename<<std::endl;
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                // Con.RealCameraList.pop_back();
+            }
+            else if(iter->PerspectiveCameraList.size()!= 0){
+                PerspectiveCameraParam PC = iter->PerspectiveCameraList.back();
+                std::string new_filename;
+                new_filename = generatePbrtFile(PC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                // PerspectiveCameraList.pop_back();
+            }
+            else if(iter->OrthographicCameraList.size()!= 0){
+                OrthographicCameraParam OC = iter->OrthographicCameraList.back();
+                std::string new_filename;
+                new_filename = generatePbrtFile(OC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                // OrthographicCameraList.pop_back();
+            }
+            else if(iter->SphericalCameraList.size()!= 0){
+                SphericalCameraParam SC = iter->SphericalCameraList.back();
+                std::string new_filename;
+                new_filename = generatePbrtFile(SC,filenames.back());
+                filenames.pop_back();
+                filenames.push_back(new_filename);
+                // SphericalCameraList.pop_back();
+            }
+            else{
+                filenames.clear();
+                filenames.push_back(iter->scene_path);
+            }
             ParseFiles(&builder, filenames);
             // Render the scene
             if (Options->useGPU || Options->wavefront)

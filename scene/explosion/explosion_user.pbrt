@@ -1,12 +1,11 @@
-
-LookAt 00 120 20       -.5 0 30   0 0 1
+LookAt 00 400 0       -20 0 150   0 0 1
 #LookAt 00 400 0       -20 0 150   0 0 1
 
 Camera "realistic"
     "float shutteropen" [ 0.000000 ]
     "float shutterclose" [ 3.000000 ]
     "string lensfile" [ "lenses/wide.22mm.dat" ]
-    "float aperturediameter" [ 2.000000 ]
+    "float aperturediameter" [ 1.000000 ]
     "float focusdistance" [ 10.000000 ]
 # Film "rgb"
 Film "gbuffer"

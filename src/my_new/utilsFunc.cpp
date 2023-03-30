@@ -17,6 +17,7 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
     int lineAfterCamera = 0;
     std::string temp;
     std::string templast;
+    ChangeLookAt(RC,infile,outfile);
     //解释：后边几个类似，原理是找到camera的位置，然后变成自己的camera，在所有信息都结束之后break出来
     //因为有些不好给默认值，所以缺省参数为-1，用浮点数比较，比-0.9大的时候认为是用户在输入，此时在写入，否则不写入，让系统用默认值
     //因为这些数一定不是负数，所以这样做是有效的。
@@ -358,4 +359,65 @@ std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
     infile.close();
     outfile.close();
     return newfilenames;
+}
+
+void ChangeLookAt(RealisticCameraParam RC,std::ifstream &infile,std::ofstream &outfile){
+    if("" == RC.Look_at){
+        return;
+    }
+    std::string temp;
+    while (!infile.eof())
+    {
+        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        if("LookAt"==temp.substr(0,6)){
+            outfile << RC.Look_at << std::endl;
+            return;
+        }
+    }
+    return;
+}
+void ChangeLookAt(OrthographicCameraParam RC,std::ifstream &infile,std::ofstream &outfile){
+    if("" == RC.Look_at){
+        return;
+    }
+    std::string temp;
+    while (!infile.eof())
+    {
+        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        if("LookAt"==temp.substr(0,6)){
+            outfile << RC.Look_at << std::endl;
+            return;
+        }
+    }
+    return;
+}
+void ChangeLookAt(SphericalCameraParam RC,std::ifstream &infile,std::ofstream &outfile){
+    if("" == RC.Look_at){
+        return;
+    }
+    std::string temp;
+    while (!infile.eof())
+    {
+        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        if("LookAt"==temp.substr(0,6)){
+            outfile << RC.Look_at << std::endl;
+            return;
+        }
+    }
+    return;
+}
+void ChangeLookAt(PerspectiveCameraParam RC,std::ifstream &infile,std::ofstream &outfile){
+    if("" == RC.Look_at){
+        return;
+    }
+    std::string temp;
+    while (!infile.eof())
+    {
+        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        if("LookAt"==temp.substr(0,6)){
+            outfile << RC.Look_at << std::endl;
+            return;
+        }
+    }
+    return;
 }

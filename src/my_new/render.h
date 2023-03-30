@@ -53,10 +53,13 @@ struct CameraParam{
     float shutteropen = 0;
     float shutterclose = 1;
     std::string label = "";
-    CameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = ""){
+    std::string Look_at = "";
+    CameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
+                std::string Look_at_input = ""){
         shutteropen = shutteropen_input;
         shutterclose = shutterclose_input;
         label = label_input;
+        Look_at = Look_at_input;
     }
 };
 struct RealisticCameraParam:CameraParam{
@@ -70,9 +73,10 @@ struct RealisticCameraParam:CameraParam{
     std::string aperture = "circular";
 
     RealisticCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
+                        std::string Look_at_input = "",
                         std::string lensfile_input = "",float aperdia_input = 1.0,float focusd_input = 10.0,
                         std::string aperture_input = "circular")
-                        :CameraParam(shutteropen_input,shutterclose_input,label_input)
+                        :CameraParam(shutteropen_input,shutterclose_input,label_input,Look_at_input)
     {
         lensfile = lensfile_input;
         aperturediameter = aperdia_input;
@@ -87,9 +91,10 @@ struct PerspectiveCameraParam:CameraParam{
     float focaldistance = 30;
     float fov=90;
     PerspectiveCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
+                    std::string Look_at_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = -1,float fov_input=90)
-                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input,Look_at_input)
     {
         frameaspectratio = frameaspectratio_input;
         screenwindow = screenwindow_input;
@@ -101,8 +106,9 @@ struct PerspectiveCameraParam:CameraParam{
 struct SphericalCameraParam:CameraParam{
     std::string mapping = "equalarea";
       SphericalCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
+                    std::string Look_at_input = "",
                     std::string mapping_input = "equalarea")
-                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input,Look_at_input)
     {
         mapping = mapping_input;
     }
@@ -113,9 +119,10 @@ struct OrthographicCameraParam:CameraParam{
     float lensradius = 1;
     float focaldistance = 30;
     OrthographicCameraParam(float shutteropen_input = 0,float shutterclose_input = 1,std::string label_input = "",
+                    std::string Look_at_input = "",
                     float frameaspectratio_input = -1,float screenwindow_input  = -1.0,float lensradius_input = 1,
                     float focaldistance_input = -1)
-                    :CameraParam(shutteropen_input,shutterclose_input,label_input)
+                    :CameraParam(shutteropen_input,shutterclose_input,label_input,Look_at_input)
     {
         frameaspectratio = frameaspectratio_input;
         screenwindow = screenwindow_input;
