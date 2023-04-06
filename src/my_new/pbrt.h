@@ -165,3 +165,5 @@ private:
     virtual bool initWithCmd(std::string &&str);
     virtual bool run();
 };
+
+void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps);

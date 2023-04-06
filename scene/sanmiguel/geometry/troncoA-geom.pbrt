@@ -1,7 +1,0 @@
-#############################################
-
-AttributeBegin
-    NamedMaterial "Tronco"
-    Shape "plymesh"
-        "string filename" [ "geometry/troncoA_00001.ply" ]
-AttributeEnd
