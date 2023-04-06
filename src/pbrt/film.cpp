@@ -931,9 +931,16 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
                                 L[21], L[22], L[23], L[24], L[25], L[26],
                                 L[27], L[28], L[29], L[30]});
                 float intensity = 0;
-                for(int iter= 0;iter<31;iter++){
-                    intensity+=10*L[iter];
-                }
+                // for(int iter= 0;iter<31;iter++){
+                //     intensity+=10*L[iter];
+                // }
+                intensity = 0.82*L[0]+0.85*L[1]+0.87*L[2]+0.88*L[3]+0.92*L[4]+
+                            0.95*L[5]+0.96*L[6]+0.96*L[7]+0.98*L[8]+1*L[9]+0.99*L[10]+
+                            1*L[11]+0.99*L[12]+1*L[13]+0.99*L[14]+1*L[15]+
+                            0.99*L[16]+0.98*L[17]+0.98*L[18]+0.97*L[19]+0.95*L[20]+
+                            0.94*L[21]+0.92*L[22]+0.92*L[23]+0.87*L[24]+0.86*L[25]+
+                            0.85*L[26]+0.82*L[27]+0.79*L[28]+0.78*L[29]+0.76*L[30];
+                intensity = intensity*10;
                 image.SetChannels(pOffset,IntensityDesc,{intensity});
             }
             if (NSpectrumSamples==16)
