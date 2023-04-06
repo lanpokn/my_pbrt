@@ -34,7 +34,7 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
+        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
         {
             findCamera = 2;
         }
@@ -119,7 +119,7 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
+        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0]  and '"'!=temp[0])
         {
             findCamera = 2;
         }
@@ -216,7 +216,7 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
+        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
         {
             findCamera = 2;
         }
@@ -310,7 +310,7 @@ std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0])
+        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
         {
             findCamera = 2;
         }
