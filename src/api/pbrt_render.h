@@ -121,7 +121,7 @@ struct PbrtConfig:BasicConfig{
     // std::string debugStart;
     // std::string displayServer;
     //changed
-    apiBound cropWindow;
+    apiBound cropWindow;//changed by hhq
     // Bounds2f projRearBounds(Point2f(-1.5f * rearRadius, -1.5f * rearRadius),
     //                         Point2f(1.5f * rearRadius, 1.5f * rearRadius));
     // pstd::optional<Bounds2i> pixelBounds;

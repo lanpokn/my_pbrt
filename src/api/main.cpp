@@ -2,10 +2,6 @@
 #include<event/event.h>
 #include<iostream>
 using namespace std;
-//TODO:给init增加右值引用的功能，否则无法直接输入一个字符串给函数，使用上有严重缺失
-//1 render should run only once
-//必须完成内部的多pbrt，否则是不可能完成结果的
-//目前版本不要同时出现多pbrt和相机设置
 int main(){
     //init a render to do the main loop
     pbrt_render render;
