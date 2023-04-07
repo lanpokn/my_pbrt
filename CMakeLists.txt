@@ -962,19 +962,19 @@ set_property (TARGET pbrt_exe PROPERTY FOLDER "cmd")
 ######################
 # my test render
 
-add_executable (my_test_exe src/api/main.cpp)
-add_executable (pbrt::my_test_exe  ALIAS my_test_exe)
+add_executable (api_test_exe src/api/main.cpp)
+add_executable (pbrt::api_test_exe  ALIAS api_test_exe)
 
-target_compile_definitions (my_test_exe PRIVATE ${PBRT_DEFINITIONS})
-target_compile_options (my_test_exe PRIVATE ${PBRT_CXX_FLAGS})
-target_include_directories (my_test_exe PRIVATE src src/ext src/api)
-target_link_libraries (my_test_exe PRIVATE ${ALL_PBRT_LIBS} pbrt_opt pbrt_warnings)
+target_compile_definitions (api_test_exe PRIVATE ${PBRT_DEFINITIONS})
+target_compile_options (api_test_exe PRIVATE ${PBRT_CXX_FLAGS})
+target_include_directories (api_test_exe PRIVATE src src/ext src/api)
+target_link_libraries (api_test_exe PRIVATE ${ALL_PBRT_LIBS} pbrt_opt pbrt_warnings)
 
-set_target_properties (my_test_exe PROPERTIES OUTPUT_NAME my_test)
+set_target_properties (api_test_exe PROPERTIES OUTPUT_NAME my_test)
 
-add_sanitizers (my_test_exe)
+add_sanitizers (api_test_exe)
 
-set_property (TARGET my_test_exe PROPERTY FOLDER "cmd")
+set_property (TARGET api_test_exe PROPERTY FOLDER "cmd")
 ######################
 # imgtool
 

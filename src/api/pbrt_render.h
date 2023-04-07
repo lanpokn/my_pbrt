@@ -78,12 +78,12 @@ extern class Imf::Header header;
  * @brief all from 0 to 1
  * 
  */
-typedef struct myBound_struct{
+typedef struct apiBound_struct{
     float x0 = 0;
     float x1 = 1;
     float y0 = 0;
     float y1 = 1;
-    myBound_struct(float x0_in = 0,float x1_in = 1,float y0_in = 0,float y1_in = 1){
+    apiBound_struct(float x0_in = 0,float x1_in = 1,float y0_in = 0,float y1_in = 1){
         x0 = x0_in;
         x1 = x1_in;
         y0 = y0_in;
@@ -91,7 +91,7 @@ typedef struct myBound_struct{
     }
 private:
     bool changed = false;
-} myBound;
+} apiBound;
 struct PbrtConfig:BasicConfig{
     //cmd 
     // int seed = 0;
@@ -121,7 +121,7 @@ struct PbrtConfig:BasicConfig{
     // std::string debugStart;
     // std::string displayServer;
     //changed
-    myBound cropWindow;
+    apiBound cropWindow;
     // Bounds2f projRearBounds(Point2f(-1.5f * rearRadius, -1.5f * rearRadius),
     //                         Point2f(1.5f * rearRadius, 1.5f * rearRadius));
     // pstd::optional<Bounds2i> pixelBounds;
