@@ -1,6 +1,6 @@
-#include<my_new/pbrt_render.h>
+#include<api/pbrt_render.h>
 #include<fstream>
-#include<my_new/utilsFunc.h>
+#include<api/utilsFunc.h>
 using namespace pbrt;
 
 //initialize it , or cmake will throw erorr: undefined referrence

@@ -1,6 +1,6 @@
 #ifndef MY_PBRT_RENDER_H
 #define MY_PBRT_RENDER_H
-#include<my_new/render.h>
+#include<api/render.h>
 
 #ifdef PBRT_BUILD_GPU_RENDERER
 #include <pbrt/gpu/memory.h>

@@ -2,7 +2,7 @@
 #define EVENT
 
 
-// #include<my_new/pbrt_render.h>
+// #include<api/pbrt_render.h>
 #include<iostream>
 #include<opencv2/opencv.hpp>
 #include<opencv2/highgui.hpp>
@@ -13,7 +13,7 @@
 #include<vector>
 #include<fstream>
 
-#include<my_new/pbrt_render.h>
+#include<api/pbrt_render.h>
 void test_cv();
 void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps = 1000);
 

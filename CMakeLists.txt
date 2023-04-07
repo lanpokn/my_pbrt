@@ -538,10 +538,10 @@ set (PBRT_SOURCE
 
   src/pbrt/cmd/pspec_gpu.cpp
 
-  src/my_new/render.cpp
-  src/my_new/pbrt_render.cpp
-  src/my_new/utilsFunc.cpp
-  src/my_new/event.cpp
+  src/api/render.cpp
+  src/api/pbrt_render.cpp
+  src/api/utilsFunc.cpp
+  src/event/event.cpp
   )
 
 set (PBRT_SOURCE_HEADERS
@@ -567,10 +567,10 @@ set (PBRT_SOURCE_HEADERS
   src/pbrt/shapes.h
   src/pbrt/textures.h
   
-  src/my_new/render.h
-  src/my_new/pbrt_render.h
-  src/my_new/utilsFunc.h
-  src/my_new/event.h
+  src/api/render.h
+  src/api/pbrt_render.h
+  src/api/utilsFunc.h
+  src/event/event.h
   )
 
 SET (PBRT_CPU_SOURCE
@@ -962,12 +962,12 @@ set_property (TARGET pbrt_exe PROPERTY FOLDER "cmd")
 ######################
 # my test render
 
-add_executable (my_test_exe src/my_new/main.cpp)
+add_executable (my_test_exe src/api/main.cpp)
 add_executable (pbrt::my_test_exe  ALIAS my_test_exe)
 
 target_compile_definitions (my_test_exe PRIVATE ${PBRT_DEFINITIONS})
 target_compile_options (my_test_exe PRIVATE ${PBRT_CXX_FLAGS})
-target_include_directories (my_test_exe PRIVATE src src/ext src/my_new)
+target_include_directories (my_test_exe PRIVATE src src/ext src/api)
 target_link_libraries (my_test_exe PRIVATE ${ALL_PBRT_LIBS} pbrt_opt pbrt_warnings)
 
 set_target_properties (my_test_exe PROPERTIES OUTPUT_NAME my_test)

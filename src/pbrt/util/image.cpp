@@ -51,7 +51,7 @@
 #include <qoi/qoi.h>
 
 //to give the parameter back
-#include <my_new/pbrt_render.h>
+#include <api/pbrt_render.h>
 
 namespace pbrt {
 

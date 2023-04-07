@@ -1,4 +1,4 @@
-#include<my_new/utilsFunc.h>
+#include<api/utilsFunc.h>
 
 std::string generateFilenames(std::string filenames,std::string suffix = "_user"){
     std::string newfilenames = filenames.substr(0, filenames.length()-5)+suffix + ".pbrt";
