@@ -11,7 +11,8 @@ int main(){
     //give msg to config
     for(int i = 1;i<2;i++){
         PbrtConfig con;
-        con.AddRealCamera(0,3,"lenses/wide.22mm.dat");
+        // con.AddRealCamera(0,3,"lenses/wide.22mm.dat");
+        con.AddRealCamera(0,3,"/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/lenses/big.dat");
         con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/cube1/cube10000"+to_string(i)+".pbrt";
         cout<<con.scene_path<<endl;
         render.AddConfig(con);
