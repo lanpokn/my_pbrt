@@ -12,6 +12,8 @@
 //这个函数最好仿照setup_cpp，完成一个python接口，全当练习了
 #include<vector>
 #include "opencv2/opencv.hpp"
+#include <Python.h>
+#include <numpy/arrayobject.h>
 using namespace cv;
  std::vector<float> waveNature =
 {
@@ -1142,16 +1144,6 @@ using namespace cv;
 #define L(i) energy.at(i).at<float>(r, c) 
 Mat SGRB2Luminance(Mat srgb)
 {
-    // SceneSpectral spec;
-    // if (waveNature.empty() || spdNature.empty() || gammaNature.empty() || rgb.rgb.empty())
-    // {
-    //     return spec;
-    // }
-    // if (waveNature.size() != spdNature.size())
-    // {
-    //     fprintf(stderr, "error: the waveNature and spdNature of the display have the different size, faield to display. \n");
-    //     return spec;
-    // }
     std::vector<float> waveDst;
         std::cout<<"1";
     if (waveDst.empty())
@@ -1225,28 +1217,71 @@ Mat SGRB2Luminance(Mat srgb)
                         0.85*L(26)+0.82*L(27)+0.79*L(28)+0.78*L(29)+0.76*L(30);
         }
     }
-    // 不转quanta了，都是能量的问题，只要保证pbrt里的和这里的在同一数量级即可
-    // 需要测试，保证pbrt和这里的转成的亮度区别不大
-    // energy to photons
-    // energy to intensity
-    // spec.photons = Color::energy2Quanta<float, float, float>(energy, waveDst);
-    // spec.waves = waveDst;
-    // spec.mfov = rgb.mfov;
-    // spec.depth = rgb.depth.clone();
-    // spec.distance = rgb.distance;
-    // spec.setMeanLuminance(Color::calMeanLuminance<float>(spec.photons, spec.waves));
     return spec;
 }
 
-int main(){
-    Mat srgb_in,srgb_out;
-    Mat srgb;
-    srgb = imread("/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/images/teaser-transparent-machines.png",1);
-    srgb.convertTo(srgb_in,CV_32FC3,1.0 / 255);
-    Mat spec = SGRB2Luminance(srgb_in);
-    std::cout<<spec.at<float>(10, 10);
-    imshow("good",spec);
-    waitKey();
-    // return 0;
+// int main(){
+//     Mat srgb_in,srgb_out;
+//     Mat srgb;
+//     srgb = imread("/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/images/teaser-transparent-machines.png",1);
+//     srgb.convertTo(srgb_in,CV_32FC3,1.0 / 255);
+//     Mat spec = SGRB2Luminance(srgb_in);
+//     std::cout<<spec.at<float>(10, 10);
+//     imshow("good",spec);
+//     waitKey();
+//     // return 0;
+// }
+PyObject* SGRB2Luminance_py(PyObject* self, PyObject* args) {
+    PyObject* srgb_arg;
+    std::cout<<"1";
+    if (!PyArg_ParseTuple(args, "O", &srgb_arg)) {
+        return NULL;
+    }
+
+    PyObject* srgb_array = PyArray_FROM_OTF(srgb_arg, NPY_FLOAT, NPY_ARRAY_C_CONTIGUOUS);
+
+    if (srgb_array == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Could not convert argument to numpy array.");
+        return NULL;
+    }
+     std::cout<<"1";
+    int rows, cols;
+    rows = PyArray_DIM(srgb_array, 0);
+    cols = PyArray_DIM(srgb_array, 1);
+    
+    Mat srgb(rows, cols, CV_32FC3, PyArray_DATA(srgb_array));
+    
+    Mat spec = SGRB2Luminance(srgb);
+    std::cout<<"1";
+    npy_intp spec_size[2] = {spec.rows, spec.cols};  // convert cv::MatSize to npy_intp pointer
+    
+   // Create a new numpy array and copy the data
+    PyObject* spec_array = PyArray_SimpleNew(2, spec_size, NPY_FLOAT);
+    memcpy(PyArray_DATA((PyArrayObject*)spec_array), spec.data, spec.total() * spec.elemSize());
+    
+    // Decrease ref count of srgb_array
+    Py_DECREF(srgb_array);
+
+    return spec_array;
+}
+// Declare the module methods and properties
+static PyMethodDef sgrb2lum_methods[] = {
+    {"SGRB2Luminance", SGRB2Luminance_py, METH_VARARGS, "Convert sRGB to luminance"},
+    {NULL, NULL, 0, NULL}
+};
+
+static struct PyModuleDef sgrb2lum_module = {
+    PyModuleDef_HEAD_INIT,
+    "sgrb2lum",
+    "sRGB to luminance conversion functions",
+    -1,
+    sgrb2lum_methods
+};
+
+// Initialize the module
+PyMODINIT_FUNC PyInit_sgrb2lum(void) {
+    import_array();  // Initialize numpy module
+
+    return PyModule_Create(&sgrb2lum_module);
 }
 
