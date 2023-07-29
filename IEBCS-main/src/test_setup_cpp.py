@@ -1,8 +1,9 @@
 import numpy as np
+import sys
+sys.path.append("../")
 import dsi
 import time
 import cv2
-import sys
 sys.path.append("../src")
 from dvs_sensor import *
 import matplotlib.pyplot as plt

@@ -6,7 +6,7 @@ import cv2
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import FontProperties
 from datetime import datetime
-import loris
+# import loris
 
 fontP = FontProperties()
 fontP.set_size('small')
@@ -150,28 +150,28 @@ def write_event_dat(filename, ts, x, y, pol,
     f.close()
 
 
-def write_event_es(filename, ts, x, y, pol,
-                   event_type='dvs', width=None, height=None):
-    """ Write the events in a .es file
-        Args:
-            filename: path of the file to create
-            ts: stimestamp
-            x, y: positions of the pixels
-            p: polarities (0 or 1)
-    """
-    events = np.recarray(shape=ts.shape,
-                         dtype=[('t', '<u8'), ('x', '<u2'),
-                                ('y', '<u2'), ('is_increase', '?')])
-    events['t'] = ts
-    events['x'] = x
-    events['y'] = y
-    events['is_increase'] = pol
-    if width is None:
-        width = x.max() + 1
-    if height is None:
-        height = y.max() + 1
-    file_dict = {'type': event_type, 'width': int(width), 'height': int(height), 'events': events}
-    loris.write_events_to_file(file_dict, filename)
+# def write_event_es(filename, ts, x, y, pol,
+#                    event_type='dvs', width=None, height=None):
+#     """ Write the events in a .es file
+#         Args:
+#             filename: path of the file to create
+#             ts: stimestamp
+#             x, y: positions of the pixels
+#             p: polarities (0 or 1)
+#     """
+#     events = np.recarray(shape=ts.shape,
+#                          dtype=[('t', '<u8'), ('x', '<u2'),
+#                                 ('y', '<u2'), ('is_increase', '?')])
+#     events['t'] = ts
+#     events['x'] = x
+#     events['y'] = y
+#     events['is_increase'] = pol
+#     if width is None:
+#         width = x.max() + 1
+#     if height is None:
+#         height = y.max() + 1
+#     file_dict = {'type': event_type, 'width': int(width), 'height': int(height), 'events': events}
+#     loris.write_events_to_file(file_dict, filename)
 
 
 def write_event_csv(filename, ts, x, y, pol):

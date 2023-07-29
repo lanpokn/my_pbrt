@@ -74,6 +74,34 @@ static PyObject * initLatency(PyObject *self, PyObject *args){
     return Py_True;
 }
 
+// static PyObject * initNoise(PyObject *self, PyObject *args){
+//     PyObject *pos_dist_arg;
+//     PyObject *neg_dist_arg;
+//     if (!PyArg_ParseTuple(args, "OO", &pos_dist_arg, &neg_dist_arg))
+//         return NULL;
+//     PyObject *pos_dist_array = PyArray_FROM_OTF(pos_dist_arg, NPY_DOUBLE, NPY_ARRAY_C_CONTIGUOUS);
+//     PyObject *neg_dist_array = PyArray_FROM_OTF(neg_dist_arg, NPY_DOUBLE, NPY_ARRAY_C_CONTIGUOUS);
+//     if (pos_dist_array == NULL || neg_dist_array == NULL){
+//         PyErr_SetString(PyExc_TypeError, "Could not convert argument to numpy array.");
+//         return NULL;
+//     }
+//     auto pos_dist_shape = PyArray_SHAPE(reinterpret_cast<PyArrayObject *>(pos_dist_array));
+//     auto neg_dist_shape = PyArray_SHAPE(reinterpret_cast<PyArrayObject *>(neg_dist_array));
+//     auto ndim = PyArray_NDIM(reinterpret_cast<PyArrayObject *>(pos_dist_array)) * PyArray_NDIM(reinterpret_cast<PyArrayObject *>(neg_dist_array));
+//     if (ndim != 4){
+//         PyErr_SetString(PyExc_ValueError, "The Dimension must be one n x 72");
+//     }
+//     if(pos_dist_shape[1] != 72 || neg_dist_shape[1] != 72 || neg_dist_shape[0] != pos_dist_shape[0]){
+//         PyErr_SetString(PyExc_ValueError, "The shape of the dist must be n x 72 .");
+//         return NULL;
+//     }
+//     const double *pos_dist = (double *)PyArray_DATA((PyArrayObject *)pos_dist_array);
+//     const double *neg_dist = (double *)PyArray_DATA((PyArrayObject *)neg_dist_array);
+//     mySimu->init_noise(pos_dist, neg_dist, pos_dist_shape[0]);
+//     Py_DECREF(pos_dist_array);
+//     Py_DECREF(neg_dist_array);
+//     return Py_True;
+// }
 static PyObject * initNoise(PyObject *self, PyObject *args){
     PyObject *pos_dist_arg;
     PyObject *neg_dist_arg;
@@ -97,7 +125,8 @@ static PyObject * initNoise(PyObject *self, PyObject *args){
     }
     const double *pos_dist = (double *)PyArray_DATA((PyArrayObject *)pos_dist_array);
     const double *neg_dist = (double *)PyArray_DATA((PyArrayObject *)neg_dist_array);
-    mySimu->init_noise(pos_dist, neg_dist, pos_dist_shape[0]);
+    long num_dist = static_cast<long>(pos_dist_shape[0]);  // Cast to long
+    mySimu->init_noise(pos_dist, neg_dist, num_dist);  // Pass the long variable
     Py_DECREF(pos_dist_array);
     Py_DECREF(neg_dist_array);
     return Py_True;
