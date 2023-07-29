@@ -333,7 +333,7 @@ int pbrt_render::pbrt_main(int argc, char *argv[]){
     // Initialize pbrt
     InitPBRT(options);
     //TODO, add here!
-    // pbrt就两种大功能，一种用来渲染图片，一种用来转化图片
+
     if (format || toPly || options.upgrade) {
         FormattingParserTarget formattingTarget(toPly, options.upgrade);
         ParseFiles(&formattingTarget, filenames);
@@ -424,7 +424,7 @@ bool pbrt_render::AddConfig(PbrtConfig& con){
     return true;
 }
 bool pbrt_render::run(){
-    //借助strtok实现split
+
     //need to be test!
     //config varibles must be less than 100,and string openation won't cost too much
     if(true == is_run){
@@ -436,10 +436,10 @@ bool pbrt_render::run(){
         char *s = (char *)(this->cmd_input).c_str();
         const char *d = " ";
         char *p;
-        /* 获取第一个子字符串 */
+
         // there is no need to use _r, because we only need to split it with space
         p = strtok(s,d);
-        /* 继续获取其他的子字符串 */
+
         //would p point to the same memory?
         int i = 0;
         argv[i] = p;
@@ -465,11 +465,9 @@ bool pbrt_render::run(){
         char *s = cmd.data();
         const char *d = " ";
         char *p;
-        std::cout<<*s<<std::endl;
-        /* 获取第一个子字符串 */
+
         // there is no need to use _r, because we only need to split it with space
         p = strtok(s,d);
-        /* 继续获取其他的子字符串 */
         //would p point to the same memory?
         int i = 0;
         argv[i] = p;

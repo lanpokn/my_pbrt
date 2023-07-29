@@ -6,7 +6,7 @@
 
 //reference one config may have different ,we need to decompose!
 /**
- * @brief config locate a lot of settings and give it to the render，note thta there is no virtual varible
+ * @brief config locate a lot of settings && give it to the render，note thta there is no virtual varible
  * 
  */
 //config设计时要保证用户可以用最基本的操作对config进行设计，而不需要引入额外库，最简单的方法就是看这些pbrt自己定义的类的构造变量都用了哪些数据
@@ -68,7 +68,7 @@ struct RealisticCameraParam:CameraParam{
     float aperturediameter = 1.0;
     float focusdistance = 10.0;
     // Allows specifying the shape of the camera aperture, 
-    // which is circular by default. The values of "gaussian", "square", "pentagon", and "
+    // which is circular by default. The values of "gaussian", "square", "pentagon", && "
     // star" are associated with built-in aperture shapes; o
     // ther values are interpreted as filenames specifying an image to be used to specify the shape.
     std::string aperture = "circular";

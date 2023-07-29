@@ -128,8 +128,8 @@ struct PbrtConfig:BasicConfig{
     // pstd::optional<Point2i> pixelMaterial;
     // Float displacementEdgeScale = 1;
     
-    //it will be used when parsefile, if it is not null, we will create a new pbrt configfile(with a different name), and then delete it
-    //because original file is very conplex and only use a filename as input, do so can avoid change code
+    //it will be used when parsefile, if it is not null, we will create a new pbrt configfile(with a different name), && then delete it
+    //because original file is very conplex && only use a filename as input, do so can avoid change code
     //TODO
     //vector<CheckInfo*> info;
     std::vector<RealisticCameraParam> RealCameraList;
@@ -210,7 +210,7 @@ class pbrt_render{
      */
     int pbrt_main(int argc, char *argv[]);
     /**
-     * @brief generate a new .pbrt file and renturn the new filename
+     * @brief generate a new .pbrt file && renturn the new filename
      * 
      * @param RC 
      * @param filenames 
@@ -224,7 +224,7 @@ class pbrt_render{
     // int resolutiony;
     // Imf::Header header;
     /**
-     * @brief change config to string, and then call init(str)
+     * @brief change config to string, && then call init(str)
      * 
      * @param con the config edit by the user
      * @return true 

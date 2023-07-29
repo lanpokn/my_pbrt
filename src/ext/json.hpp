@@ -9,13 +9,13 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2013-2018 Niels Lohmann <http://nlohmann.me>.
 
 Permission is hereby  granted, free of charge, to any  person obtaining a copy
-of this software and associated  documentation files (the "Software"), to deal
+of this software && associated  documentation files (the "Software"), to deal
 in the Software  without restriction, including without  limitation the rights
-to  use, copy,  modify, merge,  publish, distribute,  sublicense, and/or  sell
-copies  of  the Software,  and  to  permit persons  to  whom  the Software  is
+to  use, copy,  modify, merge,  publish, distribute,  sublicense, &&/or  sell
+copies  of  the Software,  &&  to  permit persons  to  whom  the Software  is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
+The above copyright notice && this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE  IS PROVIDED "AS  IS", WITHOUT WARRANTY  OF ANY KIND,  EXPRESS OR
@@ -36,7 +36,7 @@ SOFTWARE.
 
 #include <algorithm> // all_of, find, for_each
 #include <cassert> // assert
-#include <ciso646> // and, not, or
+#include <ciso646> // &&, not, or
 #include <cstddef> // nullptr_t, ptrdiff_t, size_t
 #include <functional> // hash, less
 #include <initializer_list> // initializer_list
@@ -66,7 +66,7 @@ namespace nlohmann
     /*!
     @brief default JSONSerializer template argument
 
-    This serializer ignores the template arguments and uses ADL
+    This serializer ignores the template arguments && uses ADL
     ([argument-dependent lookup](https://en.cppreference.com/w/cpp/language/adl))
     for serialization.
     */
@@ -89,7 +89,7 @@ namespace nlohmann
     @brief JSON Pointer
 
     A JSON pointer defines a string syntax for identifying a specific value
-    within a JSON document. It can be used with functions `at` and
+    within a JSON document. It can be used with functions `at` &&
     `operator[]`. Furthermore, JSON pointers are the base for JSON patches.
 
     @sa [RFC 6901](https://tools.ietf.org/html/rfc6901)
@@ -216,7 +216,7 @@ namespace nlohmann
 #endif
 
    /*!
-   @brief macro to briefly define a mapping between an enum and JSON
+   @brief macro to briefly define a mapping between an enum && JSON
    @def NLOHMANN_JSON_SERIALIZE_ENUM
    @since version 3.4.0
    */
@@ -280,7 +280,7 @@ namespace nlohmann
         template<typename T>
         using uncvref_t = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
 
-        // implementation of C++14 index_sequence and affiliates
+        // implementation of C++14 index_sequence && affiliates
         // source: https://stackoverflow.com/a/32223343
         template<std::size_t... Ints>
         struct index_sequence
@@ -475,7 +475,7 @@ namespace nlohmann
     @brief detail namespace with internal helper functions
 
     This namespace collects functions that should not be exposed,
-    implementations of some @ref basic_json methods, and meta-programming helpers.
+    implementations of some @ref basic_json methods, && meta-programming helpers.
 
     @since version 2.1.0
     */
@@ -619,7 +619,7 @@ namespace nlohmann
         template <typename BasicJsonType, typename CompatibleObjectType>
         struct is_compatible_object_type_impl <
             BasicJsonType, CompatibleObjectType,
-            enable_if_t<is_detected<mapped_type_t, CompatibleObjectType>::value and
+            enable_if_t<is_detected<mapped_type_t, CompatibleObjectType>::value &&
             is_detected<key_type_t, CompatibleObjectType>::value >>
         {
 
@@ -628,7 +628,7 @@ namespace nlohmann
             // macOS's is_constructible does not play well with nonesuch...
             static constexpr bool value =
                 std::is_constructible<typename object_t::key_type,
-                typename CompatibleObjectType::key_type>::value and
+                typename CompatibleObjectType::key_type>::value &&
                 std::is_constructible<typename object_t::mapped_type,
                 typename CompatibleObjectType::mapped_type>::value;
         };
@@ -644,13 +644,13 @@ namespace nlohmann
         template <typename BasicJsonType, typename ConstructibleObjectType>
         struct is_constructible_object_type_impl <
             BasicJsonType, ConstructibleObjectType,
-            enable_if_t<is_detected<mapped_type_t, ConstructibleObjectType>::value and
+            enable_if_t<is_detected<mapped_type_t, ConstructibleObjectType>::value &&
             is_detected<key_type_t, ConstructibleObjectType>::value >>
         {
             using object_t = typename BasicJsonType::object_t;
 
             static constexpr bool value =
-                (std::is_constructible<typename ConstructibleObjectType::key_type, typename object_t::key_type>::value and
+                (std::is_constructible<typename ConstructibleObjectType::key_type, typename object_t::key_type>::value &&
                     std::is_same<typename object_t::mapped_type, typename ConstructibleObjectType::mapped_type>::value) or
                     (has_from_json<BasicJsonType, typename ConstructibleObjectType::mapped_type>::value or
                         has_non_default_from_json<BasicJsonType, typename ConstructibleObjectType::mapped_type >::value);
@@ -704,8 +704,8 @@ namespace nlohmann
         template <typename BasicJsonType, typename CompatibleArrayType>
         struct is_compatible_array_type_impl <
             BasicJsonType, CompatibleArrayType,
-            enable_if_t<is_detected<value_type_t, CompatibleArrayType>::value and
-            is_detected<iterator_t, CompatibleArrayType>::value and
+            enable_if_t<is_detected<value_type_t, CompatibleArrayType>::value &&
+            is_detected<iterator_t, CompatibleArrayType>::value &&
             // This is needed because json_reverse_iterator has a ::iterator type...
             // Therefore it is detected as a CompatibleArrayType.
             // The real fix would be to have an Iterable concept.
@@ -735,19 +735,19 @@ namespace nlohmann
         struct is_constructible_array_type_impl <
             BasicJsonType, ConstructibleArrayType,
             enable_if_t<not std::is_same<ConstructibleArrayType,
-            typename BasicJsonType::value_type>::value and
-            is_detected<value_type_t, ConstructibleArrayType>::value and
-            is_detected<iterator_t, ConstructibleArrayType>::value and
+            typename BasicJsonType::value_type>::value &&
+            is_detected<value_type_t, ConstructibleArrayType>::value &&
+            is_detected<iterator_t, ConstructibleArrayType>::value &&
             is_complete_type<
             detected_t<value_type_t, ConstructibleArrayType>>::value >>
         {
             static constexpr bool value =
                 // This is needed because json_reverse_iterator has a ::iterator type,
-                // furthermore, std::back_insert_iterator (and other iterators) have a base class `iterator`...
+                // furthermore, std::back_insert_iterator (&& other iterators) have a base class `iterator`...
                 // Therefore it is detected as a ConstructibleArrayType.
                 // The real fix would be to have an Iterable concept.
                 not is_iterator_traits <
-                iterator_traits<ConstructibleArrayType >>::value and
+                iterator_traits<ConstructibleArrayType >>::value &&
 
                 (std::is_same<typename ConstructibleArrayType::value_type, typename BasicJsonType::array_t::value_type>::value or
                     has_from_json<BasicJsonType,
@@ -767,8 +767,8 @@ namespace nlohmann
         template <typename RealIntegerType, typename CompatibleNumberIntegerType>
         struct is_compatible_integer_type_impl <
             RealIntegerType, CompatibleNumberIntegerType,
-            enable_if_t<std::is_integral<RealIntegerType>::value and
-            std::is_integral<CompatibleNumberIntegerType>::value and
+            enable_if_t<std::is_integral<RealIntegerType>::value &&
+            std::is_integral<CompatibleNumberIntegerType>::value &&
             not std::is_same<bool, CompatibleNumberIntegerType>::value >>
         {
             // is there an assert somewhere on overflows?
@@ -777,8 +777,8 @@ namespace nlohmann
 
             static constexpr auto value =
                 std::is_constructible<RealIntegerType,
-                CompatibleNumberIntegerType>::value and
-                CompatibleLimits::is_integer and
+                CompatibleNumberIntegerType>::value &&
+                CompatibleLimits::is_integer &&
                 RealLimits::is_signed == CompatibleLimits::is_signed;
         };
 
@@ -869,7 +869,7 @@ namespace nlohmann
         @internal
         @note To have nothrow-copy-constructible exceptions, we internally use
         `std::runtime_error` which can cope with arbitrary-length error messages.
-        Intermediate strings are built with static functions and then passed to
+        Intermediate strings are built with static functions && then passed to
         the actual constructor.
         @endinternal
 
@@ -917,21 +917,21 @@ namespace nlohmann
 
         name / id                      | example message | description
         ------------------------------ | --------------- | -------------------------
-        json.exception.parse_error.101 | parse error at 2: unexpected end of input; expected string literal | This error indicates a syntax error while deserializing a JSON text. The error message describes that an unexpected token (character) was encountered, and the member @a byte indicates the error position.
+        json.exception.parse_error.101 | parse error at 2: unexpected end of input; expected string literal | This error indicates a syntax error while deserializing a JSON text. The error message describes that an unexpected token (character) was encountered, && the member @a byte indicates the error position.
         json.exception.parse_error.102 | parse error at 14: missing or wrong low surrogate | JSON uses the `\uxxxx` format to describe Unicode characters. Code points above above 0xFFFF are split into two `\uxxxx` entries ("surrogate pairs"). This error indicates that the surrogate pair is incomplete or contains an invalid code point.
         json.exception.parse_error.103 | parse error: code points above 0x10FFFF are invalid | Unicode supports code points up to 0x10FFFF. Code points above 0x10FFFF are invalid.
         json.exception.parse_error.104 | parse error: JSON patch must be an array of objects | [RFC 6902](https://tools.ietf.org/html/rfc6902) requires a JSON Patch document to be a JSON document that represents an array of objects.
         json.exception.parse_error.105 | parse error: operation must have string member 'op' | An operation of a JSON Patch document must contain exactly one "op" member, whose value indicates the operation to perform. Its value must be one of "add", "remove", "replace", "move", "copy", or "test"; other values are errors.
         json.exception.parse_error.106 | parse error: array index '01' must not begin with '0' | An array index in a JSON Pointer ([RFC 6901](https://tools.ietf.org/html/rfc6901)) may be `0` or any number without a leading `0`.
         json.exception.parse_error.107 | parse error: JSON pointer must be empty or begin with '/' - was: 'foo' | A JSON Pointer must be a Unicode string containing a sequence of zero or more reference tokens, each prefixed by a `/` character.
-        json.exception.parse_error.108 | parse error: escape character '~' must be followed with '0' or '1' | In a JSON Pointer, only `~0` and `~1` are valid escape sequences.
+        json.exception.parse_error.108 | parse error: escape character '~' must be followed with '0' or '1' | In a JSON Pointer, only `~0` && `~1` are valid escape sequences.
         json.exception.parse_error.109 | parse error: array index 'one' is not a number | A JSON Pointer array index must be a number.
         json.exception.parse_error.110 | parse error at 1: cannot read 2 bytes from vector | When parsing CBOR or MessagePack, the byte vector ends before the complete value has been read.
         json.exception.parse_error.112 | parse error at 1: error reading CBOR; last byte: 0xF8 | Not all types of CBOR or MessagePack are supported. This exception occurs if an unsupported byte was read.
         json.exception.parse_error.113 | parse error at 2: expected a CBOR string; last byte: 0x98 | While parsing a map key, a value that is not a string has been read.
         json.exception.parse_error.114 | parse error: Unsupported BSON record type 0x0F | The parsing of the corresponding BSON record type is not implemented (yet).
 
-        @note For an input with n bytes, 1 is the index of the first character and n+1
+        @note For an input with n bytes, 1 is the index of the first character && n+1
         is the index of the terminating null byte or the end of file. This also
         holds true when reading a byte vector (CBOR or MessagePack).
 
@@ -979,7 +979,7 @@ namespace nlohmann
 
             The byte index of the last read character in the input file.
 
-            @note For an input with n bytes, 1 is the index of the first character and
+            @note For an input with n bytes, 1 is the index of the first character &&
             n+1 is the index of the terminating null byte or the end of file.
             This also holds true when reading a byte vector (CBOR or MessagePack).
             */
@@ -1011,7 +1011,7 @@ namespace nlohmann
         json.exception.invalid_iterator.203 | iterators do not fit current value | Either iterator passed to function @ref erase(IteratorType first, IteratorType last) does not belong to the JSON value from which values shall be erased. It hence does not define a valid range to delete values from.
         json.exception.invalid_iterator.204 | iterators out of range | When an iterator range for a primitive type (number, boolean, or string) is passed to a constructor or an erase function, this range has to be exactly (@ref begin(), @ref end()), because this is the only way the single stored value is expressed. All other ranges are invalid.
         json.exception.invalid_iterator.205 | iterator out of range | When an iterator for a primitive type (number, boolean, or string) is passed to an erase function, the iterator has to be the @ref begin() iterator, because it is the only way to address the stored value. All other iterators are invalid.
-        json.exception.invalid_iterator.206 | cannot construct with iterators from null | The iterators passed to constructor @ref basic_json(InputIT first, InputIT last) belong to a JSON null value and hence to not define a valid range.
+        json.exception.invalid_iterator.206 | cannot construct with iterators from null | The iterators passed to constructor @ref basic_json(InputIT first, InputIT last) belong to a JSON null value && hence to not define a valid range.
         json.exception.invalid_iterator.207 | cannot use key() for non-object iterators | The key() member function can only be used on iterators belonging to a JSON object, because other types do not have a concept of a key.
         json.exception.invalid_iterator.208 | cannot use operator[] for object iterators | The operator[] to specify a concrete offset cannot be used on iterators belonging to a JSON object, because JSON objects are unordered.
         json.exception.invalid_iterator.209 | cannot use offsets with object iterators | The offset operators (+, -, +=, -=) cannot be used on iterators belonging to a JSON object, because JSON objects are unordered.
@@ -1064,14 +1064,14 @@ namespace nlohmann
         json.exception.type_error.305 | cannot use operator[] with string | The @ref operator[] member functions can only be executed for certain JSON types.
         json.exception.type_error.306 | cannot use value() with string | The @ref value() member functions can only be executed for certain JSON types.
         json.exception.type_error.307 | cannot use erase() with string | The @ref erase() member functions can only be executed for certain JSON types.
-        json.exception.type_error.308 | cannot use push_back() with string | The @ref push_back() and @ref operator+= member functions can only be executed for certain JSON types.
+        json.exception.type_error.308 | cannot use push_back() with string | The @ref push_back() && @ref operator+= member functions can only be executed for certain JSON types.
         json.exception.type_error.309 | cannot use insert() with | The @ref insert() member functions can only be executed for certain JSON types.
         json.exception.type_error.310 | cannot use swap() with number | The @ref swap() member functions can only be executed for certain JSON types.
         json.exception.type_error.311 | cannot use emplace_back() with string | The @ref emplace_back() member function can only be executed for certain JSON types.
         json.exception.type_error.312 | cannot use update() with string | The @ref update() member functions can only be executed for certain JSON types.
         json.exception.type_error.313 | invalid value to unflatten | The @ref unflatten function converts an object whose keys are JSON Pointers back into an arbitrary nested JSON value. The JSON Pointers must not overlap, because then the resulting value would not be well defined.
         json.exception.type_error.314 | only objects can be unflattened | The @ref unflatten function only works for an object whose keys are JSON Pointers.
-        json.exception.type_error.315 | values in object must be primitive | The @ref unflatten function only works for an object whose keys are JSON Pointers and whose values are primitive.
+        json.exception.type_error.315 | values in object must be primitive | The @ref unflatten function only works for an object whose keys are JSON Pointers && whose values are primitive.
         json.exception.type_error.316 | invalid UTF-8 byte at index 10: 0x7E | The @ref dump function only works with UTF-8 encoded strings; that is, if you assign a `std::string` to a JSON value, make sure it is UTF-8 encoded. |
         json.exception.type_error.317 | JSON value cannot be serialized to requested format | The dynamic type of the object cannot be represented in the requested serialization format (e.g. a raw `true` or `null` JSON object cannot be serialized to BSON) |
 
@@ -1114,9 +1114,9 @@ namespace nlohmann
         json.exception.out_of_range.402 | array index '-' (3) is out of range | The special array index `-` in a JSON Pointer never describes a valid element of the array, but the index past the end. That is, it can only be used to add elements at this position, but not to read it.
         json.exception.out_of_range.403 | key 'foo' not found | The provided key was not found in the JSON object.
         json.exception.out_of_range.404 | unresolved reference token 'foo' | A reference token in a JSON Pointer could not be resolved.
-        json.exception.out_of_range.405 | JSON pointer has no parent | The JSON Patch operations 'remove' and 'add' can not be applied to the root element of the JSON value.
+        json.exception.out_of_range.405 | JSON pointer has no parent | The JSON Patch operations 'remove' && 'add' can not be applied to the root element of the JSON value.
         json.exception.out_of_range.406 | number overflow parsing '10E1000' | A parsed number could not be stored as without changing it to NaN or INF.
-        json.exception.out_of_range.407 | number overflow serializing '9223372036854775808' | UBJSON and BSON only support integer numbers up to 9223372036854775807. |
+        json.exception.out_of_range.407 | number overflow serializing '9223372036854775808' | UBJSON && BSON only support integer numbers up to 9223372036854775807. |
         json.exception.out_of_range.408 | excessive array size: 8658170730974374167 | The size (following `#`) of an UBJSON array or object exceeds the maximal capacity. |
         json.exception.out_of_range.409 | BSON key cannot contain code point U+0000 (at byte 2) | Key identifiers to be serialized to BSON cannot contain code point U+0000, since the key is stored as zero-terminated c-string |
 
@@ -1188,7 +1188,7 @@ namespace nlohmann
 
 
 #include <array> // array
-#include <ciso646> // and
+#include <ciso646> // &&
 #include <cstddef> // size_t
 #include <cstdint> // uint8_t
 
@@ -1204,18 +1204,18 @@ namespace nlohmann
         @brief the JSON type enumeration
 
         This enumeration collects the different JSON types. It is internally used to
-        distinguish the stored values, and the functions @ref basic_json::is_null(),
+        distinguish the stored values, && the functions @ref basic_json::is_null(),
         @ref basic_json::is_object(), @ref basic_json::is_array(),
         @ref basic_json::is_string(), @ref basic_json::is_boolean(),
         @ref basic_json::is_number() (with @ref basic_json::is_number_integer(),
-        @ref basic_json::is_number_unsigned(), and @ref basic_json::is_number_float()),
-        @ref basic_json::is_discarded(), @ref basic_json::is_primitive(), and
+        @ref basic_json::is_number_unsigned(), && @ref basic_json::is_number_float()),
+        @ref basic_json::is_discarded(), @ref basic_json::is_primitive(), &&
         @ref basic_json::is_structured() rely on it.
 
-        @note There are three enumeration entries (number_integer, number_unsigned, and
+        @note There are three enumeration entries (number_integer, number_unsigned, &&
         number_float), because the library distinguishes these three types for numbers:
         @ref basic_json::number_unsigned_t is used for unsigned integers,
-        @ref basic_json::number_integer_t is used for signed integers, and
+        @ref basic_json::number_integer_t is used for signed integers, &&
         @ref basic_json::number_float_t is used for floating-point numbers or to
         approximate integers which do not fit in the limits of their respective type.
 
@@ -1257,7 +1257,7 @@ namespace nlohmann
 
             const auto l_index = static_cast<std::size_t>(lhs);
             const auto r_index = static_cast<std::size_t>(rhs);
-            return l_index < order.size() and r_index < order.size() and order[l_index] < order[r_index];
+            return l_index < order.size() && r_index < order.size() && order[l_index] < order[r_index];
         }
     }  // namespace detail
 }  // namespace nlohmann
@@ -1267,7 +1267,7 @@ namespace nlohmann
 
 #include <algorithm> // transform
 #include <array> // array
-#include <ciso646> // and, not
+#include <ciso646> // &&, not
 #include <forward_list> // forward_list
 #include <iterator> // inserter, front_inserter, end
 #include <map> // map
@@ -1305,7 +1305,7 @@ namespace nlohmann
 
         // overloads for basic_json template parameters
         template<typename BasicJsonType, typename ArithmeticType,
-            enable_if_t<std::is_arithmetic<ArithmeticType>::value and
+            enable_if_t<std::is_arithmetic<ArithmeticType>::value &&
             not std::is_same<ArithmeticType, typename BasicJsonType::boolean_t>::value,
             int> = 0>
             void get_arithmetic_value(const BasicJsonType& j, ArithmeticType& val)
@@ -1356,7 +1356,7 @@ namespace nlohmann
         template <
             typename BasicJsonType, typename ConstructibleStringType,
             enable_if_t <
-            is_constructible_string_type<BasicJsonType, ConstructibleStringType>::value and
+            is_constructible_string_type<BasicJsonType, ConstructibleStringType>::value &&
             not std::is_same<typename BasicJsonType::string_t,
             ConstructibleStringType>::value,
             int > = 0 >
@@ -1480,9 +1480,9 @@ namespace nlohmann
 
         template <typename BasicJsonType, typename ConstructibleArrayType,
             enable_if_t <
-            is_constructible_array_type<BasicJsonType, ConstructibleArrayType>::value and
-            not is_constructible_object_type<BasicJsonType, ConstructibleArrayType>::value and
-            not is_constructible_string_type<BasicJsonType, ConstructibleArrayType>::value and
+            is_constructible_array_type<BasicJsonType, ConstructibleArrayType>::value &&
+            not is_constructible_object_type<BasicJsonType, ConstructibleArrayType>::value &&
+            not is_constructible_string_type<BasicJsonType, ConstructibleArrayType>::value &&
             not is_basic_json<ConstructibleArrayType>::value,
             int > = 0 >
 
@@ -1526,10 +1526,10 @@ namespace nlohmann
         // an arithmetic type?
         template<typename BasicJsonType, typename ArithmeticType,
             enable_if_t <
-            std::is_arithmetic<ArithmeticType>::value and
-            not std::is_same<ArithmeticType, typename BasicJsonType::number_unsigned_t>::value and
-            not std::is_same<ArithmeticType, typename BasicJsonType::number_integer_t>::value and
-            not std::is_same<ArithmeticType, typename BasicJsonType::number_float_t>::value and
+            std::is_arithmetic<ArithmeticType>::value &&
+            not std::is_same<ArithmeticType, typename BasicJsonType::number_unsigned_t>::value &&
+            not std::is_same<ArithmeticType, typename BasicJsonType::number_integer_t>::value &&
+            not std::is_same<ArithmeticType, typename BasicJsonType::number_float_t>::value &&
             not std::is_same<ArithmeticType, typename BasicJsonType::boolean_t>::value,
             int> = 0>
             void from_json(const BasicJsonType& j, ArithmeticType& val)
@@ -1642,7 +1642,7 @@ namespace nlohmann
    // #include <nlohmann/detail/conversions/to_json.hpp>
 
 
-#include <ciso646> // or, and, not
+#include <ciso646> // or, &&, not
 #include <iterator> // begin, end
 #include <tuple> // tuple, get
 #include <type_traits> // is_same, is_constructible, is_floating_point, is_enum, underlying_type
@@ -2059,10 +2059,10 @@ namespace nlohmann
 
         template <typename BasicJsonType, typename CompatibleArrayType,
             enable_if_t<is_compatible_array_type<BasicJsonType,
-            CompatibleArrayType>::value and
+            CompatibleArrayType>::value &&
             not is_compatible_object_type<
-            BasicJsonType, CompatibleArrayType>::value and
-            not is_compatible_string_type<BasicJsonType, CompatibleArrayType>::value and
+            BasicJsonType, CompatibleArrayType>::value &&
+            not is_compatible_string_type<BasicJsonType, CompatibleArrayType>::value &&
             not is_basic_json<CompatibleArrayType>::value,
             int> = 0>
             void to_json(BasicJsonType& j, const CompatibleArrayType& arr)
@@ -2084,7 +2084,7 @@ namespace nlohmann
         }
 
         template<typename BasicJsonType, typename CompatibleObjectType,
-            enable_if_t<is_compatible_object_type<BasicJsonType, CompatibleObjectType>::value and not is_basic_json<CompatibleObjectType>::value, int> = 0>
+            enable_if_t<is_compatible_object_type<BasicJsonType, CompatibleObjectType>::value && not is_basic_json<CompatibleObjectType>::value, int> = 0>
             void to_json(BasicJsonType& j, const CompatibleObjectType& obj)
         {
             external_constructor<value_t::object>::construct(j, obj);
@@ -2203,7 +2203,7 @@ namespace nlohmann
         using input_adapter_t = std::shared_ptr<input_adapter_protocol>;
 
         /*!
-        Input adapter for stdio file access. This adapter read only 1 byte and do not use any
+        Input adapter for stdio file access. This adapter read only 1 byte && do not use any
         buffer. This adapter is a very low level adapter.
         */
         class file_input_adapter : public input_adapter_protocol
@@ -2226,7 +2226,7 @@ namespace nlohmann
         /*!
         Input adapter for a (caching) istream. Ignores a UFT Byte Order Mark at
         beginning of input. Does not support changing the underlying std::streambuf
-        in mid-input. Maintains underlying std::istream and std::streambuf to support
+        in mid-input. Maintains underlying std::istream && std::streambuf to support
         subsequent use of standard std::istream operations to process any input
         characters following those used in parsing the JSON input.  Clears the
         std::istream flags; any input errors (e.g., EOF) will be detected by the first
@@ -2253,7 +2253,7 @@ namespace nlohmann
             input_stream_adapter& operator=(input_stream_adapter&&) = delete;
 
             // std::istream/std::streambuf use std::char_traits<char>::to_int_type, to
-            // ensure that std::char_traits<char>::eof() and the character 0xFF do not
+            // ensure that std::char_traits<char>::eof() && the character 0xFF do not
             // end up as the same value, eg. 0xFFFFFFFF.
             std::char_traits<char>::int_type get_character() override
             {
@@ -2493,8 +2493,8 @@ namespace nlohmann
             /// input adapter for buffer
             template<typename CharT,
                 typename std::enable_if<
-                std::is_pointer<CharT>::value and
-                std::is_integral<typename std::remove_pointer<CharT>::type>::value and
+                std::is_pointer<CharT>::value &&
+                std::is_integral<typename std::remove_pointer<CharT>::type>::value &&
                 sizeof(typename std::remove_pointer<CharT>::type) == 1,
                 int>::type = 0>
                 input_adapter(CharT b, std::size_t l)
@@ -2505,8 +2505,8 @@ namespace nlohmann
             /// input adapter for string literal
             template<typename CharT,
                 typename std::enable_if<
-                std::is_pointer<CharT>::value and
-                std::is_integral<typename std::remove_pointer<CharT>::type>::value and
+                std::is_pointer<CharT>::value &&
+                std::is_integral<typename std::remove_pointer<CharT>::type>::value &&
                 sizeof(typename std::remove_pointer<CharT>::type) == 1,
                 int>::type = 0>
                 input_adapter(CharT b)
@@ -2558,7 +2558,7 @@ namespace nlohmann
 
             /// input adapter for contiguous container
             template<class ContiguousContainer, typename
-                std::enable_if<not std::is_pointer<ContiguousContainer>::value and
+                std::enable_if<not std::is_pointer<ContiguousContainer>::value &&
                 std::is_base_of<std::random_access_iterator_tag, typename iterator_traits<decltype(std::begin(std::declval<ContiguousContainer const>()))>::iterator_category>::value,
                 int>::type = 0>
                 input_adapter(const ContiguousContainer& c)
@@ -2716,10 +2716,10 @@ namespace nlohmann
             (c1 * 0x1000) + (c2 * 0x0100) + (c3 * 0x0010) + c4
             = (c1 << 12) + (c2 << 8) + (c3 << 4) + (c4 << 0)
 
-            Furthermore, the possible characters '0'..'9', 'A'..'F', and 'a'..'f'
+            Furthermore, the possible characters '0'..'9', 'A'..'F', && 'a'..'f'
             must be converted to the integers 0x0..0x9, 0xA..0xF, 0xA..0xF, resp. The
-            conversion is done by subtracting the offset (0x30, 0x37, and 0x57)
-            between the ASCII value of the character and the desired integer value.
+            conversion is done by subtracting the offset (0x30, 0x37, && 0x57)
+            between the ASCII value of the character && the desired integer value.
 
             @return codepoint (0x0000..0xFFFF) or -1 in case of an error (e.g. EOF or
             non-hex character)
@@ -2735,15 +2735,15 @@ namespace nlohmann
                 {
                     get();
 
-                    if (current >= '0' and current <= '9')
+                    if (current >= '0' && current <= '9')
                     {
                         codepoint += ((current - 0x30) << factor);
                     }
-                    else if (current >= 'A' and current <= 'F')
+                    else if (current >= 'A' && current <= 'F')
                     {
                         codepoint += ((current - 0x37) << factor);
                     }
-                    else if (current >= 'a' and current <= 'f')
+                    else if (current >= 'a' && current <= 'f')
                     {
                         codepoint += ((current - 0x57) << factor);
                     }
@@ -2753,24 +2753,24 @@ namespace nlohmann
                     }
                 }
 
-                assert(0x0000 <= codepoint and codepoint <= 0xFFFF);
+                assert(0x0000 <= codepoint && codepoint <= 0xFFFF);
                 return codepoint;
             }
 
             /*!
             @brief check if the next byte(s) are inside a given range
 
-            Adds the current byte and, for each passed range, reads a new byte and
+            Adds the current byte &&, for each passed range, reads a new byte &&
             checks if it is inside the range. If a violation was detected, set up an
-            error message and return false. Otherwise, return true.
+            error message && return false. Otherwise, return true.
 
             @param[in] ranges  list of integers; interpreted as list of pairs of
-            inclusive lower and upper bound, respectively
+            inclusive lower && upper bound, respectively
 
             @pre The passed list @a ranges must have 2, 4, or 6 elements; that is,
             1, 2, or 3 pairs. This precondition is enforced by an assertion.
 
-            @return true if and only if no range violation was detected
+            @return true if && only if no range violation was detected
             */
             bool next_byte_in_range(std::initializer_list<int> ranges)
             {
@@ -2780,7 +2780,7 @@ namespace nlohmann
                 for (auto range = ranges.begin(); range != ranges.end(); ++range)
                 {
                     get();
-                    if (JSON_LIKELY(*range <= current and current <= *(++range)))
+                    if (JSON_LIKELY(*range <= current && current <= *(++range)))
                     {
                         add(current);
                     }
@@ -2798,9 +2798,9 @@ namespace nlohmann
             @brief scan a string literal
 
             This function scans a string according to Sect. 7 of RFC 7159. While
-            scanning, bytes are escaped and copied into buffer token_buffer. Then the
+            scanning, bytes are escaped && copied into buffer token_buffer. Then the
             function returns successfully, token_buffer is *not* null-terminated (as it
-            may contain \0 bytes), and token_buffer.size() is the number of bytes in the
+            may contain \0 bytes), && token_buffer.size() is the number of bytes in the
             string.
 
             @return token_type::value_string if string could be successfully scanned,
@@ -2886,10 +2886,10 @@ namespace nlohmann
                             }
 
                             // check if code point is a high surrogate
-                            if (0xD800 <= codepoint1 and codepoint1 <= 0xDBFF)
+                            if (0xD800 <= codepoint1 && codepoint1 <= 0xDBFF)
                             {
                                 // expect next \uxxxx entry
-                                if (JSON_LIKELY(get() == '\\' and get() == 'u'))
+                                if (JSON_LIKELY(get() == '\\' && get() == 'u'))
                                 {
                                     const int codepoint2 = get_codepoint();
 
@@ -2900,7 +2900,7 @@ namespace nlohmann
                                     }
 
                                     // check if codepoint2 is a low surrogate
-                                    if (JSON_LIKELY(0xDC00 <= codepoint2 and codepoint2 <= 0xDFFF))
+                                    if (JSON_LIKELY(0xDC00 <= codepoint2 && codepoint2 <= 0xDFFF))
                                     {
                                         // overwrite codepoint
                                         codepoint =
@@ -2908,7 +2908,7 @@ namespace nlohmann
                                             (codepoint1 << 10)
                                             // low surrogate occupies the least significant 15 bits
                                             + codepoint2
-                                            // there is still the 0xD800, 0xDC00 and 0x10000 noise
+                                            // there is still the 0xD800, 0xDC00 && 0x10000 noise
                                             // in the result so we have to subtract with:
                                             // (0xD800 << 10) + DC00 - 0x10000 = 0x35FDC00
                                             -0x35FDC00;
@@ -2927,7 +2927,7 @@ namespace nlohmann
                             }
                             else
                             {
-                                if (JSON_UNLIKELY(0xDC00 <= codepoint1 and codepoint1 <= 0xDFFF))
+                                if (JSON_UNLIKELY(0xDC00 <= codepoint1 && codepoint1 <= 0xDFFF))
                                 {
                                     error_message = "invalid string: surrogate U+DC00..U+DFFF must follow U+D800..U+DBFF";
                                     return token_type::parse_error;
@@ -2935,7 +2935,7 @@ namespace nlohmann
                             }
 
                             // result of the above calculation yields a proper codepoint
-                            assert(0x00 <= codepoint and codepoint <= 0x10FFFF);
+                            assert(0x00 <= codepoint && codepoint <= 0x10FFFF);
 
                             // translate codepoint into bytes
                             if (codepoint < 0x80)
@@ -3170,7 +3170,7 @@ namespace nlohmann
                         return token_type::parse_error;
                     }
 
-                    // U+0020..U+007F (except U+0022 (quote) and U+005C (backspace))
+                    // U+0020..U+007F (except U+0022 (quote) && U+005C (backspace))
                     case 0x20:
                     case 0x21:
                     case 0x23:
@@ -3385,7 +3385,7 @@ namespace nlohmann
                         break;
                     }
 
-                    // remaining bytes (80..C1 and F5..FF) are ill-formed
+                    // remaining bytes (80..C1 && F5..FF) are ill-formed
                     default:
                     {
                         error_message = "invalid string: ill-formed UTF-8 byte";
@@ -3417,7 +3417,7 @@ namespace nlohmann
 
             The function is realized with a deterministic finite state machine derived
             from the grammar described in RFC 7159. Starting in state "init", the
-            input is read and used to determined the next state. Only state "done"
+            input is read && used to determined the next state. Only state "done"
             accepts the number. State "error" is a trap state to model errors. In the
             table below, "anything" means any character but the ones listed before.
 
@@ -3434,7 +3434,7 @@ namespace nlohmann
             any2     | any2     | any2     | done     | done    | done    | done     | done
 
             The state machine is realized with one label per state (prefixed with
-            "scan_number_") and `goto` statements between them. The state machine
+            "scan_number_") && `goto` statements between them. The state machine
             contains cycles, but any cycle can be left when EOF is read. Therefore,
             the function is guaranteed to terminate.
 
@@ -3735,7 +3735,7 @@ namespace nlohmann
                 char* endptr = nullptr;
                 errno = 0;
 
-                // try to parse integers first and fall back to floats
+                // try to parse integers first && fall back to floats
                 if (number_type == token_type::value_unsigned)
                 {
                     const auto x = std::strtoull(token_buffer.data(), &endptr, 10);
@@ -3828,7 +3828,7 @@ namespace nlohmann
 
                 if (next_unget)
                 {
-                    // just reset the next_unget variable and work with current
+                    // just reset the next_unget variable && work with current
                     next_unget = false;
                 }
                 else
@@ -3855,7 +3855,7 @@ namespace nlohmann
 
             We implement unget by setting variable next_unget to true. The input is not
             changed - we just simulate ungetting by modifying chars_read_total,
-            chars_read_current_line, and token_string. The next call to get() will
+            chars_read_current_line, && token_string. The next call to get() will
             behave as if the unget character is read again.
             */
             void unget()
@@ -3938,7 +3938,7 @@ namespace nlohmann
                 std::string result;
                 for (const auto c : token_string)
                 {
-                    if ('\x00' <= c and c <= '\x1F')
+                    if ('\x00' <= c && c <= '\x1F')
                     {
                         // escape control characters
                         char cs[9];
@@ -3974,7 +3974,7 @@ namespace nlohmann
                 if (get() == 0xEF)
                 {
                     // check if we completely parse the BOM
-                    return get() == 0xBB and get() == 0xBF;
+                    return get() == 0xBB && get() == 0xBF;
                 }
 
                 // the first character is not the beginning of the BOM; unget it to
@@ -3986,13 +3986,13 @@ namespace nlohmann
             token_type scan()
             {
                 // initially, skip the BOM
-                if (position.chars_read_total == 0 and not skip_bom())
+                if (position.chars_read_total == 0 && not skip_bom())
                 {
                     error_message = "invalid BOM; must be 0xEF 0xBB 0xBF if given";
                     return token_type::parse_error;
                 }
 
-                // read next character and ignore whitespace
+                // read next character && ignore whitespace
                 do
                 {
                     get();
@@ -4382,7 +4382,7 @@ namespace nlohmann
         /*!
         @brief SAX implementation to create a JSON value from SAX events
 
-        This class implements the @ref json_sax interface and processes the SAX events
+        This class implements the @ref json_sax interface && processes the SAX events
         to create a JSON value which makes it basically a DOM parser. The structure or
         hierarchy of the JSON value is managed by the stack `ref_stack` which contains
         a pointer to the respective array or object for each recursion depth.
@@ -4450,7 +4450,7 @@ namespace nlohmann
             {
                 ref_stack.push_back(handle_value(BasicJsonType::value_t::object));
 
-                if (JSON_UNLIKELY(len != std::size_t(-1) and len > ref_stack.back()->max_size()))
+                if (JSON_UNLIKELY(len != std::size_t(-1) && len > ref_stack.back()->max_size()))
                 {
                     JSON_THROW(out_of_range::create(408,
                         "excessive object size: " + std::to_string(len)));
@@ -4461,7 +4461,7 @@ namespace nlohmann
 
             bool key(string_t& val)
             {
-                // add null at given key and store the reference for later
+                // add null at given key && store the reference for later
                 object_element = &(ref_stack.back()->m_value.object->operator[](val));
                 return true;
             }
@@ -4476,7 +4476,7 @@ namespace nlohmann
             {
                 ref_stack.push_back(handle_value(BasicJsonType::value_t::array));
 
-                if (JSON_UNLIKELY(len != std::size_t(-1) and len > ref_stack.back()->max_size()))
+                if (JSON_UNLIKELY(len != std::size_t(-1) && len > ref_stack.back()->max_size()))
                 {
                     JSON_THROW(out_of_range::create(408,
                         "excessive array size: " + std::to_string(len)));
@@ -4634,7 +4634,7 @@ namespace nlohmann
                 // check object limit
                 if (ref_stack.back())
                 {
-                    if (JSON_UNLIKELY(len != std::size_t(-1) and len > ref_stack.back()->max_size()))
+                    if (JSON_UNLIKELY(len != std::size_t(-1) && len > ref_stack.back()->max_size()))
                     {
                         JSON_THROW(out_of_range::create(408,
                             "excessive object size: " + std::to_string(len)));
@@ -4652,8 +4652,8 @@ namespace nlohmann
                 const bool keep = callback(static_cast<int>(ref_stack.size()), parse_event_t::key, k);
                 key_keep_stack.push_back(keep);
 
-                // add discarded value at given key and store the reference for later
-                if (keep and ref_stack.back())
+                // add discarded value at given key && store the reference for later
+                if (keep && ref_stack.back())
                 {
                     object_element = &(ref_stack.back()->m_value.object->operator[](val) = discarded);
                 }
@@ -4677,7 +4677,7 @@ namespace nlohmann
                 ref_stack.pop_back();
                 keep_stack.pop_back();
 
-                if (not ref_stack.empty() and ref_stack.back())
+                if (not ref_stack.empty() && ref_stack.back())
                 {
                     // remove discarded value
                     if (ref_stack.back()->is_object())
@@ -4707,7 +4707,7 @@ namespace nlohmann
                 // check array limit
                 if (ref_stack.back())
                 {
-                    if (JSON_UNLIKELY(len != std::size_t(-1) and len > ref_stack.back()->max_size()))
+                    if (JSON_UNLIKELY(len != std::size_t(-1) && len > ref_stack.back()->max_size()))
                     {
                         JSON_THROW(out_of_range::create(408,
                             "excessive array size: " + std::to_string(len)));
@@ -4737,7 +4737,7 @@ namespace nlohmann
                 keep_stack.pop_back();
 
                 // remove discarded value
-                if (not keep and not ref_stack.empty())
+                if (not keep && not ref_stack.empty())
                 {
                     if (ref_stack.back()->is_array())
                     {
@@ -4785,7 +4785,7 @@ namespace nlohmann
             /*!
             @param[in] v  value to add to the JSON value we build during parsing
             @param[in] skip_callback  whether we should skip calling the callback
-            function; this is required after start_array() and
+            function; this is required after start_array() &&
             start_object() SAX events, because otherwise we would call the
             callback function with an empty array or object, respectively.
 
@@ -4794,7 +4794,7 @@ namespace nlohmann
             @invariant If the ref stack contains a value, then it is an array or an
             object to which we can add elements
 
-            @return pair of boolean (whether value should be kept) and pointer (to the
+            @return pair of boolean (whether value should be kept) && pointer (to the
             passed value in the ref_stack hierarchy; nullptr if not kept)
             */
             template<typename Value>
@@ -4834,7 +4834,7 @@ namespace nlohmann
                     return{ false, nullptr };
                 }
 
-                // we now only expect arrays and objects
+                // we now only expect arrays && objects
                 assert(ref_stack.back()->is_array() or ref_stack.back()->is_object());
 
                 if (ref_stack.back()->is_array())
@@ -4984,13 +4984,13 @@ namespace nlohmann
         public:
             enum class parse_event_t : uint8_t
             {
-                /// the parser read `{` and started to process a JSON object
+                /// the parser read `{` && started to process a JSON object
                 object_start,
-                /// the parser read `}` and finished processing a JSON object
+                /// the parser read `}` && finished processing a JSON object
                 object_end,
-                /// the parser read `[` and started to process a JSON array
+                /// the parser read `[` && started to process a JSON array
                 array_start,
-                /// the parser read `]` and finished processing a JSON array
+                /// the parser read `]` && finished processing a JSON array
                 array_end,
                 /// the parser read a key of a value in an object
                 key,
@@ -5030,7 +5030,7 @@ namespace nlohmann
                     result.assert_invariant();
 
                     // in strict mode, input must be completely read
-                    if (strict and (get_token() != token_type::end_of_input))
+                    if (strict && (get_token() != token_type::end_of_input))
                     {
                         sdp.parse_error(m_lexer.get_position(),
                             m_lexer.get_token_string(),
@@ -5059,7 +5059,7 @@ namespace nlohmann
                     result.assert_invariant();
 
                     // in strict mode, input must be completely read
-                    if (strict and (get_token() != token_type::end_of_input))
+                    if (strict && (get_token() != token_type::end_of_input))
                     {
                         sdp.parse_error(m_lexer.get_position(),
                             m_lexer.get_token_string(),
@@ -5095,7 +5095,7 @@ namespace nlohmann
                 const bool result = sax_parse_internal(sax);
 
                 // strict mode: next byte must be EOF
-                if (result and strict and (get_token() != token_type::end_of_input))
+                if (result && strict && (get_token() != token_type::end_of_input))
                 {
                     return sax->parse_error(m_lexer.get_position(),
                         m_lexer.get_token_string(),
@@ -5628,17 +5628,17 @@ namespace nlohmann
 
         /*!
         @brief a template for a bidirectional iterator for the @ref basic_json class
-        This class implements a both iterators (iterator and const_iterator) for the
+        This class implements a both iterators (iterator && const_iterator) for the
         @ref basic_json class.
         @note An iterator is called *initialized* when a pointer to a JSON value has
         been set (e.g., by a constructor or a copy assignment). If the iterator is
-        default-constructed, it is *uninitialized* and most methods are undefined.
+        default-constructed, it is *uninitialized* && most methods are undefined.
         **The library uses assertions to detect calls on uninitialized iterators.**
         @requirement The class satisfies the following concept requirements:
         -
         [BidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator):
         The iterator that can be moved can be moved in both directions (i.e.
-        incremented and decremented).
+        incremented && decremented).
         @since version 1.0.0, simplified in version 2.0.9, change to bidirectional
         iterators in version 3.0.0 (see https://github.com/nlohmann/json/issues/593)
         */
@@ -5662,7 +5662,7 @@ namespace nlohmann
             /// The std::iterator class template (used as a base class to provide typedefs) is deprecated in C++17.
             /// The C++ Standard has never required user-defined iterators to derive from std::iterator.
             /// A user-defined iterator should provide publicly accessible typedefs named
-            /// iterator_category, value_type, difference_type, pointer, and reference.
+            /// iterator_category, value_type, difference_type, pointer, && reference.
             /// Note that value_type is required to be non-const, even for constant iterators.
             using iterator_category = std::bidirectional_iterator_tag;
 
@@ -5716,10 +5716,10 @@ namespace nlohmann
             }
 
             /*!
-            @note The conventional copy constructor and copy assignment are implicitly
-            defined. Combined with the following converting constructor and
+            @note The conventional copy constructor && copy assignment are implicitly
+            defined. Combined with the following converting constructor &&
             assignment, they support: (1) copy from iterator to iterator, (2)
-            copy from const iterator to const iterator, and (3) conversion from
+            copy from const iterator to const iterator, && (3) conversion from
             iterator to const iterator. However conversion from const iterator
             to iterator is not defined.
             */
@@ -6111,7 +6111,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief  addition of distance and iterator
+            @brief  addition of distance && iterator
             @pre The iterator is initialized; i.e. `m_object != nullptr`.
             */
             friend iter_impl operator+(difference_type i, const iter_impl& it)
@@ -6238,14 +6238,14 @@ namespace nlohmann
         @brief a template for a reverse iterator class
 
         @tparam Base the base iterator type to reverse. Valid types are @ref
-        iterator (to create @ref reverse_iterator) and @ref const_iterator (to
+        iterator (to create @ref reverse_iterator) && @ref const_iterator (to
         create @ref const_reverse_iterator).
 
         @requirement The class satisfies the following concept requirements:
         -
         [BidirectionalIterator](https://en.cppreference.com/w/cpp/named_req/BidirectionalIterator):
         The iterator that can be moved can be moved in both directions (i.e.
-        incremented and decremented).
+        incremented && decremented).
         - [OutputIterator](https://en.cppreference.com/w/cpp/named_req/OutputIterator):
         It is possible to write to the pointed-to element (only if @a Base is
         @ref iterator).
@@ -6499,7 +6499,7 @@ namespace nlohmann
         ///////////////////
 
         /*!
-        @brief deserialization of CBOR, MessagePack, and UBJSON values
+        @brief deserialization of CBOR, MessagePack, && UBJSON values
         */
         template<typename BasicJsonType, typename SAX = json_sax_dom_parser<BasicJsonType>>
         class binary_reader
@@ -6561,7 +6561,7 @@ namespace nlohmann
                 }
 
                 // strict mode: next byte must be EOF
-                if (result and strict)
+                if (result && strict)
                 {
                     if (format == input_format_t::ubjson)
                     {
@@ -6585,7 +6585,7 @@ namespace nlohmann
             /*!
             @brief determine system byte order
 
-            @return true if and only if system's byte order is little endian
+            @return true if && only if system's byte order is little endian
 
             @note from http://stackoverflow.com/a/1001328/266378
             */
@@ -6600,7 +6600,7 @@ namespace nlohmann
             //////////
 
             /*!
-            @brief Reads in a BSON-object and passes it to the SAX-parser.
+            @brief Reads in a BSON-object && passes it to the SAX-parser.
             @return whether a valid BSON-value was passed to the SAX parser
             */
             bool parse_bson_internal()
@@ -6668,7 +6668,7 @@ namespace nlohmann
                     return sax->parse_error(chars_read, last_token, parse_error::create(112, chars_read, exception_message(input_format_t::bson, "string length must be at least 1, is " + std::to_string(len), "string")));
                 }
 
-                return get_string(input_format_t::bson, len - static_cast<NumberType>(1), result) and get() != std::char_traits<char>::eof();
+                return get_string(input_format_t::bson, len - static_cast<NumberType>(1), result) && get() != std::char_traits<char>::eof();
             }
 
             /*!
@@ -6689,14 +6689,14 @@ namespace nlohmann
                 case 0x01: // double
                 {
                     double number;
-                    return get_number<double, true>(input_format_t::bson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number<double, true>(input_format_t::bson, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 0x02: // string
                 {
                     std::int32_t len;
                     string_t value;
-                    return get_number<std::int32_t, true>(input_format_t::bson, len) and get_bson_string(len, value) and sax->string(value);
+                    return get_number<std::int32_t, true>(input_format_t::bson, len) && get_bson_string(len, value) && sax->string(value);
                 }
 
                 case 0x03: // object
@@ -6722,13 +6722,13 @@ namespace nlohmann
                 case 0x10: // int32
                 {
                     std::int32_t value;
-                    return get_number<std::int32_t, true>(input_format_t::bson, value) and sax->number_integer(value);
+                    return get_number<std::int32_t, true>(input_format_t::bson, value) && sax->number_integer(value);
                 }
 
                 case 0x12: // int64
                 {
                     std::int64_t value;
-                    return get_number<std::int64_t, true>(input_format_t::bson, value) and sax->number_integer(value);
+                    return get_number<std::int64_t, true>(input_format_t::bson, value) && sax->number_integer(value);
                 }
 
                 default: // anything else not supported (yet)
@@ -6743,7 +6743,7 @@ namespace nlohmann
             /*!
             @brief Read a BSON element list (as specified in the BSON-spec)
 
-            The same binary layout is used for objects and arrays, hence it must be
+            The same binary layout is used for objects && arrays, hence it must be
             indicated with the argument @a is_array which one is expected
             (true --> array, false --> object).
 
@@ -6789,7 +6789,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Reads an array from the BSON input and passes it to the SAX-parser.
+            @brief Reads an array from the BSON input && passes it to the SAX-parser.
             @return whether a valid BSON-array was passed to the SAX parser
             */
             bool parse_bson_array()
@@ -6859,25 +6859,25 @@ namespace nlohmann
                 case 0x18: // Unsigned integer (one-byte uint8_t follows)
                 {
                     uint8_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::cbor, number) && sax->number_unsigned(number);
                 }
 
                 case 0x19: // Unsigned integer (two-byte uint16_t follows)
                 {
                     uint16_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::cbor, number) && sax->number_unsigned(number);
                 }
 
                 case 0x1A: // Unsigned integer (four-byte uint32_t follows)
                 {
                     uint32_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::cbor, number) && sax->number_unsigned(number);
                 }
 
                 case 0x1B: // Unsigned integer (eight-byte uint64_t follows)
                 {
                     uint64_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::cbor, number) && sax->number_unsigned(number);
                 }
 
                 // Negative integer -1-0x00..-1-0x17 (-1..-24)
@@ -6910,25 +6910,25 @@ namespace nlohmann
                 case 0x38: // Negative integer (one-byte uint8_t follows)
                 {
                     uint8_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    return get_number(input_format_t::cbor, number) && sax->number_integer(static_cast<number_integer_t>(-1) - number);
                 }
 
                 case 0x39: // Negative integer -1-n (two-byte uint16_t follows)
                 {
                     uint16_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    return get_number(input_format_t::cbor, number) && sax->number_integer(static_cast<number_integer_t>(-1) - number);
                 }
 
                 case 0x3A: // Negative integer -1-n (four-byte uint32_t follows)
                 {
                     uint32_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1) - number);
+                    return get_number(input_format_t::cbor, number) && sax->number_integer(static_cast<number_integer_t>(-1) - number);
                 }
 
                 case 0x3B: // Negative integer -1-n (eight-byte uint64_t follows)
                 {
                     uint64_t number;
-                    return get_number(input_format_t::cbor, number) and sax->number_integer(static_cast<number_integer_t>(-1)
+                    return get_number(input_format_t::cbor, number) && sax->number_integer(static_cast<number_integer_t>(-1)
                         - static_cast<number_integer_t>(number));
                 }
 
@@ -6964,7 +6964,7 @@ namespace nlohmann
                 case 0x7F: // UTF-8 string (indefinite length)
                 {
                     string_t s;
-                    return get_cbor_string(s) and sax->string(s);
+                    return get_cbor_string(s) && sax->string(s);
                 }
 
                 // array (0x00..0x17 data items follow)
@@ -6997,25 +6997,25 @@ namespace nlohmann
                 case 0x98: // array (one-byte uint8_t for n follows)
                 {
                     uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_array(static_cast<std::size_t>(len));
                 }
 
                 case 0x99: // array (two-byte uint16_t for n follow)
                 {
                     uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_array(static_cast<std::size_t>(len));
                 }
 
                 case 0x9A: // array (four-byte uint32_t for n follow)
                 {
                     uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_array(static_cast<std::size_t>(len));
                 }
 
                 case 0x9B: // array (eight-byte uint64_t for n follow)
                 {
                     uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_array(static_cast<std::size_t>(len));
                 }
 
                 case 0x9F: // array (indefinite length)
@@ -7051,25 +7051,25 @@ namespace nlohmann
                 case 0xB8: // map (one-byte uint8_t for n follows)
                 {
                     uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_object(static_cast<std::size_t>(len));
                 }
 
                 case 0xB9: // map (two-byte uint16_t for n follow)
                 {
                     uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_object(static_cast<std::size_t>(len));
                 }
 
                 case 0xBA: // map (four-byte uint32_t for n follow)
                 {
                     uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_object(static_cast<std::size_t>(len));
                 }
 
                 case 0xBB: // map (eight-byte uint64_t for n follow)
                 {
                     uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_cbor_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::cbor, len) && get_cbor_object(static_cast<std::size_t>(len));
                 }
 
                 case 0xBF: // map (indefinite length)
@@ -7113,8 +7113,8 @@ namespace nlohmann
                     {
                         const int exp = (half >> 10) & 0x1F;
                         const int mant = half & 0x3FF;
-                        assert(0 <= exp and exp <= 32);
-                        assert(0 <= mant and mant <= 1024);
+                        assert(0 <= exp && exp <= 32);
+                        assert(0 <= mant && mant <= 1024);
                         switch (exp)
                         {
                         case 0:
@@ -7135,13 +7135,13 @@ namespace nlohmann
                 case 0xFA: // Single-Precision Float (four-byte IEEE 754)
                 {
                     float number;
-                    return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::cbor, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 0xFB: // Double-Precision Float (eight-byte IEEE 754)
                 {
                     double number;
-                    return get_number(input_format_t::cbor, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::cbor, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 default: // anything else (0xFF is handled inside the other types)
@@ -7156,7 +7156,7 @@ namespace nlohmann
             @brief reads a CBOR string
 
             This function first reads starting bytes to determine the expected
-            string length and then copies this number of bytes into a string.
+            string length && then copies this number of bytes into a string.
             Additionally, CBOR's strings with indefinite lengths are supported.
 
             @param[out] result  created string
@@ -7204,25 +7204,25 @@ namespace nlohmann
                 case 0x78: // UTF-8 string (one-byte uint8_t for n follows)
                 {
                     uint8_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    return get_number(input_format_t::cbor, len) && get_string(input_format_t::cbor, len, result);
                 }
 
                 case 0x79: // UTF-8 string (two-byte uint16_t for n follow)
                 {
                     uint16_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    return get_number(input_format_t::cbor, len) && get_string(input_format_t::cbor, len, result);
                 }
 
                 case 0x7A: // UTF-8 string (four-byte uint32_t for n follow)
                 {
                     uint32_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    return get_number(input_format_t::cbor, len) && get_string(input_format_t::cbor, len, result);
                 }
 
                 case 0x7B: // UTF-8 string (eight-byte uint64_t for n follow)
                 {
                     uint64_t len;
-                    return get_number(input_format_t::cbor, len) and get_string(input_format_t::cbor, len, result);
+                    return get_number(input_format_t::cbor, len) && get_string(input_format_t::cbor, len, result);
                 }
 
                 case 0x7F: // UTF-8 string (indefinite length)
@@ -7552,7 +7552,7 @@ namespace nlohmann
                 case 0xBF:
                 {
                     string_t s;
-                    return get_msgpack_string(s) and sax->string(s);
+                    return get_msgpack_string(s) && sax->string(s);
                 }
 
                 case 0xC0: // nil
@@ -7567,61 +7567,61 @@ namespace nlohmann
                 case 0xCA: // float 32
                 {
                     float number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::msgpack, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 0xCB: // float 64
                 {
                     double number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::msgpack, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 0xCC: // uint 8
                 {
                     uint8_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_unsigned(number);
                 }
 
                 case 0xCD: // uint 16
                 {
                     uint16_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_unsigned(number);
                 }
 
                 case 0xCE: // uint 32
                 {
                     uint32_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_unsigned(number);
                 }
 
                 case 0xCF: // uint 64
                 {
                     uint64_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_unsigned(number);
                 }
 
                 case 0xD0: // int 8
                 {
                     int8_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_integer(number);
                 }
 
                 case 0xD1: // int 16
                 {
                     int16_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_integer(number);
                 }
 
                 case 0xD2: // int 32
                 {
                     int32_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_integer(number);
                 }
 
                 case 0xD3: // int 64
                 {
                     int64_t number;
-                    return get_number(input_format_t::msgpack, number) and sax->number_integer(number);
+                    return get_number(input_format_t::msgpack, number) && sax->number_integer(number);
                 }
 
                 case 0xD9: // str 8
@@ -7629,31 +7629,31 @@ namespace nlohmann
                 case 0xDB: // str 32
                 {
                     string_t s;
-                    return get_msgpack_string(s) and sax->string(s);
+                    return get_msgpack_string(s) && sax->string(s);
                 }
 
                 case 0xDC: // array 16
                 {
                     uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::msgpack, len) && get_msgpack_array(static_cast<std::size_t>(len));
                 }
 
                 case 0xDD: // array 32
                 {
                     uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_array(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::msgpack, len) && get_msgpack_array(static_cast<std::size_t>(len));
                 }
 
                 case 0xDE: // map 16
                 {
                     uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::msgpack, len) && get_msgpack_object(static_cast<std::size_t>(len));
                 }
 
                 case 0xDF: // map 32
                 {
                     uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_msgpack_object(static_cast<std::size_t>(len));
+                    return get_number(input_format_t::msgpack, len) && get_msgpack_object(static_cast<std::size_t>(len));
                 }
 
                 // negative fixint
@@ -7703,7 +7703,7 @@ namespace nlohmann
             @brief reads a MessagePack string
 
             This function first reads starting bytes to determine the expected
-            string length and then copies this number of bytes into a string.
+            string length && then copies this number of bytes into a string.
 
             @param[out] result  created string
 
@@ -7758,19 +7758,19 @@ namespace nlohmann
                 case 0xD9: // str 8
                 {
                     uint8_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    return get_number(input_format_t::msgpack, len) && get_string(input_format_t::msgpack, len, result);
                 }
 
                 case 0xDA: // str 16
                 {
                     uint16_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    return get_number(input_format_t::msgpack, len) && get_string(input_format_t::msgpack, len, result);
                 }
 
                 case 0xDB: // str 32
                 {
                     uint32_t len;
-                    return get_number(input_format_t::msgpack, len) and get_string(input_format_t::msgpack, len, result);
+                    return get_number(input_format_t::msgpack, len) && get_string(input_format_t::msgpack, len, result);
                 }
 
                 default:
@@ -7880,31 +7880,31 @@ namespace nlohmann
                 case 'U':
                 {
                     uint8_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    return get_number(input_format_t::ubjson, len) && get_string(input_format_t::ubjson, len, result);
                 }
 
                 case 'i':
                 {
                     int8_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    return get_number(input_format_t::ubjson, len) && get_string(input_format_t::ubjson, len, result);
                 }
 
                 case 'I':
                 {
                     int16_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    return get_number(input_format_t::ubjson, len) && get_string(input_format_t::ubjson, len, result);
                 }
 
                 case 'l':
                 {
                     int32_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    return get_number(input_format_t::ubjson, len) && get_string(input_format_t::ubjson, len, result);
                 }
 
                 case 'L':
                 {
                     int64_t len;
-                    return get_number(input_format_t::ubjson, len) and get_string(input_format_t::ubjson, len, result);
+                    return get_number(input_format_t::ubjson, len) && get_string(input_format_t::ubjson, len, result);
                 }
 
                 default:
@@ -7985,12 +7985,12 @@ namespace nlohmann
             }
 
             /*!
-            @brief determine the type and size for a container
+            @brief determine the type && size for a container
 
-            In the optimized UBJSON format, a type and a size can be provided to allow
+            In the optimized UBJSON format, a type && a size can be provided to allow
             for a more compact representation.
 
-            @param[out] result  pair of the size and the type
+            @param[out] result  pair of the size && the type
 
             @return whether pair creation completed
             */
@@ -8051,43 +8051,43 @@ namespace nlohmann
                 case 'U':
                 {
                     uint8_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_unsigned(number);
+                    return get_number(input_format_t::ubjson, number) && sax->number_unsigned(number);
                 }
 
                 case 'i':
                 {
                     int8_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    return get_number(input_format_t::ubjson, number) && sax->number_integer(number);
                 }
 
                 case 'I':
                 {
                     int16_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    return get_number(input_format_t::ubjson, number) && sax->number_integer(number);
                 }
 
                 case 'l':
                 {
                     int32_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    return get_number(input_format_t::ubjson, number) && sax->number_integer(number);
                 }
 
                 case 'L':
                 {
                     int64_t number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_integer(number);
+                    return get_number(input_format_t::ubjson, number) && sax->number_integer(number);
                 }
 
                 case 'd':
                 {
                     float number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::ubjson, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 'D':
                 {
                     double number;
-                    return get_number(input_format_t::ubjson, number) and sax->number_float(static_cast<number_float_t>(number), "");
+                    return get_number(input_format_t::ubjson, number) && sax->number_float(static_cast<number_float_t>(number), "");
                 }
 
                 case 'C':  // char
@@ -8109,7 +8109,7 @@ namespace nlohmann
                 case 'S':  // string
                 {
                     string_t s;
-                    return get_ubjson_string(s) and sax->string(s);
+                    return get_ubjson_string(s) && sax->string(s);
                 }
 
                 case '[':  // array
@@ -8305,8 +8305,8 @@ namespace nlohmann
             @return whether conversion completed
 
             @note This function needs to respect the system's endianess, because
-            bytes in CBOR, MessagePack, and UBJSON are stored in network order
-            (big endian) and therefore need reordering on little endian systems.
+            bytes in CBOR, MessagePack, && UBJSON are stored in network order
+            (big endian) && therefore need reordering on little endian systems.
             */
             template<typename NumberType, bool InputIsLittleEndian = false>
             bool get_number(const input_format_t format, NumberType& result)
@@ -8332,7 +8332,7 @@ namespace nlohmann
                     }
                 }
 
-                // step 2: convert array into number of type T and return
+                // step 2: convert array into number of type T && return
                 std::memcpy(&result, vec.data(), sizeof(NumberType));
                 return true;
             }
@@ -8475,7 +8475,7 @@ namespace nlohmann
         ///////////////////
 
         /*!
-        @brief serialization to CBOR and MessagePack values
+        @brief serialization to CBOR && MessagePack values
         */
         template<typename BasicJsonType, typename CharType>
         class binary_writer
@@ -8540,7 +8540,7 @@ namespace nlohmann
                     if (j.m_value.number_integer >= 0)
                     {
                         // CBOR does not differentiate between positive signed
-                        // integers and unsigned integers. Therefore, we used the
+                        // integers && unsigned integers. Therefore, we used the
                         // code from the value_t::number_unsigned case here.
                         if (j.m_value.number_integer <= 0x17)
                         {
@@ -8570,7 +8570,7 @@ namespace nlohmann
                     else
                     {
                         // The conversions below encode the sign in the first
-                        // byte, and the value is converted to a positive number.
+                        // byte, && the value is converted to a positive number.
                         const auto positive_number = -1 - j.m_value.number_integer;
                         if (j.m_value.number_integer >= -24)
                         {
@@ -8638,7 +8638,7 @@ namespace nlohmann
 
                 case value_t::string:
                 {
-                    // step 1: write control byte and the string length
+                    // step 1: write control byte && the string length
                     const auto N = j.m_value.string->size();
                     if (N <= 0x17)
                     {
@@ -8676,7 +8676,7 @@ namespace nlohmann
 
                 case value_t::array:
                 {
-                    // step 1: write control byte and the array size
+                    // step 1: write control byte && the array size
                     const auto N = j.m_value.array->size();
                     if (N <= 0x17)
                     {
@@ -8715,7 +8715,7 @@ namespace nlohmann
 
                 case value_t::object:
                 {
-                    // step 1: write control byte and the object size
+                    // step 1: write control byte && the object size
                     const auto N = j.m_value.object->size();
                     if (N <= 0x17)
                     {
@@ -8771,7 +8771,7 @@ namespace nlohmann
                     break;
                 }
 
-                case value_t::boolean: // true and false
+                case value_t::boolean: // true && false
                 {
                     oa->write_character(j.m_value.boolean
                         ? to_char_type(0xC3)
@@ -8784,7 +8784,7 @@ namespace nlohmann
                     if (j.m_value.number_integer >= 0)
                     {
                         // MessagePack does not differentiate between positive
-                        // signed integers and unsigned integers. Therefore, we used
+                        // signed integers && unsigned integers. Therefore, we used
                         // the code from the value_t::number_unsigned case here.
                         if (j.m_value.number_unsigned < 128)
                         {
@@ -8823,28 +8823,28 @@ namespace nlohmann
                             // negative fixnum
                             write_number(static_cast<int8_t>(j.m_value.number_integer));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<int8_t>::min)() and
+                        else if (j.m_value.number_integer >= (std::numeric_limits<int8_t>::min)() &&
                             j.m_value.number_integer <= (std::numeric_limits<int8_t>::max)())
                         {
                             // int 8
                             oa->write_character(to_char_type(0xD0));
                             write_number(static_cast<int8_t>(j.m_value.number_integer));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<int16_t>::min)() and
+                        else if (j.m_value.number_integer >= (std::numeric_limits<int16_t>::min)() &&
                             j.m_value.number_integer <= (std::numeric_limits<int16_t>::max)())
                         {
                             // int 16
                             oa->write_character(to_char_type(0xD1));
                             write_number(static_cast<int16_t>(j.m_value.number_integer));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<int32_t>::min)() and
+                        else if (j.m_value.number_integer >= (std::numeric_limits<int32_t>::min)() &&
                             j.m_value.number_integer <= (std::numeric_limits<int32_t>::max)())
                         {
                             // int 32
                             oa->write_character(to_char_type(0xD2));
                             write_number(static_cast<int32_t>(j.m_value.number_integer));
                         }
-                        else if (j.m_value.number_integer >= (std::numeric_limits<int64_t>::min)() and
+                        else if (j.m_value.number_integer >= (std::numeric_limits<int64_t>::min)() &&
                             j.m_value.number_integer <= (std::numeric_limits<int64_t>::max)())
                         {
                             // int 64
@@ -8898,7 +8898,7 @@ namespace nlohmann
 
                 case value_t::string:
                 {
-                    // step 1: write control byte and the string length
+                    // step 1: write control byte && the string length
                     const auto N = j.m_value.string->size();
                     if (N <= 31)
                     {
@@ -8933,7 +8933,7 @@ namespace nlohmann
 
                 case value_t::array:
                 {
-                    // step 1: write control byte and the array size
+                    // step 1: write control byte && the array size
                     const auto N = j.m_value.array->size();
                     if (N <= 15)
                     {
@@ -8963,7 +8963,7 @@ namespace nlohmann
 
                 case value_t::object:
                 {
-                    // step 1: write control byte and the object size
+                    // step 1: write control byte && the object size
                     const auto N = j.m_value.object->size();
                     if (N <= 15)
                     {
@@ -9067,7 +9067,7 @@ namespace nlohmann
                     }
 
                     bool prefix_required = true;
-                    if (use_type and not j.m_value.array->empty())
+                    if (use_type && not j.m_value.array->empty())
                     {
                         assert(use_count);
                         const CharType first_prefix = ubjson_prefix(j.front());
@@ -9112,7 +9112,7 @@ namespace nlohmann
                     }
 
                     bool prefix_required = true;
-                    if (use_type and not j.m_value.object->empty())
+                    if (use_type && not j.m_value.object->empty())
                     {
                         assert(use_count);
                         const CharType first_prefix = ubjson_prefix(j.front());
@@ -9165,7 +9165,7 @@ namespace nlohmann
 
             /*!
             @return The size of a BSON document entry header, including the id marker
-            and the entry name size (and its null-terminator).
+            && the entry name size (&& its null-terminator).
             */
             static std::size_t calc_bson_entry_header_size(const string_t& name)
             {
@@ -9180,7 +9180,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes the given @a element_type and @a name to the output adapter
+            @brief Writes the given @a element_type && @a name to the output adapter
             */
             void write_bson_entry_header(const string_t& name,
                 const std::uint8_t element_type)
@@ -9192,7 +9192,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and boolean value @a value
+            @brief Writes a BSON element with key @a name && boolean value @a value
             */
             void write_bson_boolean(const string_t& name,
                 const bool value)
@@ -9202,7 +9202,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and double value @a value
+            @brief Writes a BSON element with key @a name && double value @a value
             */
             void write_bson_double(const string_t& name,
                 const double value)
@@ -9220,7 +9220,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and string value @a value
+            @brief Writes a BSON element with key @a name && string value @a value
             */
             void write_bson_string(const string_t& name,
                 const string_t& value)
@@ -9234,7 +9234,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and null value
+            @brief Writes a BSON element with key @a name && null value
             */
             void write_bson_null(const string_t& name)
             {
@@ -9246,7 +9246,7 @@ namespace nlohmann
             */
             static std::size_t calc_bson_integer_size(const std::int64_t value)
             {
-                if ((std::numeric_limits<std::int32_t>::min)() <= value and value <= (std::numeric_limits<std::int32_t>::max)())
+                if ((std::numeric_limits<std::int32_t>::min)() <= value && value <= (std::numeric_limits<std::int32_t>::max)())
                 {
                     return sizeof(std::int32_t);
                 }
@@ -9257,12 +9257,12 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and integer @a value
+            @brief Writes a BSON element with key @a name && integer @a value
             */
             void write_bson_integer(const string_t& name,
                 const std::int64_t value)
             {
-                if ((std::numeric_limits<std::int32_t>::min)() <= value and value <= (std::numeric_limits<std::int32_t>::max)())
+                if ((std::numeric_limits<std::int32_t>::min)() <= value && value <= (std::numeric_limits<std::int32_t>::max)())
                 {
                     write_bson_entry_header(name, 0x10); // int32
                     write_number<std::int32_t, true>(static_cast<std::int32_t>(value));
@@ -9285,7 +9285,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and unsigned @a value
+            @brief Writes a BSON element with key @a name && unsigned @a value
             */
             void write_bson_unsigned(const string_t& name,
                 const std::uint64_t value)
@@ -9307,7 +9307,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and object @a value
+            @brief Writes a BSON element with key @a name && object @a value
             */
             void write_bson_object_entry(const string_t& name,
                 const typename BasicJsonType::object_t& value)
@@ -9333,7 +9333,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Writes a BSON element with key @a name and array @a value
+            @brief Writes a BSON element with key @a name && array @a value
             */
             void write_bson_array(const string_t& name,
                 const typename BasicJsonType::array_t& value)
@@ -9394,7 +9394,7 @@ namespace nlohmann
             }
 
             /*!
-            @brief Serializes the JSON value @a j to BSON and associates it with the
+            @brief Serializes the JSON value @a j to BSON && associates it with the
             key @a name.
             @param name The name to associate with the JSON entity @a j within the
             current BSON document
@@ -9569,12 +9569,12 @@ namespace nlohmann
 
             // UBJSON: write number (signed integer)
             template<typename NumberType, typename std::enable_if<
-                std::is_signed<NumberType>::value and
+                std::is_signed<NumberType>::value &&
                 not std::is_floating_point<NumberType>::value, int>::type = 0>
                 void write_number_with_ubjson_prefix(const NumberType n,
                     const bool add_prefix)
             {
-                if ((std::numeric_limits<int8_t>::min)() <= n and n <= (std::numeric_limits<int8_t>::max)())
+                if ((std::numeric_limits<int8_t>::min)() <= n && n <= (std::numeric_limits<int8_t>::max)())
                 {
                     if (add_prefix)
                     {
@@ -9582,7 +9582,7 @@ namespace nlohmann
                     }
                     write_number(static_cast<int8_t>(n));
                 }
-                else if (static_cast<int64_t>((std::numeric_limits<uint8_t>::min)()) <= n and n <= static_cast<int64_t>((std::numeric_limits<uint8_t>::max)()))
+                else if (static_cast<int64_t>((std::numeric_limits<uint8_t>::min)()) <= n && n <= static_cast<int64_t>((std::numeric_limits<uint8_t>::max)()))
                 {
                     if (add_prefix)
                     {
@@ -9590,7 +9590,7 @@ namespace nlohmann
                     }
                     write_number(static_cast<uint8_t>(n));
                 }
-                else if ((std::numeric_limits<int16_t>::min)() <= n and n <= (std::numeric_limits<int16_t>::max)())
+                else if ((std::numeric_limits<int16_t>::min)() <= n && n <= (std::numeric_limits<int16_t>::max)())
                 {
                     if (add_prefix)
                     {
@@ -9598,7 +9598,7 @@ namespace nlohmann
                     }
                     write_number(static_cast<int16_t>(n));
                 }
-                else if ((std::numeric_limits<int32_t>::min)() <= n and n <= (std::numeric_limits<int32_t>::max)())
+                else if ((std::numeric_limits<int32_t>::min)() <= n && n <= (std::numeric_limits<int32_t>::max)())
                 {
                     if (add_prefix)
                     {
@@ -9606,7 +9606,7 @@ namespace nlohmann
                     }
                     write_number(static_cast<int32_t>(n));
                 }
-                else if ((std::numeric_limits<int64_t>::min)() <= n and n <= (std::numeric_limits<int64_t>::max)())
+                else if ((std::numeric_limits<int64_t>::min)() <= n && n <= (std::numeric_limits<int64_t>::max)())
                 {
                     if (add_prefix)
                     {
@@ -9643,23 +9643,23 @@ namespace nlohmann
 
                 case value_t::number_integer:
                 {
-                    if ((std::numeric_limits<int8_t>::min)() <= j.m_value.number_integer and j.m_value.number_integer <= (std::numeric_limits<int8_t>::max)())
+                    if ((std::numeric_limits<int8_t>::min)() <= j.m_value.number_integer && j.m_value.number_integer <= (std::numeric_limits<int8_t>::max)())
                     {
                         return 'i';
                     }
-                    if ((std::numeric_limits<uint8_t>::min)() <= j.m_value.number_integer and j.m_value.number_integer <= (std::numeric_limits<uint8_t>::max)())
+                    if ((std::numeric_limits<uint8_t>::min)() <= j.m_value.number_integer && j.m_value.number_integer <= (std::numeric_limits<uint8_t>::max)())
                     {
                         return 'U';
                     }
-                    if ((std::numeric_limits<int16_t>::min)() <= j.m_value.number_integer and j.m_value.number_integer <= (std::numeric_limits<int16_t>::max)())
+                    if ((std::numeric_limits<int16_t>::min)() <= j.m_value.number_integer && j.m_value.number_integer <= (std::numeric_limits<int16_t>::max)())
                     {
                         return 'I';
                     }
-                    if ((std::numeric_limits<int32_t>::min)() <= j.m_value.number_integer and j.m_value.number_integer <= (std::numeric_limits<int32_t>::max)())
+                    if ((std::numeric_limits<int32_t>::min)() <= j.m_value.number_integer && j.m_value.number_integer <= (std::numeric_limits<int32_t>::max)())
                     {
                         return 'l';
                     }
-                    // no check and assume int64_t (see note above)
+                    // no check && assume int64_t (see note above)
                     return 'L';
                 }
 
@@ -9681,7 +9681,7 @@ namespace nlohmann
                     {
                         return 'l';
                     }
-                    // no check and assume int64_t (see note above)
+                    // no check && assume int64_t (see note above)
                     return 'L';
                 }
 
@@ -9724,8 +9724,8 @@ namespace nlohmann
             required to be little endian
 
             @note This function needs to respect the system's endianess, because bytes
-            in CBOR, MessagePack, and UBJSON are stored in network order (big
-            endian) and therefore need reordering on little endian systems.
+            in CBOR, MessagePack, && UBJSON are stored in network order (big
+            endian) && therefore need reordering on little endian systems.
             */
             template<typename NumberType, bool OutputIsLittleEndian = false>
             void write_number(const NumberType n)
@@ -9735,7 +9735,7 @@ namespace nlohmann
                 std::memcpy(vec.data(), &n, sizeof(NumberType));
 
                 // step 2: write array to output (with possible reordering)
-                if (is_little_endian and not OutputIsLittleEndian)
+                if (is_little_endian && not OutputIsLittleEndian)
                 {
                     // reverse byte order prior to conversion if necessary
                     std::reverse(vec.begin(), vec.end());
@@ -9746,18 +9746,18 @@ namespace nlohmann
 
         public:
             // The following to_char_type functions are implement the conversion
-            // between uint8_t and CharType. In case CharType is not unsigned,
+            // between uint8_t && CharType. In case CharType is not unsigned,
             // such a conversion is required to allow values greater than 128.
             // See <https://github.com/nlohmann/json/issues/1286> for a discussion.
             template < typename C = CharType,
-                enable_if_t < std::is_signed<C>::value and std::is_signed<char>::value > * = nullptr >
+                enable_if_t < std::is_signed<C>::value && std::is_signed<char>::value > * = nullptr >
                 static constexpr CharType to_char_type(std::uint8_t x) noexcept
             {
                 return *reinterpret_cast<char*>(&x);
             }
 
             template < typename C = CharType,
-                enable_if_t < std::is_signed<C>::value and std::is_unsigned<char>::value > * = nullptr >
+                enable_if_t < std::is_signed<C>::value && std::is_unsigned<char>::value > * = nullptr >
                 static CharType to_char_type(std::uint8_t x) noexcept
             {
                 static_assert(sizeof(std::uint8_t) == sizeof(CharType), "size of CharType must be equal to std::uint8_t");
@@ -9776,8 +9776,8 @@ namespace nlohmann
 
             template < typename InputCharType, typename C = CharType,
                 enable_if_t <
-                std::is_signed<C>::value and
-                std::is_signed<char>::value and
+                std::is_signed<C>::value &&
+                std::is_signed<char>::value &&
                 std::is_same<char, typename std::remove_cv<InputCharType>::type>::value
             > * = nullptr >
                 static constexpr CharType to_char_type(InputCharType x) noexcept
@@ -9801,7 +9801,7 @@ namespace nlohmann
 #include <algorithm> // reverse, remove, fill, find, none_of
 #include <array> // array
 #include <cassert> // assert
-#include <ciso646> // and, or
+#include <ciso646> // &&, or
 #include <clocale> // localeconv, lconv
 #include <cmath> // labs, isfinite, isnan, signbit
 #include <cstddef> // size_t, ptrdiff_t
@@ -9817,7 +9817,7 @@ namespace nlohmann
 
 
 #include <cassert> // assert
-#include <ciso646> // or, and, not
+#include <ciso646> // or, &&, not
 #include <cmath>   // signbit, isfinite
 #include <cstdint> // intN_t, uintN_t
 #include <cstring> // memcpy, memmove
@@ -9841,12 +9841,12 @@ namespace nlohmann
 
         For a detailed description of the algorithm see:
 
-        [1] Loitsch, "Printing Floating-Point Numbers Quickly and Accurately with
+        [1] Loitsch, "Printing Floating-Point Numbers Quickly && Accurately with
         Integers", Proceedings of the ACM SIGPLAN 2010 Conference on Programming
-        Language Design and Implementation, PLDI 2010
-        [2] Burger, Dybvig, "Printing Floating-Point Numbers Quickly and Accurately",
+        Language Design && Implementation, PLDI 2010
+        [2] Burger, Dybvig, "Printing Floating-Point Numbers Quickly && Accurately",
         Proceedings of the ACM SIGPLAN 1996 Conference on Programming Language
-        Design and Implementation, PLDI 1996
+        Design && Implementation, PLDI 1996
         */
         namespace dtoa_impl
         {
@@ -9872,7 +9872,7 @@ namespace nlohmann
 
                 /*!
                 @brief returns x - y
-                @pre x.e == y.e and x.f >= y.f
+                @pre x.e == y.e && x.f >= y.f
                 */
                 static diyfp sub(const diyfp& x, const diyfp& y) noexcept
                 {
@@ -9937,7 +9937,7 @@ namespace nlohmann
                     // p_lo = p0_lo + (Q << 32)
                     //
                     // But in this particular case here, the full p_lo is not required.
-                    // Effectively we only need to add the highest bit in p_lo to p_hi (and
+                    // Effectively we only need to add the highest bit in p_lo to p_hi (&&
                     // Q_hi + 1 does not overflow).
 
                     Q += uint64_t{ 1 } << (64 - 32 - 1); // round, ties up
@@ -9966,7 +9966,7 @@ namespace nlohmann
 
                 /*!
                 @brief normalize x such that the result has the exponent E
-                @pre e >= x.e and the upper e - x.e bits of x.f must be zero.
+                @pre e >= x.e && the upper e - x.e bits of x.f must be zero.
                 */
                 static diyfp normalize_to(const diyfp& x, const int target_exponent) noexcept
                 {
@@ -9987,10 +9987,10 @@ namespace nlohmann
             };
 
             /*!
-            Compute the (normalized) diyfp representing the input number 'value' and its
+            Compute the (normalized) diyfp representing the input number 'value' && its
             boundaries.
 
-            @pre value must be finite and positive
+            @pre value must be finite && positive
             */
             template <typename FloatType>
             boundaries compute_boundaries(FloatType value)
@@ -10024,19 +10024,19 @@ namespace nlohmann
                     ? diyfp(F, kMinExp)
                     : diyfp(F + kHiddenBit, static_cast<int>(E) - kBias);
 
-                // Compute the boundaries m- and m+ of the floating-point value
+                // Compute the boundaries m- && m+ of the floating-point value
                 // v = f * 2^e.
                 //
-                // Determine v- and v+, the floating-point predecessor and successor if v,
+                // Determine v- && v+, the floating-point predecessor && successor if v,
                 // respectively.
                 //
                 //      v- = v - 2^e        if f != 2^(p-1) or e == e_min                (A)
-                //         = v - 2^(e-1)    if f == 2^(p-1) and e > e_min                (B)
+                //         = v - 2^(e-1)    if f == 2^(p-1) && e > e_min                (B)
                 //
                 //      v+ = v + 2^e
                 //
-                // Let m- = (v- + v) / 2 and m+ = (v + v+) / 2. All real numbers _strictly_
-                // between m- and m+ round to v, regardless of how the input rounding
+                // Let m- = (v- + v) / 2 && m+ = (v + v+) / 2. All real numbers _strictly_
+                // between m- && m+ round to v, regardless of how the input rounding
                 // algorithm breaks ties.
                 //
                 //      ---+-------------+-------------+-------------+-------------+---  (A)
@@ -10045,7 +10045,7 @@ namespace nlohmann
                 //      -----------------+------+------+-------------+-------------+---  (B)
                 //                       v-     m-     v             m+            v+
 
-                const bool lower_boundary_is_closer = (F == 0 and E > 1);
+                const bool lower_boundary_is_closer = (F == 0 && E > 1);
                 const diyfp m_plus = diyfp(2 * v.f + 1, v.e - 1);
                 const diyfp m_minus = lower_boundary_is_closer
                     ? diyfp(4 * v.f - 1, v.e - 2)  // (B)
@@ -10071,7 +10071,7 @@ namespace nlohmann
             //      f_c * f_w * 2^alpha <= f_c 2^(e_c) * f_w 2^(e_w) * 2^q
             //                          <= f_c * f_w * 2^gamma
             //
-            // Since c and w are normalized, i.e. 2^(q-1) <= f < 2^q, this implies
+            // Since c && w are normalized, i.e. 2^(q-1) <= f < 2^q, this implies
             //
             //      2^(q-1) * 2^(q-1) * 2^alpha <= c * w * 2^q < 2^q * 2^q * 2^gamma
             //
@@ -10079,18 +10079,18 @@ namespace nlohmann
             //
             //      2^(q - 2 + alpha) <= c * w < 2^(q + gamma)
             //
-            // The choice of (alpha,gamma) determines the size of the table and the form of
+            // The choice of (alpha,gamma) determines the size of the table && the form of
             // the digit generation procedure. Using (alpha,gamma)=(-60,-32) works out well
             // in practice:
             //
             // The idea is to cut the number c * w = f * 2^e into two parts, which can be
-            // processed independently: An integral part p1, and a fractional part p2:
+            // processed independently: An integral part p1, && a fractional part p2:
             //
             //      f * 2^e = ( (f div 2^-e) * 2^-e + (f mod 2^-e) ) * 2^e
             //              = (f div 2^-e) + (f mod 2^-e) * 2^e
             //              = p1 + p2 * 2^e
             //
-            // The conversion of p1 into decimal form requires a series of divisions and
+            // The conversion of p1 into decimal form requires a series of divisions &&
             // modulos by (a power of) 10. These operations are faster for 32-bit than for
             // 64-bit integers, so p1 should ideally fit into a 32-bit integer. This can be
             // achieved by choosing
@@ -10101,7 +10101,7 @@ namespace nlohmann
             //
             //      p2 * 2^e = p2 / 2^-e = d[-1] / 10^1 + d[-2] / 10^2 + ...
             //
-            // into decimal form, the fraction is repeatedly multiplied by 10 and the digits
+            // into decimal form, the fraction is repeatedly multiplied by 10 && the digits
             // d[-i] are extracted in order:
             //
             //      (10 * p2) div 2^-e = d[-1]
@@ -10139,7 +10139,7 @@ namespace nlohmann
                 //      alpha <= e_c + e + q <= gamma                                    (1)
                 //      ==> f_c * 2^alpha <= c * 2^e * 2^q
                 //
-                // and since the c's are normalized, 2^(q-1) <= f_c,
+                // && since the c's are normalized, 2^(q-1) <= f_c,
                 //
                 //      ==> 2^(q - 1 + alpha) <= c * 2^(e + q)
                 //      ==> 2^(alpha - e - 1) <= c
@@ -10151,7 +10151,7 @@ namespace nlohmann
                 //
                 // From the paper:
                 // "In theory the result of the procedure could be wrong since c is rounded,
-                //  and the computation itself is approximated [...]. In practice, however,
+                //  && the computation itself is approximated [...]. In practice, however,
                 //  this simple function is sufficient."
                 //
                 // For IEEE double precision floating-point numbers converted into
@@ -10163,7 +10163,7 @@ namespace nlohmann
                 //           -11        (normalize the diyfp)
                 //         = -1137
                 //
-                // and
+                // &&
                 //
                 //      e <= +1023      (max IEEE exponent)
                 //           -52        (p - 1)
@@ -10294,7 +10294,7 @@ namespace nlohmann
 
             /*!
             For n != 0, returns k, such that pow10 := 10^(k-1) <= n < 10^k.
-            For n == 0, returns 1 and sets pow10 := 1.
+            For n == 0, returns 1 && sets pow10 := 1.
             */
             inline int find_largest_pow10(const uint32_t n, uint32_t& pow10)
             {
@@ -10380,8 +10380,8 @@ namespace nlohmann
                 // integer arithmetic.
 
                 while (rest < dist
-                    and delta - rest >= ten_k
-                    and (rest + ten_k < dist or dist - rest > rest + ten_k - dist))
+                    && delta - rest >= ten_k
+                    && (rest + ten_k < dist or dist - rest > rest + ten_k - dist))
                 {
                     assert(buf[len - 1] != '0');
                     buf[len - 1]--;
@@ -10391,7 +10391,7 @@ namespace nlohmann
 
             /*!
             Generates V = buffer * 10^decimal_exponent, such that M- <= V <= M+.
-            M- and M+ must be normalized and share the same exponent -60 <= e <= -32.
+            M- && M+ must be normalized && share the same exponent -60 <= e <= -32.
             */
             inline void grisu2_digit_gen(char* buffer, int& length, int& decimal_exponent,
                 diyfp M_minus, diyfp w, diyfp M_plus)
@@ -10399,16 +10399,16 @@ namespace nlohmann
                 static_assert(kAlpha >= -60, "internal error");
                 static_assert(kGamma <= -32, "internal error");
 
-                // Generates the digits (and the exponent) of a decimal floating-point
+                // Generates the digits (&& the exponent) of a decimal floating-point
                 // number V = buffer * 10^decimal_exponent in the range [M-, M+]. The diyfp's
-                // w, M- and M+ share the same exponent e, which satisfies alpha <= e <= gamma.
+                // w, M- && M+ share the same exponent e, which satisfies alpha <= e <= gamma.
                 //
                 //               <--------------------------- delta ---->
                 //                                  <---- dist --------->
                 // --------------[------------------+-------------------]--------------
                 //               M-                 w                   M+
                 //
-                // Grisu2 generates the digits of M+ from left to right and stops as soon as
+                // Grisu2 generates the digits of M+ from left to right && stops as soon as
                 // V is in [M-,M+].
 
                 assert(M_plus.e >= kAlpha);
@@ -10417,7 +10417,7 @@ namespace nlohmann
                 uint64_t delta = diyfp::sub(M_plus, M_minus).f; // (significand of (M+ - M-), implicit exponent is e)
                 uint64_t dist = diyfp::sub(M_plus, w).f; // (significand of (M+ - w ), implicit exponent is e)
 
-                                                         // Split M+ = f * 2^e into two parts p1 and p2 (note: e < 0):
+                                                         // Split M+ = f * 2^e into two parts p1 && p2 (note: e < 0):
                                                          //
                                                          //      M+ = f * 2^e
                                                          //         = ((f div 2^-e) * 2^-e + (f mod 2^-e)) * 2^e
@@ -10487,7 +10487,7 @@ namespace nlohmann
                     //      p1 + p2 * 2^e = (p1 * 2^-e + p2) * 2^e = rest * 2^e
                     //
                     // Note:
-                    // Since rest and delta share the same exponent e, it suffices to
+                    // Since rest && delta share the same exponent e, it suffices to
                     // compare the significands.
                     const uint64_t rest = (uint64_t{ p1 } << -one.e) + p2;
                     if (rest <= delta)
@@ -10554,7 +10554,7 @@ namespace nlohmann
                 //         = buffer + 10^-m * (d + r * 2^e)
                 //         = (buffer * 10^m + d) * 10^-m + 10^-m * r * 2^e
                 //
-                // and stop as soon as 10^-m * r * 2^e <= delta * 2^e
+                // && stop as soon as 10^-m * r * 2^e <= delta * 2^e
 
                 assert(p2 > delta);
 
@@ -10605,7 +10605,7 @@ namespace nlohmann
                 decimal_exponent -= m;
 
                 // 1 ulp in the decimal representation is now 10^-m.
-                // Since delta and dist are now scaled by 10^m, we need to do the
+                // Since delta && dist are now scaled by 10^m, we need to do the
                 // same with ulp in order to keep the units in sync.
                 //
                 //      10^m * 10^-m = 1 = 2^-e * 2^e = ten_m * 2^e
@@ -10620,7 +10620,7 @@ namespace nlohmann
                 //      N = 1 + ceil(p * log_10(2))
                 //
                 // decimal digits are sufficient to identify all binary floating-point
-                // numbers (Matula, "In-and-Out conversions").
+                // numbers (Matula, "In-&&-Out conversions").
                 // This implies that the algorithm does not produce more than N decimal
                 // digits.
                 //
@@ -10645,14 +10645,14 @@ namespace nlohmann
                 //  --------------------(-----------+-----------------------)--------    (B)
                 //                      m-          v                       m+
                 //
-                // First scale v (and m- and m+) such that the exponent is in the range
+                // First scale v (&& m- && m+) such that the exponent is in the range
                 // [alpha, gamma].
 
                 const cached_power cached = get_cached_power_for_binary_exponent(m_plus.e);
 
                 const diyfp c_minus_k(cached.f, cached.e); // = c ~= 10^-k
 
-                                                           // The exponent of the products is = v.e + c_minus_k.e + q and is in the range [alpha,gamma]
+                                                           // The exponent of the products is = v.e + c_minus_k.e + q && is in the range [alpha,gamma]
                 const diyfp w = diyfp::mul(v, c_minus_k);
                 const diyfp w_minus = diyfp::mul(m_minus, c_minus_k);
                 const diyfp w_plus = diyfp::mul(m_plus, c_minus_k);
@@ -10661,7 +10661,7 @@ namespace nlohmann
                 //          w-                      w                       w+
                 //          = c*m-                  = c*v                   = c*m+
                 //
-                // diyfp::mul rounds its result and c_minus_k is approximated too. w, w- and
+                // diyfp::mul rounds its result && c_minus_k is approximated too. w, w- &&
                 // w+ are now off by a small amount.
                 // In fact:
                 //
@@ -10700,13 +10700,13 @@ namespace nlohmann
                 assert(std::isfinite(value));
                 assert(value > 0);
 
-                // If the neighbors (and boundaries) of 'value' are always computed for double-precision
-                // numbers, all float's can be recovered using strtod (and strtof). However, the resulting
+                // If the neighbors (&& boundaries) of 'value' are always computed for double-precision
+                // numbers, all float's can be recovered using strtod (&& strtof). However, the resulting
                 // decimal representations are not exactly "short".
                 //
                 // The documentation for 'std::to_chars' (https://en.cppreference.com/w/cpp/utility/to_chars)
                 // says "value is converted to a string as if by std::sprintf in the default ("C") locale"
-                // and since sprintf promotes float's to double's, I think this is exactly what 'std::to_chars'
+                // && since sprintf promotes float's to double's, I think this is exactly what 'std::to_chars'
                 // does.
                 // On the other hand, the documentation for 'std::to_chars' requires that "parsing the
                 // representation using the corresponding std::from_chars function recovers value exactly". That
@@ -10793,7 +10793,7 @@ namespace nlohmann
                 // k is the length of the buffer (number of decimal digits)
                 // n is the position of the decimal point relative to the start of the buffer.
 
-                if (k <= n and n <= max_exp)
+                if (k <= n && n <= max_exp)
                 {
                     // digits[000]
                     // len <= max_exp + 2
@@ -10805,7 +10805,7 @@ namespace nlohmann
                     return buf + (n + 2);
                 }
 
-                if (0 < n and n <= max_exp)
+                if (0 < n && n <= max_exp)
                 {
                     // dig.its
                     // len <= max_digits10 + 1
@@ -10817,7 +10817,7 @@ namespace nlohmann
                     return buf + (k + 1);
                 }
 
-                if (min_exp < n and n <= 0)
+                if (min_exp < n && n <= 0)
                 {
                     // 0.[000]digits
                     // len <= 2 + (-min_exp - 1) + max_digits10
@@ -10858,7 +10858,7 @@ namespace nlohmann
           The format of the resulting decimal representation is similar to printf's %g
           format. Returns an iterator pointing past-the-end of the decimal representation.
 
-          @note The input number must be finite, i.e. NaN's and Inf's are not supported.
+          @note The input number must be finite, i.e. NaN's && Inf's are not supported.
           @note The buffer must be large enough.
           @note The result is NOT null-terminated.
           */
@@ -10975,12 +10975,12 @@ namespace nlohmann
             /*!
             @brief internal implementation of the serialization function
 
-            This function is called by the public member function dump and organizes
+            This function is called by the public member function dump && organizes
             the serialization internally. The indentation level is propagated as
-            additional parameter. In case of arrays and objects, the function is
+            additional parameter. In case of arrays && objects, the function is
             called recursively.
 
-            - strings and object keys are escaped using `escape_string()`
+            - strings && object keys are escaped using `escape_string()`
             - integer numbers are converted implicitly via `operator<<`
             - floating-point numbers are converted to a string using `"%g"` format
 
@@ -11186,7 +11186,7 @@ namespace nlohmann
             @brief dump escaped string
 
             Escape a string by replacing certain special characters by a sequence of an
-            escape character (backslash) and another character and other control
+            escape character (backslash) && another character && other control
             characters by a sequence of "\u" followed by a four-digit hex
             representation. The escaped string is written to output stream @a o.
 
@@ -11269,7 +11269,7 @@ namespace nlohmann
                         {
                             // escape control characters (0x00..0x1F) or, if
                             // ensure_ascii parameter is used, non-ASCII characters
-                            if ((codepoint <= 0x1F) or (ensure_ascii and (codepoint >= 0x7F)))
+                            if ((codepoint <= 0x1F) or (ensure_ascii && (codepoint >= 0x7F)))
                             {
                                 if (codepoint <= 0xFFFF)
                                 {
@@ -11295,7 +11295,7 @@ namespace nlohmann
                         }
                         }
 
-                        // write buffer and reset index; there must be 13 bytes
+                        // write buffer && reset index; there must be 13 bytes
                         // left, as this is the maximal number of bytes to be
                         // written ("\uxxxx\uxxxx\0") for one code point
                         if (string_buffer.size() - bytes < 13)
@@ -11356,7 +11356,7 @@ namespace nlohmann
                                     string_buffer[bytes++] = detail::binary_writer<BasicJsonType, char>::to_char_type('\xBD');
                                 }
 
-                                // write buffer and reset index; there must be 13 bytes
+                                // write buffer && reset index; there must be 13 bytes
                                 // left, as this is the maximal number of bytes to be
                                 // written ("\uxxxx\uxxxx\0") for one code point
                                 if (string_buffer.size() - bytes < 13)
@@ -11513,7 +11513,7 @@ namespace nlohmann
                 // use a pointer to fill the buffer
                 auto buffer_ptr = begin(number_buffer);
 
-                const bool is_negative = std::is_same<NumberType, number_integer_t>::value and not(x >= 0); // see issue #755
+                const bool is_negative = std::is_same<NumberType, number_integer_t>::value && not(x >= 0); // see issue #755
                 number_unsigned_t abs_value;
 
                 unsigned int n_chars;
@@ -11582,12 +11582,12 @@ namespace nlohmann
 
                 // If number_float_t is an IEEE-754 single or double precision number,
                 // use the Grisu2 algorithm to produce short numbers which are
-                // guaranteed to round-trip, using strtof and strtod, resp.
+                // guaranteed to round-trip, using strtof && strtod, resp.
                 //
                 // NB: The test below works if <long double> == <double>.
                 static constexpr bool is_ieee_single_or_double
-                    = (std::numeric_limits<number_float_t>::is_iec559 and std::numeric_limits<number_float_t>::digits == 24 and std::numeric_limits<number_float_t>::max_exponent == 128) or
-                    (std::numeric_limits<number_float_t>::is_iec559 and std::numeric_limits<number_float_t>::digits == 53 and std::numeric_limits<number_float_t>::max_exponent == 1024);
+                    = (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 24 && std::numeric_limits<number_float_t>::max_exponent == 128) or
+                    (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 53 && std::numeric_limits<number_float_t>::max_exponent == 1024);
 
                 dump_float(x, std::integral_constant<bool, is_ieee_single_or_double>());
             }
@@ -11624,7 +11624,7 @@ namespace nlohmann
                 }
 
                 // convert decimal point to '.'
-                if (decimal_point != '\0' and decimal_point != '.')
+                if (decimal_point != '\0' && decimal_point != '.')
                 {
                     const auto dec_pos = std::find(number_buffer.begin(), number_buffer.end(), decimal_point);
                     if (dec_pos != number_buffer.end())
@@ -11837,7 +11837,7 @@ namespace nlohmann
         @param[in] s  string representing the JSON pointer; if omitted, the empty
         string is assumed which references the whole JSON value
 
-        @throw parse_error.107 if the given JSON pointer @a s is nonempty and does
+        @throw parse_error.107 if the given JSON pointer @a s is nonempty && does
         not begin with a slash (`/`); see example below
 
         @throw parse_error.108 if a tilde (`~`) in the given JSON pointer @a s is
@@ -11906,7 +11906,7 @@ namespace nlohmann
         }
 
         /*!
-        @brief remove and return last reference pointer
+        @brief remove && return last reference pointer
         @throw out_of_range.405 if JSON pointer has no parent
         */
         std::string pop_back()
@@ -11922,7 +11922,7 @@ namespace nlohmann
         }
 
         /*!
-        @brief remove and return last reference pointer
+        @brief remove && return last reference pointer
         @throw out_of_range.405 if JSON pointer has no parent
         */
         void push_back(const std::string& tok)
@@ -11950,7 +11950,7 @@ namespace nlohmann
         }
 
         /*!
-        @brief create and return a reference to the pointed to value
+        @brief create && return a reference to the pointed to value
 
         @complexity Linear in the number of reference tokens.
 
@@ -12050,7 +12050,7 @@ namespace nlohmann
                         std::all_of(reference_token.begin(), reference_token.end(),
                             [](const char x)
                     {
-                        return (x >= '0' and x <= '9');
+                        return (x >= '0' && x <= '9');
                     });
 
                     // change value to array for numbers or "-" or to object otherwise
@@ -12071,7 +12071,7 @@ namespace nlohmann
                 case detail::value_t::array:
                 {
                     // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    if (JSON_UNLIKELY(reference_token.size() > 1 && reference_token[0] == '0'))
                     {
                         JSON_THROW(detail::parse_error::create(106, 0,
                             "array index '" + reference_token +
@@ -12138,7 +12138,7 @@ namespace nlohmann
                     }
 
                     // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    if (JSON_UNLIKELY(reference_token.size() > 1 && reference_token[0] == '0'))
                     {
                         JSON_THROW(detail::parse_error::create(106, 0,
                             "array index '" + reference_token +
@@ -12203,7 +12203,7 @@ namespace nlohmann
                     }
 
                     // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    if (JSON_UNLIKELY(reference_token.size() > 1 && reference_token[0] == '0'))
                     {
                         JSON_THROW(detail::parse_error::create(106, 0,
                             "array index '" + reference_token +
@@ -12262,7 +12262,7 @@ namespace nlohmann
                     }
 
                     // error condition (cf. RFC 6901, Sect. 4)
-                    if (JSON_UNLIKELY(reference_token.size() > 1 and reference_token[0] == '0'))
+                    if (JSON_UNLIKELY(reference_token.size() > 1 && reference_token[0] == '0'))
                     {
                         JSON_THROW(detail::parse_error::create(106, 0,
                             "array index '" + reference_token +
@@ -12333,7 +12333,7 @@ namespace nlohmann
                 slash = reference_string.find_first_of('/', start))
             {
                 // use the text between the beginning of the reference token
-                // (start) and the last slash (slash).
+                // (start) && the last slash (slash).
                 auto reference_token = reference_string.substr(start, slash - start);
 
                 // check reference tokens are properly escaped
@@ -12345,7 +12345,7 @@ namespace nlohmann
 
                     // ~ must be followed by 0 or 1
                     if (JSON_UNLIKELY(pos == reference_token.size() - 1 or
-                        (reference_token[pos + 1] != '0' and
+                        (reference_token[pos + 1] != '0' &&
                             reference_token[pos + 1] != '1')))
                     {
                         JSON_THROW(detail::parse_error::create(108, 0, "escape character '~' must be followed with '0' or '1'"));
@@ -12379,13 +12379,13 @@ namespace nlohmann
             assert(not f.empty());
             for (auto pos = s.find(f);                // find first occurrence of f
                 pos != std::string::npos;         // make sure f was found
-                s.replace(pos, f.size(), t),      // replace with t, and
+                s.replace(pos, f.size(), t),      // replace with t, &&
                 pos = s.find(f, pos + t.size()))  // find next occurrence of f
             {
             }
         }
 
-        /// escape "~" to "~0" and "/" to "~1"
+        /// escape "~" to "~0" && "/" to "~1"
         static std::string escape(std::string s)
         {
             replace_substring(s, "~", "~0");
@@ -12393,7 +12393,7 @@ namespace nlohmann
             return s;
         }
 
-        /// unescape "~1" to tilde and "~0" to slash (order is important!)
+        /// unescape "~1" to tilde && "~0" to slash (order is important!)
         static void unescape(std::string& s)
         {
             replace_substring(s, "~1", "/");
@@ -12422,7 +12422,7 @@ namespace nlohmann
                 }
                 else
                 {
-                    // iterate array and use index as reference string
+                    // iterate array && use index as reference string
                     for (std::size_t i = 0; i < value.m_value.array->size(); ++i)
                     {
                         flatten(reference_string + "/" + std::to_string(i),
@@ -12441,7 +12441,7 @@ namespace nlohmann
                 }
                 else
                 {
-                    // iterate object and use keys as reference string
+                    // iterate object && use keys as reference string
                     for (const auto& element : *value.m_value.object)
                     {
                         flatten(reference_string + "/" + escape(element.first), element.second, result);
@@ -12583,7 +12583,7 @@ namespace nlohmann
     in @ref object_t)
     @tparam ArrayType type for JSON arrays (`std::vector` by default; will be used
     in @ref array_t)
-    @tparam StringType type for JSON strings and object keys (`std::string` by
+    @tparam StringType type for JSON strings && object keys (`std::string` by
     default; will be used in @ref string_t)
     @tparam BooleanType type for JSON booleans (`bool` by default; will be used
     in @ref boolean_t)
@@ -12596,7 +12596,7 @@ namespace nlohmann
     @tparam AllocatorType type of the allocator to use (`std::allocator` by
     default)
     @tparam JSONSerializer the serializer to resolve internal calls to `to_json()`
-    and `from_json()` (@ref adl_serializer by default)
+    && `from_json()` (@ref adl_serializer by default)
 
     @requirement The class satisfies the following concept requirements:
     - Basic
@@ -12617,7 +12617,7 @@ namespace nlohmann
     - [StandardLayoutType](https://en.cppreference.com/w/cpp/named_req/StandardLayoutType):
     JSON values have
     [standard layout](https://en.cppreference.com/w/cpp/language/data_members#Standard_layout):
-    All non-static data members are private and standard layout types, the
+    All non-static data members are private && standard layout types, the
     class has no virtual functions or (virtual) base classes.
     - Library-wide
     - [EqualityComparable](https://en.cppreference.com/w/cpp/named_req/EqualityComparable):
@@ -12634,12 +12634,12 @@ namespace nlohmann
     to model the `null` value.
     - Container
     - [Container](https://en.cppreference.com/w/cpp/named_req/Container):
-    JSON values can be used like STL containers and provide iterator access.
+    JSON values can be used like STL containers && provide iterator access.
     - [ReversibleContainer](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer);
-    JSON values can be used like STL containers and provide reverse iterator
+    JSON values can be used like STL containers && provide reverse iterator
     access.
 
-    @invariant The member variables @a m_value and @a m_type have the following
+    @invariant The member variables @a m_value && @a m_type have the following
     relationship:
     - If `m_type == value_t::object`, then `m_value.object != nullptr`.
     - If `m_type == value_t::array`, then `m_value.array != nullptr`.
@@ -12793,17 +12793,17 @@ namespace nlohmann
         @brief returns version information on the library
 
         This function returns a JSON object with information about the library,
-        including the version number and information on the platform and compiler.
+        including the version number && information on the platform && compiler.
 
         @return JSON object holding version information
         key         | description
         ----------- | ---------------
-        `compiler`  | Information on the used compiler. It is an object with the following keys: `c++` (the used C++ standard), `family` (the compiler family; possible values are `clang`, `icc`, `gcc`, `ilecpp`, `msvc`, `pgcpp`, `sunpro`, and `unknown`), and `version` (the compiler version).
+        `compiler`  | Information on the used compiler. It is an object with the following keys: `c++` (the used C++ standard), `family` (the compiler family; possible values are `clang`, `icc`, `gcc`, `ilecpp`, `msvc`, `pgcpp`, `sunpro`, && `unknown`), && `version` (the compiler version).
         `copyright` | The copyright line for the library as string.
         `name`      | The name of the library as string.
-        `platform`  | The used platform as string. Possible values are `win32`, `linux`, `apple`, `unix`, and `unknown`.
+        `platform`  | The used platform as string. Possible values are `win32`, `linux`, `apple`, `unix`, && `unknown`.
         `url`       | The URL of the project as string.
-        `version`   | The version of the library. It is an object with the following keys: `major`, `minor`, and `patch` as defined by [Semantic Versioning](http://semver.org), and `string` (the version string).
+        `version`   | The version of the library. It is an object with the following keys: `major`, `minor`, && `patch` as defined by [Semantic Versioning](http://semver.org), && `string` (the version string).
 
         @liveexample{The following code shows an example output of the `meta()`
         function.,meta}
@@ -12883,7 +12883,7 @@ namespace nlohmann
 
 #if defined(JSON_HAS_CPP_14)
         // Use transparent comparator if possible, combined with perfect forwarding
-        // on find() and count() calls prevents unnecessary string construction.
+        // on find() && count() calls prevents unnecessary string construction.
         using object_comparator_t = std::less<>;
 #else
         using object_comparator_t = std::less<StringType>;
@@ -12894,7 +12894,7 @@ namespace nlohmann
 
         [RFC 7159](http://rfc7159.net/rfc7159) describes JSON objects as follows:
         > An object is an unordered collection of zero or more name/value pairs,
-        > where a name is a string and a value is a string, number, boolean, null,
+        > where a name is a string && a value is a string, number, boolean, null,
         > object, or array.
 
         To store objects in C++, a type is defined by the template parameters
@@ -12911,7 +12911,7 @@ namespace nlohmann
         #### Default type
 
         With the default values for @a ObjectType (`std::map`), @a StringType
-        (`std::string`), and @a AllocatorType (`std::allocator`), the default
+        (`std::string`), && @a AllocatorType (`std::allocator`), the default
         value for @a object_t is:
 
         @code {.cpp}
@@ -12937,11 +12937,11 @@ namespace nlohmann
         `{"key": 2}`.
         - Internally, name/value pairs are stored in lexicographical order of the
         names. Objects will also be serialized (see @ref dump) in this order.
-        For instance, `{"b": 1, "a": 2}` and `{"a": 2, "b": 1}` will be stored
-        and serialized as `{"a": 2, "b": 1}`.
+        For instance, `{"b": 1, "a": 2}` && `{"a": 2, "b": 1}` will be stored
+        && serialized as `{"a": 2, "b": 1}`.
         - When comparing objects, the order of the name/value pairs is irrelevant.
         This makes objects interoperable in the sense that they will not be
-        affected by these differences. For instance, `{"b": 1, "a": 2}` and
+        affected by these differences. For instance, `{"b": 1, "a": 2}` &&
         `{"a": 2, "b": 1}` will be treated as equal.
 
         #### Limits
@@ -12993,7 +12993,7 @@ namespace nlohmann
 
         #### Default type
 
-        With the default values for @a ArrayType (`std::vector`) and @a
+        With the default values for @a ArrayType (`std::vector`) && @a
         AllocatorType (`std::allocator`), the default value for @a array_t is:
 
         @code {.cpp}
@@ -13057,12 +13057,12 @@ namespace nlohmann
         [RFC 7159](http://rfc7159.net/rfc7159) states:
         > Software implementations are typically required to test names of object
         > members for equality. Implementations that transform the textual
-        > representation into sequences of Unicode code units and then perform the
+        > representation into sequences of Unicode code units && then perform the
         > comparison numerically, code unit by code unit, are interoperable in the
         > sense that implementations will agree in all cases on equality or
         > inequality of two strings. For example, implementations that compare
         > strings with escaped characters unconverted may incorrectly find that
-        > `"a\\b"` and `"a\u005Cb"` are not equal.
+        > `"a\\b"` && `"a\u005Cb"` are not equal.
 
         This implementation is interoperable as it does compare strings code unit
         by code unit.
@@ -13081,7 +13081,7 @@ namespace nlohmann
         @brief a type for a boolean
 
         [RFC 7159](http://rfc7159.net/rfc7159) implicitly describes a boolean as a
-        type which differentiates the two literals `true` and `false`.
+        type which differentiates the two literals `true` && `false`.
 
         To store objects in C++, a type is defined by the template parameter @a
         BooleanType which chooses the type to use.
@@ -13110,16 +13110,16 @@ namespace nlohmann
         > The representation of numbers is similar to that used in most
         > programming languages. A number is represented in base 10 using decimal
         > digits. It contains an integer component that may be prefixed with an
-        > optional minus sign, which may be followed by a fraction part and/or an
+        > optional minus sign, which may be followed by a fraction part &&/or an
         > exponent part. Leading zeros are not allowed. (...) Numeric values that
-        > cannot be represented in the grammar below (such as Infinity and NaN)
+        > cannot be represented in the grammar below (such as Infinity && NaN)
         > are not permitted.
 
-        This description includes both integer and floating-point numbers.
+        This description includes both integer && floating-point numbers.
         However, C++ allows more precise storage if it is known whether the number
         is a signed integer, an unsigned integer or a floating-point number.
         Therefore, three different types, @ref number_integer_t, @ref
-        number_unsigned_t and @ref number_float_t are used.
+        number_unsigned_t && @ref number_float_t are used.
 
         To store integer numbers in C++, a type is defined by the template
         parameter @a NumberIntegerType which chooses the type to use.
@@ -13145,10 +13145,10 @@ namespace nlohmann
         #### Limits
 
         [RFC 7159](http://rfc7159.net/rfc7159) specifies:
-        > An implementation may set limits on the range and precision of numbers.
+        > An implementation may set limits on the range && precision of numbers.
 
         When the default type is used, the maximal integer number that can be
-        stored is `9223372036854775807` (INT64_MAX) and the minimal integer number
+        stored is `9223372036854775807` (INT64_MAX) && the minimal integer number
         that can be stored is `-9223372036854775808` (INT64_MIN). Integer numbers
         that are out of range will yield over/underflow when used in a
         constructor. During deserialization, too large or small integer numbers
@@ -13156,7 +13156,7 @@ namespace nlohmann
         number_float_t.
 
         [RFC 7159](http://rfc7159.net/rfc7159) further states:
-        > Note that when such software is used, numbers that are integers and are
+        > Note that when such software is used, numbers that are integers && are
         > in the range \f$[-2^{53}+1, 2^{53}-1]\f$ are interoperable in the sense
         > that implementations will agree exactly on their numeric values.
 
@@ -13182,16 +13182,16 @@ namespace nlohmann
         > The representation of numbers is similar to that used in most
         > programming languages. A number is represented in base 10 using decimal
         > digits. It contains an integer component that may be prefixed with an
-        > optional minus sign, which may be followed by a fraction part and/or an
+        > optional minus sign, which may be followed by a fraction part &&/or an
         > exponent part. Leading zeros are not allowed. (...) Numeric values that
-        > cannot be represented in the grammar below (such as Infinity and NaN)
+        > cannot be represented in the grammar below (such as Infinity && NaN)
         > are not permitted.
 
-        This description includes both integer and floating-point numbers.
+        This description includes both integer && floating-point numbers.
         However, C++ allows more precise storage if it is known whether the number
         is a signed integer, an unsigned integer or a floating-point number.
         Therefore, three different types, @ref number_integer_t, @ref
-        number_unsigned_t and @ref number_float_t are used.
+        number_unsigned_t && @ref number_float_t are used.
 
         To store unsigned integer numbers in C++, a type is defined by the
         template parameter @a NumberUnsignedType which chooses the type to use.
@@ -13217,17 +13217,17 @@ namespace nlohmann
         #### Limits
 
         [RFC 7159](http://rfc7159.net/rfc7159) specifies:
-        > An implementation may set limits on the range and precision of numbers.
+        > An implementation may set limits on the range && precision of numbers.
 
         When the default type is used, the maximal integer number that can be
-        stored is `18446744073709551615` (UINT64_MAX) and the minimal integer
+        stored is `18446744073709551615` (UINT64_MAX) && the minimal integer
         number that can be stored is `0`. Integer numbers that are out of range
         will yield over/underflow when used in a constructor. During
         deserialization, too large or small integer numbers will be automatically
         be stored as @ref number_integer_t or @ref number_float_t.
 
         [RFC 7159](http://rfc7159.net/rfc7159) further states:
-        > Note that when such software is used, numbers that are integers and are
+        > Note that when such software is used, numbers that are integers && are
         > in the range \f$[-2^{53}+1, 2^{53}-1]\f$ are interoperable in the sense
         > that implementations will agree exactly on their numeric values.
 
@@ -13253,16 +13253,16 @@ namespace nlohmann
         > The representation of numbers is similar to that used in most
         > programming languages. A number is represented in base 10 using decimal
         > digits. It contains an integer component that may be prefixed with an
-        > optional minus sign, which may be followed by a fraction part and/or an
+        > optional minus sign, which may be followed by a fraction part &&/or an
         > exponent part. Leading zeros are not allowed. (...) Numeric values that
-        > cannot be represented in the grammar below (such as Infinity and NaN)
+        > cannot be represented in the grammar below (such as Infinity && NaN)
         > are not permitted.
 
-        This description includes both integer and floating-point numbers.
+        This description includes both integer && floating-point numbers.
         However, C++ allows more precise storage if it is known whether the number
         is a signed integer, an unsigned integer or a floating-point number.
         Therefore, three different types, @ref number_integer_t, @ref
-        number_unsigned_t and @ref number_float_t are used.
+        number_unsigned_t && @ref number_float_t are used.
 
         To store floating-point numbers in C++, a type is defined by the template
         parameter @a NumberFloatType which chooses the type to use.
@@ -13288,9 +13288,9 @@ namespace nlohmann
         #### Limits
 
         [RFC 7159](http://rfc7159.net/rfc7159) states:
-        > This specification allows implementations to set limits on the range and
+        > This specification allows implementations to set limits on the range &&
         > precision of numbers accepted. Since software that implements IEEE
-        > 754-2008 binary64 (double precision) numbers is generally available and
+        > 754-2008 binary64 (double precision) numbers is generally available &&
         > widely used, good interoperability can be achieved by implementations
         > that expect no more precision or range than these provide, in the sense
         > that implementations will approximate JSON numbers within the expected
@@ -13298,8 +13298,8 @@ namespace nlohmann
 
         This implementation does exactly follow this approach, as it uses double
         precision floating-point numbers. Note values smaller than
-        `-1.79769313486232e+308` and values greater than `1.79769313486232e+308`
-        will be stored as NaN internally and be serialized to `null`.
+        `-1.79769313486232e+308` && values greater than `1.79769313486232e+308`
+        will be stored as NaN internally && be serialized to `null`.
 
         #### Storage
 
@@ -13357,7 +13357,7 @@ namespace nlohmann
         number    | number_float    | @ref number_float_t
         null      | null            | *no value is stored*
 
-        @note Variable-length types (objects, arrays, and strings) are stored as
+        @note Variable-length types (objects, arrays, && strings) are stored as
         pointers. The size of the union should not exceed 64 bits if the default
         value types are used.
 
@@ -13534,7 +13534,7 @@ namespace nlohmann
         end of every constructor to make sure that created objects respect the
         invariant. Furthermore, it has to be called each time the type of a JSON
         value is changed, because the invariant expresses a relationship between
-        @a m_type and @a m_value.
+        @a m_type && @a m_value.
         */
         void assert_invariant() const noexcept
         {
@@ -13552,16 +13552,16 @@ namespace nlohmann
         @brief parser event types
 
         The parser callback distinguishes the following events:
-        - `object_start`: the parser read `{` and started to process a JSON object
+        - `object_start`: the parser read `{` && started to process a JSON object
         - `key`: the parser read a key of a value in an object
-        - `object_end`: the parser read `}` and finished processing a JSON object
-        - `array_start`: the parser read `[` and started to process a JSON array
-        - `array_end`: the parser read `]` and finished processing a JSON array
+        - `object_end`: the parser read `}` && finished processing a JSON object
+        - `array_start`: the parser read `[` && started to process a JSON array
+        - `array_end`: the parser read `]` && finished processing a JSON array
         - `value`: the parser finished reading a JSON value
 
         @image html callback_events.png "Example when certain parse events are triggered"
 
-        @sa @ref parser_callback_t for more information and examples
+        @sa @ref parser_callback_t for more information && examples
         */
         using parse_event_t = typename parser::parse_event_t;
 
@@ -13571,21 +13571,21 @@ namespace nlohmann
         With a parser callback function, the result of parsing a JSON text can be
         influenced. When passed to @ref parse, it is called on certain events
         (passed as @ref parse_event_t via parameter @a event) with a set recursion
-        depth @a depth and context JSON value @a parsed. The return value of the
+        depth @a depth && context JSON value @a parsed. The return value of the
         callback function is a boolean indicating whether the element that emitted
         the callback shall be kept or not.
 
         We distinguish six scenarios (determined by the event type) in which the
         callback function can be called. The following table describes the values
-        of the parameters @a depth, @a event, and @a parsed.
+        of the parameters @a depth, @a event, && @a parsed.
 
         parameter @a event | description | parameter @a depth | parameter @a parsed
         ------------------ | ----------- | ------------------ | -------------------
-        parse_event_t::object_start | the parser read `{` and started to process a JSON object | depth of the parent of the JSON object | a JSON value with type discarded
+        parse_event_t::object_start | the parser read `{` && started to process a JSON object | depth of the parent of the JSON object | a JSON value with type discarded
         parse_event_t::key | the parser read a key of a value in an object | depth of the currently parsed JSON object | a JSON string containing the key
-        parse_event_t::object_end | the parser read `}` and finished processing a JSON object | depth of the parent of the JSON object | the parsed JSON object
-        parse_event_t::array_start | the parser read `[` and started to process a JSON array | depth of the parent of the JSON array | a JSON value with type discarded
-        parse_event_t::array_end | the parser read `]` and finished processing a JSON array | depth of the parent of the JSON array | the parsed JSON array
+        parse_event_t::object_end | the parser read `}` && finished processing a JSON object | depth of the parent of the JSON object | the parsed JSON object
+        parse_event_t::array_start | the parser read `[` && started to process a JSON array | depth of the parent of the JSON array | a JSON value with type discarded
+        parse_event_t::array_end | the parser read `]` && finished processing a JSON array | depth of the parent of the JSON array | the parsed JSON array
         parse_event_t::value | the parser finished reading a JSON value | depth of the value | the parsed JSON value
 
         @image html callback_events.png "Example when certain parse events are triggered"
@@ -13620,9 +13620,9 @@ namespace nlohmann
         // constructors //
         //////////////////
 
-        /// @name constructors and destructors
+        /// @name constructors && destructors
         /// Constructors of class @ref basic_json, copy/move constructor, copy
-        /// assignment, static functions creating objects, and the destructor.
+        /// assignment, static functions creating objects, && the destructor.
         /// @{
 
         /*!
@@ -13673,7 +13673,7 @@ namespace nlohmann
         @exceptionsafety No-throw guarantee: this constructor never throws
         exceptions.
 
-        @liveexample{The following code shows the constructor with and without a
+        @liveexample{The following code shows the constructor with && without a
         null pointer parameter.,basic_json__nullptr_t}
 
         @since version 1.0.0
@@ -13694,20 +13694,20 @@ namespace nlohmann
 
         Template type @a CompatibleType includes, but is not limited to, the
         following types:
-        - **arrays**: @ref array_t and all kinds of compatible containers such as
+        - **arrays**: @ref array_t && all kinds of compatible containers such as
         `std::vector`, `std::deque`, `std::list`, `std::forward_list`,
         `std::array`, `std::valarray`, `std::set`, `std::unordered_set`,
-        `std::multiset`, and `std::unordered_multiset` with a `value_type` from
+        `std::multiset`, && `std::unordered_multiset` with a `value_type` from
         which a @ref basic_json value can be constructed.
-        - **objects**: @ref object_t and all kinds of compatible associative
+        - **objects**: @ref object_t && all kinds of compatible associative
         containers such as `std::map`, `std::unordered_map`, `std::multimap`,
-        and `std::unordered_multimap` with a `key_type` compatible to
-        @ref string_t and a `value_type` from which a @ref basic_json value can
+        && `std::unordered_multimap` with a `key_type` compatible to
+        @ref string_t && a `value_type` from which a @ref basic_json value can
         be constructed.
-        - **strings**: @ref string_t, string literals, and all compatible string
+        - **strings**: @ref string_t, string literals, && all compatible string
         containers can be used.
         - **numbers**: @ref number_integer_t, @ref number_unsigned_t,
-        @ref number_float_t, and all convertible number types such as `int`,
+        @ref number_float_t, && all convertible number types such as `int`,
         `size_t`, `int64_t`, `float` or `double` can be used.
         - **boolean**: @ref boolean_t / `bool` can be used.
 
@@ -13744,7 +13744,7 @@ namespace nlohmann
         template <typename CompatibleType,
             typename U = detail::uncvref_t<CompatibleType>,
             detail::enable_if_t<
-            not detail::is_basic_json<U>::value and detail::is_compatible_type<basic_json_t, U>::value, int> = 0>
+            not detail::is_basic_json<U>::value && detail::is_compatible_type<basic_json_t, U>::value, int> = 0>
             basic_json(CompatibleType && val) noexcept(noexcept(
                 JSONSerializer<U>::to_json(std::declval<basic_json_t&>(),
                     std::forward<CompatibleType>(val))))
@@ -13781,7 +13781,7 @@ namespace nlohmann
         */
         template <typename BasicJsonType,
             detail::enable_if_t<
-            detail::is_basic_json<BasicJsonType>::value and not std::is_same<basic_json, BasicJsonType>::value, int> = 0>
+            detail::is_basic_json<BasicJsonType>::value && not std::is_same<basic_json, BasicJsonType>::value, int> = 0>
             basic_json(const BasicJsonType& val)
         {
             using other_boolean_t = typename BasicJsonType::boolean_t;
@@ -13836,10 +13836,10 @@ namespace nlohmann
         1. If the list is empty, an empty JSON object value `{}` is created.
         2. If the list consists of pairs whose first element is a string, a JSON
         object value is created where the first elements of the pairs are
-        treated as keys and the second elements are as values.
+        treated as keys && the second elements are as values.
         3. In all other cases, an array is created.
 
-        The rules aim to create the best fit between a C++ initializer list and
+        The rules aim to create the best fit between a C++ initializer list &&
         JSON values. The rationale is as follows:
 
         1. The empty initializer list is written as `{}` which is exactly an empty
@@ -13869,12 +13869,12 @@ namespace nlohmann
         @param[in] type_deduction internal parameter; when set to `true`, the type
         of the JSON value is deducted from the initializer list @a init; when set
         to `false`, the type provided via @a manual_type is forced. This mode is
-        used by the functions @ref array(initializer_list_t) and
+        used by the functions @ref array(initializer_list_t) &&
         @ref object(initializer_list_t).
 
         @param[in] manual_type internal parameter; when @a type_deduction is set
         to `false`, the created JSON value will use the provided type (only @ref
-        value_t::array and @ref value_t::object are valid); when @a type_deduction
+        value_t::array && @ref value_t::object are valid); when @a type_deduction
         is set to `true`, this parameter has no effect
 
         @throw type_error.301 if @a type_deduction is `false`, @a manual_type is
@@ -13908,7 +13908,7 @@ namespace nlohmann
             bool is_an_object = std::all_of(init.begin(), init.end(),
                 [](const detail::json_ref<basic_json>& element_ref)
             {
-                return (element_ref->is_array() and element_ref->size() == 2 and (*element_ref)[0].is_string());
+                return (element_ref->is_array() && element_ref->size() == 2 && (*element_ref)[0].is_string());
             });
 
             // adjust type if type deduction is not wanted
@@ -13921,7 +13921,7 @@ namespace nlohmann
                 }
 
                 // if object is wanted but impossible, throw an exception
-                if (JSON_UNLIKELY(manual_type == value_t::object and not is_an_object))
+                if (JSON_UNLIKELY(manual_type == value_t::object && not is_an_object))
                 {
                     JSON_THROW(type_error::create(301, "cannot create object from initializer list"));
                 }
@@ -13998,7 +13998,7 @@ namespace nlohmann
         @brief explicitly create an object from an initializer list
 
         Creates a JSON object value from a given initializer list. The initializer
-        lists elements must be pairs, and their first elements must be strings. If
+        lists elements must be pairs, && their first elements must be strings. If
         the initializer list is empty, the empty object `{}` is created.
 
         @note This function is only added for symmetry reasons. In contrast to the
@@ -14074,7 +14074,7 @@ namespace nlohmann
         The semantics depends on the different types a JSON value can have:
         - In case of a null type, invalid_iterator.206 is thrown.
         - In case of other primitive types (number, boolean, or string), @a first
-        must be `begin()` and @a last must be `end()`. In this case, the value is
+        must be `begin()` && @a last must be `end()`. In this case, the value is
         copied. Otherwise, invalid_iterator.204 is thrown.
         - In case of structured types (array, object), the constructor behaves as
         similar versions for `std::vector` or `std::map`; that is, a JSON array
@@ -14086,7 +14086,7 @@ namespace nlohmann
         @param[in] first begin of the range to copy from (included)
         @param[in] last end of the range to copy from (excluded)
 
-        @pre Iterators @a first and @a last must be initialized. **This
+        @pre Iterators @a first && @a last must be initialized. **This
         precondition is enforced with an assertion (see warning).** If
         assertions are switched off, a violation of this precondition yields
         undefined behavior.
@@ -14102,17 +14102,17 @@ namespace nlohmann
         See https://en.cppreference.com/w/cpp/error/assert for more
         information.
 
-        @throw invalid_iterator.201 if iterators @a first and @a last are not
+        @throw invalid_iterator.201 if iterators @a first && @a last are not
         compatible (i.e., do not belong to the same JSON value). In this case,
         the range `[first, last)` is undefined.
-        @throw invalid_iterator.204 if iterators @a first and @a last belong to a
+        @throw invalid_iterator.204 if iterators @a first && @a last belong to a
         primitive type (number, boolean, or string), but @a first does not point
         to the first element any more. In this case, the range `[first, last)` is
         undefined. See example code below.
-        @throw invalid_iterator.206 if iterators @a first and @a last belong to a
+        @throw invalid_iterator.206 if iterators @a first && @a last belong to a
         null value. In this case, the range `[first, last)` is undefined.
 
-        @complexity Linear in distance between @a first and @a last.
+        @complexity Linear in distance between @a first && @a last.
 
         @exceptionsafety Strong guarantee: if an exception is thrown, there are no
         changes to any JSON value.
@@ -14216,7 +14216,7 @@ namespace nlohmann
 
 
         ///////////////////////////////////////
-        // other constructors and destructor //
+        // other constructors && destructor //
         ///////////////////////////////////////
 
         /// @private
@@ -14311,7 +14311,7 @@ namespace nlohmann
 
         Move constructor. Constructs a JSON value with the contents of the given
         value @a other using move semantics. It "steals" the resources from @a
-        other and leaves it as JSON null value.
+        other && leaves it as JSON null value.
 
         @param[in,out] other  value to move to this object
 
@@ -14349,9 +14349,9 @@ namespace nlohmann
         /*!
         @brief copy assignment
 
-        Copy assignment operator. Copies a JSON value via the "copy and swap"
+        Copy assignment operator. Copies a JSON value via the "copy && swap"
         strategy: It is expressed in terms of the copy constructor, destructor,
-        and the `swap()` member function.
+        && the `swap()` member function.
 
         @param[in] other  value to copy from
 
@@ -14362,7 +14362,7 @@ namespace nlohmann
         requirements:
         - The complexity is linear.
 
-        @liveexample{The code below shows and example for the copy assignment. It
+        @liveexample{The code below shows && example for the copy assignment. It
         creates a copy of value `a` which is then swapped with `b`. Finally\, the
         copy of `a` (which is the null value after the swap) is
         destroyed.,basic_json__copyassignment}
@@ -14370,9 +14370,9 @@ namespace nlohmann
         @since version 1.0.0
         */
         basic_json& operator=(basic_json other) noexcept (
-            std::is_nothrow_move_constructible<value_t>::value and
-            std::is_nothrow_move_assignable<value_t>::value and
-            std::is_nothrow_move_constructible<json_value>::value and
+            std::is_nothrow_move_constructible<value_t>::value &&
+            std::is_nothrow_move_assignable<value_t>::value &&
+            std::is_nothrow_move_constructible<json_value>::value &&
             std::is_nothrow_move_assignable<json_value>::value
             )
         {
@@ -14390,7 +14390,7 @@ namespace nlohmann
         /*!
         @brief destructor
 
-        Destroys the JSON value and frees all allocated memory.
+        Destroys the JSON value && frees all allocated memory.
 
         @complexity Linear.
 
@@ -14398,7 +14398,7 @@ namespace nlohmann
         [Container](https://en.cppreference.com/w/cpp/named_req/Container)
         requirements:
         - The complexity is linear.
-        - All stored elements are destroyed and all memory is freed.
+        - All stored elements are destroyed && all memory is freed.
 
         @since version 1.0.0
         */
@@ -14423,22 +14423,22 @@ namespace nlohmann
         @brief serialization
 
         Serialization function for JSON values. The function tries to mimic
-        Python's `json.dumps()` function, and currently supports its @a indent
-        and @a ensure_ascii parameters.
+        Python's `json.dumps()` function, && currently supports its @a indent
+        && @a ensure_ascii parameters.
 
-        @param[in] indent If indent is nonnegative, then array elements and object
+        @param[in] indent If indent is nonnegative, then array elements && object
         members will be pretty-printed with that indent level. An indent level of
         `0` will only insert newlines. `-1` (the default) selects the most compact
         representation.
         @param[in] indent_char The character to use for indentation if @a indent is
         greater than `0`. The default is ` ` (space).
         @param[in] ensure_ascii If @a ensure_ascii is true, all non-ASCII characters
-        in the output are escaped with `\uXXXX` sequences, and the result consists
+        in the output are escaped with `\uXXXX` sequences, && the result consists
         of ASCII characters only.
         @param[in] error_handler  how to react on decoding errors; there are three
-        possible values: `strict` (throws and exception in case a decoding error
+        possible values: `strict` (throws && exception in case a decoding error
         occurs; default), `replace` (replace invalid UTF-8 sequences with U+FFFD),
-        and `ignore` (ignore invalid UTF-8 sequences during serialization).
+        && `ignore` (ignore invalid UTF-8 sequences during serialization).
 
         @return string containing the serialization of the JSON value
 
@@ -14451,13 +14451,13 @@ namespace nlohmann
         changes in the JSON value.
 
         @liveexample{The following example shows the effect of different @a indent\,
-        @a indent_char\, and @a ensure_ascii parameters to the result of the
+        @a indent_char\, && @a ensure_ascii parameters to the result of the
         serialization.,dump}
 
         @see https://docs.python.org/2/library/json.html#json.dump
 
         @since version 1.0.0; indentation character @a indent_char, option
-        @a ensure_ascii and exceptions added in version 3.0.0; error
+        @a ensure_ascii && exceptions added in version 3.0.0; error
         handlers added in version 3.4.0.
         */
         string_t dump(const int indent = -1,
@@ -14520,7 +14520,7 @@ namespace nlohmann
         /*!
         @brief return whether type is primitive
 
-        This function returns true if and only if the JSON type is primitive
+        This function returns true if && only if the JSON type is primitive
         (string, number, boolean, or null).
 
         @return `true` if type is primitive (string, number, boolean, or null),
@@ -14550,7 +14550,7 @@ namespace nlohmann
         /*!
         @brief return whether type is structured
 
-        This function returns true if and only if the JSON type is structured
+        This function returns true if && only if the JSON type is structured
         (array or object).
 
         @return `true` if type is structured (array or object), `false` otherwise.
@@ -14577,7 +14577,7 @@ namespace nlohmann
         /*!
         @brief return whether value is null
 
-        This function returns true if and only if the JSON value is null.
+        This function returns true if && only if the JSON value is null.
 
         @return `true` if type is null, `false` otherwise.
 
@@ -14599,7 +14599,7 @@ namespace nlohmann
         /*!
         @brief return whether value is a boolean
 
-        This function returns true if and only if the JSON value is a boolean.
+        This function returns true if && only if the JSON value is a boolean.
 
         @return `true` if type is boolean, `false` otherwise.
 
@@ -14621,8 +14621,8 @@ namespace nlohmann
         /*!
         @brief return whether value is a number
 
-        This function returns true if and only if the JSON value is a number. This
-        includes both integer (signed and unsigned) and floating-point values.
+        This function returns true if && only if the JSON value is a number. This
+        includes both integer (signed && unsigned) && floating-point values.
 
         @return `true` if type is number (regardless whether integer, unsigned
         integer or floating-type), `false` otherwise.
@@ -14651,7 +14651,7 @@ namespace nlohmann
         /*!
         @brief return whether value is an integer number
 
-        This function returns true if and only if the JSON value is a signed or
+        This function returns true if && only if the JSON value is a signed or
         unsigned integer number. This excludes floating-point values.
 
         @return `true` if type is an integer or unsigned integer number, `false`
@@ -14680,8 +14680,8 @@ namespace nlohmann
         /*!
         @brief return whether value is an unsigned integer number
 
-        This function returns true if and only if the JSON value is an unsigned
-        integer number. This excludes floating-point and signed integer values.
+        This function returns true if && only if the JSON value is an unsigned
+        integer number. This excludes floating-point && signed integer values.
 
         @return `true` if type is an unsigned integer number, `false` otherwise.
 
@@ -14708,8 +14708,8 @@ namespace nlohmann
         /*!
         @brief return whether value is a floating-point number
 
-        This function returns true if and only if the JSON value is a
-        floating-point number. This excludes signed and unsigned integer values.
+        This function returns true if && only if the JSON value is a
+        floating-point number. This excludes signed && unsigned integer values.
 
         @return `true` if type is a floating-point number, `false` otherwise.
 
@@ -14736,7 +14736,7 @@ namespace nlohmann
         /*!
         @brief return whether value is an object
 
-        This function returns true if and only if the JSON value is an object.
+        This function returns true if && only if the JSON value is an object.
 
         @return `true` if type is object, `false` otherwise.
 
@@ -14758,7 +14758,7 @@ namespace nlohmann
         /*!
         @brief return whether value is an array
 
-        This function returns true if and only if the JSON value is an array.
+        This function returns true if && only if the JSON value is an array.
 
         @return `true` if type is array, `false` otherwise.
 
@@ -14780,7 +14780,7 @@ namespace nlohmann
         /*!
         @brief return whether value is a string
 
-        This function returns true if and only if the JSON value is a string.
+        This function returns true if && only if the JSON value is a string.
 
         @return `true` if type is string, `false` otherwise.
 
@@ -14802,7 +14802,7 @@ namespace nlohmann
         /*!
         @brief return whether value is discarded
 
-        This function returns true if and only if the JSON value was discarded
+        This function returns true if && only if the JSON value was discarded
         during parsing with a callback function (see @ref parser_callback_t).
 
         @note This function will always be `false` for JSON values after parsing.
@@ -14958,7 +14958,7 @@ namespace nlohmann
         @brief helper function to implement get_ref()
 
         This function helps to implement get_ref() without code duplication for
-        const and non-const overloads
+        const && non-const overloads
 
         @tparam ThisType will be deduced as `basic_json` or `const basic_json`
 
@@ -15022,7 +15022,7 @@ namespace nlohmann
         @since version 3.2.0
         */
         template<typename BasicJsonType, detail::enable_if_t<
-            not std::is_same<BasicJsonType, basic_json>::value and
+            not std::is_same<BasicJsonType, basic_json>::value &&
             detail::is_basic_json<BasicJsonType>::value, int> = 0>
             BasicJsonType get() const
         {
@@ -15032,9 +15032,9 @@ namespace nlohmann
         /*!
         @brief get a value (explicit)
 
-        Explicit type conversion between the JSON value and a compatible value
+        Explicit type conversion between the JSON value && a compatible value
         which is [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
-        and [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
+        && [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
         The value is converted by calling the @ref json_serializer<ValueType>
         `from_json()` method.
 
@@ -15048,7 +15048,7 @@ namespace nlohmann
         This overloads is chosen if:
         - @a ValueType is not @ref basic_json,
         - @ref json_serializer<ValueType> has a `from_json()` method of the form
-        `void from_json(const basic_json&, ValueType&)`, and
+        `void from_json(const basic_json&, ValueType&)`, &&
         - @ref json_serializer<ValueType> does not have a `from_json()` method of
         the form `ValueType from_json(const basic_json&)`
 
@@ -15070,8 +15070,8 @@ namespace nlohmann
         */
         template<typename ValueTypeCV, typename ValueType = detail::uncvref_t<ValueTypeCV>,
             detail::enable_if_t <
-            not detail::is_basic_json<ValueType>::value and
-            detail::has_from_json<basic_json_t, ValueType>::value and
+            not detail::is_basic_json<ValueType>::value &&
+            detail::has_from_json<basic_json_t, ValueType>::value &&
             not detail::has_non_default_from_json<basic_json_t, ValueType>::value,
             int> = 0>
             ValueType get() const noexcept(noexcept(
@@ -15093,9 +15093,9 @@ namespace nlohmann
         /*!
         @brief get a value (explicit); special case
 
-        Explicit type conversion between the JSON value and a compatible value
+        Explicit type conversion between the JSON value && a compatible value
         which is **not** [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
-        and **not** [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
+        && **not** [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible).
         The value is converted by calling the @ref json_serializer<ValueType>
         `from_json()` method.
 
@@ -15105,7 +15105,7 @@ namespace nlohmann
         @endcode
 
         This overloads is chosen if:
-        - @a ValueType is not @ref basic_json and
+        - @a ValueType is not @ref basic_json &&
         - @ref json_serializer<ValueType> has a `from_json()` method of the form
         `ValueType from_json(const basic_json&)`
 
@@ -15122,7 +15122,7 @@ namespace nlohmann
         @since version 2.1.0
         */
         template<typename ValueTypeCV, typename ValueType = detail::uncvref_t<ValueTypeCV>,
-            detail::enable_if_t<not std::is_same<basic_json_t, ValueType>::value and
+            detail::enable_if_t<not std::is_same<basic_json_t, ValueType>::value &&
             detail::has_non_default_from_json<basic_json_t, ValueType>::value,
             int> = 0>
             ValueType get() const noexcept(noexcept(
@@ -15136,7 +15136,7 @@ namespace nlohmann
         /*!
         @brief get a value (explicit)
 
-        Explicit type conversion between the JSON value and a compatible value.
+        Explicit type conversion between the JSON value && a compatible value.
         The value is filled into the input parameter by calling the @ref json_serializer<ValueType>
         `from_json()` method.
 
@@ -15149,7 +15149,7 @@ namespace nlohmann
         This overloads is chosen if:
         - @a ValueType is not @ref basic_json,
         - @ref json_serializer<ValueType> has a `from_json()` method of the form
-        `void from_json(const basic_json&, ValueType&)`, and
+        `void from_json(const basic_json&, ValueType&)`, &&
 
         @tparam ValueType the input parameter type.
 
@@ -15168,7 +15168,7 @@ namespace nlohmann
         */
         template<typename ValueType,
             detail::enable_if_t <
-            not detail::is_basic_json<ValueType>::value and
+            not detail::is_basic_json<ValueType>::value &&
             detail::has_from_json<basic_json_t, ValueType>::value,
             int> = 0>
             ValueType & get_to(ValueType& v) const noexcept(noexcept(
@@ -15199,8 +15199,8 @@ namespace nlohmann
         @complexity Constant.
 
         @liveexample{The example below shows how pointers to internal values of a
-        JSON value can be requested. Note that no type conversions are made and a
-        `nullptr` is returned if the value and the requested pointer type does not
+        JSON value can be requested. Note that no type conversions are made && a
+        `nullptr` is returned if the value && the requested pointer type does not
         match.,get_ptr}
 
         @since version 1.0.0
@@ -15218,7 +15218,7 @@ namespace nlohmann
         @copydoc get_ptr()
         */
         template<typename PointerType, typename std::enable_if<
-            std::is_pointer<PointerType>::value and
+            std::is_pointer<PointerType>::value &&
             std::is_const<typename std::remove_pointer<PointerType>::type>::value, int>::type = 0>
             constexpr auto get_ptr() const noexcept -> decltype(std::declval<const basic_json_t&>().get_impl_ptr(std::declval<PointerType>()))
         {
@@ -15245,8 +15245,8 @@ namespace nlohmann
         @complexity Constant.
 
         @liveexample{The example below shows how pointers to internal values of a
-        JSON value can be requested. Note that no type conversions are made and a
-        `nullptr` is returned if the value and the requested pointer type does not
+        JSON value can be requested. Note that no type conversions are made && a
+        `nullptr` is returned if the value && the requested pointer type does not
         match.,get__PointerType}
 
         @sa @ref get_ptr() for explicit pointer-member access
@@ -15312,7 +15312,7 @@ namespace nlohmann
         @copydoc get_ref()
         */
         template<typename ReferenceType, typename std::enable_if<
-            std::is_reference<ReferenceType>::value and
+            std::is_reference<ReferenceType>::value &&
             std::is_const<typename std::remove_reference<ReferenceType>::type>::value, int>::type = 0>
             ReferenceType get_ref() const
         {
@@ -15323,7 +15323,7 @@ namespace nlohmann
         /*!
         @brief get a value (implicit)
 
-        Implicit type conversion between the JSON value and a compatible value.
+        Implicit type conversion between the JSON value && a compatible value.
         The call is realized by calling @ref get() const.
 
         @tparam ValueType non-pointer type compatible to the JSON value, for
@@ -15350,18 +15350,18 @@ namespace nlohmann
         @since version 1.0.0
         */
         template < typename ValueType, typename std::enable_if <
-            not std::is_pointer<ValueType>::value and
-            not std::is_same<ValueType, detail::json_ref<basic_json>>::value and
-            not std::is_same<ValueType, typename string_t::value_type>::value and
+            not std::is_pointer<ValueType>::value &&
+            not std::is_same<ValueType, detail::json_ref<basic_json>>::value &&
+            not std::is_same<ValueType, typename string_t::value_type>::value &&
             not detail::is_basic_json<ValueType>::value
 
 #ifndef _MSC_VER  // fix for issue #167 operator<< ambiguity under VS2015
-            and not std::is_same<ValueType, std::initializer_list<typename string_t::value_type>>::value
-#if defined(JSON_HAS_CPP_17) && defined(_MSC_VER) and _MSC_VER <= 1914
-            and not std::is_same<ValueType, typename std::string_view>::value
+            && not std::is_same<ValueType, std::initializer_list<typename string_t::value_type>>::value
+#if defined(JSON_HAS_CPP_17) && defined(_MSC_VER) && _MSC_VER <= 1914
+            && not std::is_same<ValueType, typename std::string_view>::value
 #endif
 #endif
-            and detail::is_detected<detail::get_template_function, const basic_json_t&, ValueType>::value
+            && detail::is_detected<detail::get_template_function, const basic_json_t&, ValueType>::value
             , int >::type = 0 >
             operator ValueType() const
         {
@@ -15402,7 +15402,7 @@ namespace nlohmann
 
         @since version 1.0.0
 
-        @liveexample{The example below shows how array elements can be read and
+        @liveexample{The example below shows how array elements can be read &&
         written using `at()`. It also demonstrates the different exceptions that
         can be thrown.,at__size_type}
         */
@@ -15500,7 +15500,7 @@ namespace nlohmann
 
         @since version 1.0.0
 
-        @liveexample{The example below shows how object elements can be read and
+        @liveexample{The example below shows how object elements can be read &&
         written using `at()`. It also demonstrates the different exceptions that
         can be thrown.,at__object_t_key_type}
         */
@@ -15595,7 +15595,7 @@ namespace nlohmann
         @complexity Constant if @a idx is in the range of the array. Otherwise
         linear in `idx - size()`.
 
-        @liveexample{The example below shows how array elements can be read and
+        @liveexample{The example below shows how array elements can be read &&
         written using `[]` operator. Note the addition of `null`
         values.,operatorarray__size_type}
 
@@ -15664,7 +15664,7 @@ namespace nlohmann
         Returns a reference to the element at with specified key @a key.
 
         @note If @a key is not found in the object, then it is silently added to
-        the object and filled with a `null` value to make `key` a valid reference.
+        the object && filled with a `null` value to make `key` a valid reference.
         In case the value was `null` before, it is converted to an object.
 
         @param[in] key  key of the element to access
@@ -15676,7 +15676,7 @@ namespace nlohmann
 
         @complexity Logarithmic in the size of the container.
 
-        @liveexample{The example below shows how object elements can be read and
+        @liveexample{The example below shows how object elements can be read &&
         written using the `[]` operator.,operatorarray__key_type}
 
         @sa @ref at(const typename object_t::key_type&) for access by reference
@@ -15752,7 +15752,7 @@ namespace nlohmann
         Returns a reference to the element at with specified key @a key.
 
         @note If @a key is not found in the object, then it is silently added to
-        the object and filled with a `null` value to make `key` a valid reference.
+        the object && filled with a `null` value to make `key` a valid reference.
         In case the value was `null` before, it is converted to an object.
 
         @param[in] key  key of the element to access
@@ -15764,7 +15764,7 @@ namespace nlohmann
 
         @complexity Logarithmic in the size of the container.
 
-        @liveexample{The example below shows how object elements can be read and
+        @liveexample{The example below shows how object elements can be read &&
         written using the `[]` operator.,operatorarray__key_type}
 
         @sa @ref at(const typename object_t::key_type&) for access by reference
@@ -15863,7 +15863,7 @@ namespace nlohmann
 
         @tparam ValueType type compatible to JSON values, for instance `int` for
         JSON integer numbers, `bool` for JSON booleans, or `std::vector` types for
-        JSON arrays. Note the type of the expected value at @a key and the default
+        JSON arrays. Note the type of the expected value at @a key && the default
         value @a default_value must be compatible.
 
         @return copy of the element at key @a key or @a default_value if @a key
@@ -15891,7 +15891,7 @@ namespace nlohmann
             // at only works for objects
             if (JSON_LIKELY(is_object()))
             {
-                // if key is found, return value and given default value otherwise
+                // if key is found, return value && given default value otherwise
                 const auto it = find(key);
                 if (it != end())
                 {
@@ -15936,7 +15936,7 @@ namespace nlohmann
 
         @tparam ValueType type compatible to JSON values, for instance `int` for
         JSON integer numbers, `bool` for JSON booleans, or `std::vector` types for
-        JSON arrays. Note the type of the expected value at @a key and the default
+        JSON arrays. Note the type of the expected value at @a key && the default
         value @a default_value must be compatible.
 
         @return copy of the element at key @a key or @a default_value if @a key
@@ -16074,7 +16074,7 @@ namespace nlohmann
         @brief remove element given an iterator
 
         Removes the element specified by iterator @a pos. The iterator @a pos must
-        be valid and dereferenceable. Thus the `end()` iterator (which is valid,
+        be valid && dereferenceable. Thus the `end()` iterator (which is valid,
         but is not dereferenceable) cannot be used as a value for @a pos.
 
         If called on a primitive type other than `null`, the resulting JSON value
@@ -16086,7 +16086,7 @@ namespace nlohmann
 
         @tparam IteratorType an @ref iterator or @ref const_iterator
 
-        @post Invalidates iterators and references at or after the point of the
+        @post Invalidates iterators && references at or after the point of the
         erase, including the `end()` iterator.
 
         @throw type_error.307 if called on a `null` value; example: `"cannot use
@@ -16100,7 +16100,7 @@ namespace nlohmann
 
         @complexity The complexity depends on the type:
         - objects: amortized constant
-        - arrays: linear in distance between @a pos and the end of the container
+        - arrays: linear in distance between @a pos && the end of the container
         - strings: linear in the length of the string
         - other types: constant
 
@@ -16192,7 +16192,7 @@ namespace nlohmann
 
         @tparam IteratorType an @ref iterator or @ref const_iterator
 
-        @post Invalidates iterators and references at or after the point of the
+        @post Invalidates iterators && references at or after the point of the
         erase, including the `end()` iterator.
 
         @throw type_error.307 if called on a `null` value; example: `"cannot use
@@ -16200,13 +16200,13 @@ namespace nlohmann
         @throw invalid_iterator.203 if called on iterators which does not belong
         to the current JSON value; example: `"iterators do not fit current value"`
         @throw invalid_iterator.204 if called on a primitive type with invalid
-        iterators (i.e., if `first != begin()` and `last != end()`); example:
+        iterators (i.e., if `first != begin()` && `last != end()`); example:
         `"iterators out of range"`
 
         @complexity The complexity depends on the type:
         - objects: `log(size()) + std::distance(first, last)`
-        - arrays: linear in the distance between @a first and @a last, plus linear
-        in the distance between @a last and end of the container
+        - arrays: linear in the distance between @a first && @a last, plus linear
+        in the distance between @a last && end of the container
         - strings: linear in the length of the string
         - other types: constant
 
@@ -16294,8 +16294,8 @@ namespace nlohmann
         `std::map` type, the return value will always be `0` (@a key was not
         found) or `1` (@a key was found).
 
-        @post References and iterators to the erased elements are invalidated.
-        Other references and iterators are not affected.
+        @post References && iterators to the erased elements are invalidated.
+        Other references && iterators are not affected.
 
         @throw type_error.307 when called on a type other than JSON object;
         example: `"cannot use erase() with null"`
@@ -16335,7 +16335,7 @@ namespace nlohmann
         @throw out_of_range.401 when `idx >= size()`; example: `"array index 17
         is out of range"`
 
-        @complexity Linear in distance between @a idx and the end of the container.
+        @complexity Linear in distance between @a idx && the end of the container.
 
         @liveexample{The example shows the effect of `erase()`.,erase__size_type}
 
@@ -16742,7 +16742,7 @@ namespace nlohmann
         /*!
         @brief wrapper to access iterator member functions in range-based for
 
-        This function allows to access @ref iterator::key() and @ref
+        This function allows to access @ref iterator::key() && @ref
         iterator::value() during range-based for loops. In these loops, a
         reference to the JSON values is returned, so there is no access to the
         underlying iterator.
@@ -16761,7 +16761,7 @@ namespace nlohmann
         @code{cpp}
         for (auto it : j_object)
         {
-        // "it" is of type json::reference and has no key() member
+        // "it" is of type json::reference && has no key() member
         std::cout << "value: " << it << '\n';
         }
         @endcode
@@ -16789,10 +16789,10 @@ namespace nlohmann
 
         @complexity Constant.
 
-        @note The name of this function is not yet final and may change in the
+        @note The name of this function is not yet final && may change in the
         future.
 
-        @deprecated This stream operator is deprecated and will be removed in
+        @deprecated This stream operator is deprecated && will be removed in
         future 4.0.0 of the library. Please use @ref items() instead;
         that is, replace `json::iterator_wrapper(j)` with `j.items()`.
         */
@@ -16814,7 +16814,7 @@ namespace nlohmann
         /*!
         @brief helper to access iterator member functions in range-based for
 
-        This function allows to access @ref iterator::key() and @ref
+        This function allows to access @ref iterator::key() && @ref
         iterator::value() during range-based for loops. In these loops, a
         reference to the JSON values is returned, so there is no access to the
         underlying iterator.
@@ -16833,7 +16833,7 @@ namespace nlohmann
         @code{cpp}
         for (auto it : j_object)
         {
-        // "it" is of type json::reference and has no key() member
+        // "it" is of type json::reference && has no key() member
         std::cout << "value: " << it << '\n';
         }
         @endcode
@@ -16902,7 +16902,7 @@ namespace nlohmann
 
         Checks if a JSON value has no elements (i.e. whether its @ref size is `0`).
 
-        @return The return value depends on the different types and is
+        @return The return value depends on the different types && is
         defined as follows:
         Value type  | return value
         ----------- | -------------
@@ -16916,7 +16916,7 @@ namespace nlohmann
         @liveexample{The following code uses `empty()` to check if a JSON
         object contains any elements.,empty}
 
-        @complexity Constant, as long as @ref array_t and @ref object_t satisfy
+        @complexity Constant, as long as @ref array_t && @ref object_t satisfy
         the Container concept; that is, their `empty()` functions have constant
         complexity.
 
@@ -16973,7 +16973,7 @@ namespace nlohmann
 
         Returns the number of elements in a JSON value.
 
-        @return The return value depends on the different types and is
+        @return The return value depends on the different types && is
         defined as follows:
         Value type  | return value
         ----------- | -------------
@@ -16987,7 +16987,7 @@ namespace nlohmann
         @liveexample{The following code calls `size()` on the different value
         types.,size}
 
-        @complexity Constant, as long as @ref array_t and @ref object_t satisfy
+        @complexity Constant, as long as @ref array_t && @ref object_t satisfy
         the Container concept; that is, their size() functions have constant
         complexity.
 
@@ -17047,7 +17047,7 @@ namespace nlohmann
         system or library implementation limitations, i.e. `std::distance(begin(),
         end())` for the JSON value.
 
-        @return The return value depends on the different types and is
+        @return The return value depends on the different types && is
         defined as follows:
         Value type  | return value
         ----------- | -------------
@@ -17061,7 +17061,7 @@ namespace nlohmann
         @liveexample{The following code calls `max_size()` on the different value
         types. Note the output is implementation specific.,max_size}
 
-        @complexity Constant, as long as @ref array_t and @ref object_t satisfy
+        @complexity Constant, as long as @ref array_t && @ref object_t satisfy
         the Container concept; that is, their `max_size()` functions have constant
         complexity.
 
@@ -17117,7 +17117,7 @@ namespace nlohmann
         /*!
         @brief clears the contents
 
-        Clears the content of a JSON value and resets it to the default value as
+        Clears the content of a JSON value && resets it to the default value as
         if @ref basic_json(value_t) would have been called with the current value
         type from @ref type():
 
@@ -17140,7 +17140,7 @@ namespace nlohmann
 
         @complexity Linear in the size of the JSON value.
 
-        @iterators All iterators, pointers and references related to this container
+        @iterators All iterators, pointers && references related to this container
         are invalidated.
 
         @exceptionsafety No-throw guarantee: this function never throws exceptions.
@@ -17215,7 +17215,7 @@ namespace nlohmann
 
         @complexity Amortized constant.
 
-        @liveexample{The example shows how `push_back()` and `+=` can be used to
+        @liveexample{The example shows how `push_back()` && `+=` can be used to
         add elements to a JSON array. Note how the `null` value was silently
         converted to a JSON array.,push_back}
 
@@ -17301,7 +17301,7 @@ namespace nlohmann
 
         @complexity Logarithmic in the size of the container, O(log(`size()`)).
 
-        @liveexample{The example shows how `push_back()` and `+=` can be used to
+        @liveexample{The example shows how `push_back()` && `+=` can be used to
         add elements to a JSON object. Note how the `null` value was silently
         converted to a JSON object.,push_back__object_t__value}
 
@@ -17343,12 +17343,12 @@ namespace nlohmann
         This function allows to use `push_back` with an initializer list. In case
 
         1. the current value is an object,
-        2. the initializer list @a init contains only two elements, and
+        2. the initializer list @a init contains only two elements, &&
         3. the first element of @a init is a string,
 
-        @a init is converted into an object element and added using
+        @a init is converted into an object element && added using
         @ref push_back(const typename object_t::value_type&). Otherwise, @a init
-        is converted to a JSON value and added using @ref push_back(basic_json&&).
+        is converted to a JSON value && added using @ref push_back(basic_json&&).
 
         @param[in] init  an initializer list
 
@@ -17364,7 +17364,7 @@ namespace nlohmann
         */
         void push_back(initializer_list_t init)
         {
-            if (is_object() and init.size() == 2 and (*init.begin())->is_string())
+            if (is_object() && init.size() == 2 && (*init.begin())->is_string())
             {
                 basic_json&& key = init.begin()->moved_or_copied();
                 push_back(typename object_t::value_type(
@@ -17440,7 +17440,7 @@ namespace nlohmann
         @tparam Args compatible types to create a @ref basic_json object
 
         @return a pair consisting of an iterator to the inserted element, or the
-        already-existing element if no insertion happened, and a bool
+        already-existing element if no insertion happened, && a bool
         denoting whether the insertion took place.
 
         @throw type_error.311 when called on a type other than JSON object or
@@ -17474,11 +17474,11 @@ namespace nlohmann
 
             // add element to array (perfect forwarding)
             auto res = m_value.object->emplace(std::forward<Args>(args)...);
-            // create result iterator and set iterator to the result of emplace
+            // create result iterator && set iterator to the result of emplace
             auto it = begin();
             it.m_it.object_iterator = res.first;
 
-            // return pair of iterator and boolean
+            // return pair of iterator && boolean
             return{ it, res.second };
         }
 
@@ -17517,7 +17517,7 @@ namespace nlohmann
         @throw invalid_iterator.202 if @a pos is not an iterator of *this;
         example: `"iterator does not fit current value"`
 
-        @complexity Constant plus linear in the distance between @a pos and end of
+        @complexity Constant plus linear in the distance between @a pos && end of
         the container.
 
         @liveexample{The example shows how `insert()` is used.,insert}
@@ -17535,7 +17535,7 @@ namespace nlohmann
                     JSON_THROW(invalid_iterator::create(202, "iterator does not fit current value"));
                 }
 
-                // insert to array and return iterator
+                // insert to array && return iterator
                 return insert_iterator(pos, val);
             }
 
@@ -17569,7 +17569,7 @@ namespace nlohmann
         example: `"iterator does not fit current value"`
 
         @complexity Linear in @a cnt plus linear in the distance between @a pos
-        and end of the container.
+        && end of the container.
 
         @liveexample{The example shows how `insert()` is used.,insert__count}
 
@@ -17586,7 +17586,7 @@ namespace nlohmann
                     JSON_THROW(invalid_iterator::create(202, "iterator does not fit current value"));
                 }
 
-                // insert to array and return iterator
+                // insert to array && return iterator
                 return insert_iterator(pos, cnt, val);
             }
 
@@ -17607,7 +17607,7 @@ namespace nlohmann
         `"cannot use insert() with string"`
         @throw invalid_iterator.202 if @a pos is not an iterator of *this;
         example: `"iterator does not fit current value"`
-        @throw invalid_iterator.210 if @a first and @a last do not belong to the
+        @throw invalid_iterator.210 if @a first && @a last do not belong to the
         same JSON value; example: `"iterators do not fit"`
         @throw invalid_iterator.211 if @a first or @a last are iterators into
         container for which insert is called; example: `"passed iterators may not
@@ -17617,7 +17617,7 @@ namespace nlohmann
         `first==last`
 
         @complexity Linear in `std::distance(first, last)` plus linear in the
-        distance between @a pos and end of the container.
+        distance between @a pos && end of the container.
 
         @liveexample{The example shows how `insert()` is used.,insert__range}
 
@@ -17648,7 +17648,7 @@ namespace nlohmann
                 JSON_THROW(invalid_iterator::create(211, "passed iterators may not belong to container"));
             }
 
-            // insert to array and return iterator
+            // insert to array && return iterator
             return insert_iterator(pos, first.m_it.array_iterator, last.m_it.array_iterator);
         }
 
@@ -17670,7 +17670,7 @@ namespace nlohmann
         `ilist` is empty
 
         @complexity Linear in `ilist.size()` plus linear in the distance between
-        @a pos and end of the container.
+        @a pos && end of the container.
 
         @liveexample{The example shows how `insert()` is used.,insert__ilist}
 
@@ -17690,7 +17690,7 @@ namespace nlohmann
                 JSON_THROW(invalid_iterator::create(202, "iterator does not fit current value"));
             }
 
-            // insert to array and return iterator
+            // insert to array && return iterator
             return insert_iterator(pos, ilist.begin(), ilist.end());
         }
 
@@ -17705,9 +17705,9 @@ namespace nlohmann
         @throw type_error.309 if called on JSON values other than objects; example:
         `"cannot use insert() with string"`
         @throw invalid_iterator.202 if iterator @a first or @a last does does not
-        point to an object; example: `"iterators first and last must point to
+        point to an object; example: `"iterators first && last must point to
         objects"`
-        @throw invalid_iterator.210 if @a first and @a last do not belong to the
+        @throw invalid_iterator.210 if @a first && @a last do not belong to the
         same JSON value; example: `"iterators do not fit"`
 
         @complexity Logarithmic: `O(N*log(size() + N))`, where `N` is the number
@@ -17734,7 +17734,7 @@ namespace nlohmann
             // passed iterators must belong to objects
             if (JSON_UNLIKELY(not first.m_object->is_object()))
             {
-                JSON_THROW(invalid_iterator::create(202, "iterators first and last must point to objects"));
+                JSON_THROW(invalid_iterator::create(202, "iterators first && last must point to objects"));
             }
 
             m_value.object->insert(first.m_it.object_iterator, last.m_it.object_iterator);
@@ -17743,7 +17743,7 @@ namespace nlohmann
         /*!
         @brief updates a JSON object from another object, overwriting existing keys
 
-        Inserts all values from JSON object @a j and overwrites existing keys.
+        Inserts all values from JSON object @a j && overwrites existing keys.
 
         @param[in] j  JSON object to read values from
 
@@ -17787,7 +17787,7 @@ namespace nlohmann
         /*!
         @brief updates a JSON object from another object, overwriting existing keys
 
-        Inserts all values from from range `[first, last)` and overwrites existing
+        Inserts all values from from range `[first, last)` && overwrites existing
         keys.
 
         @param[in] first begin of the range of elements to insert
@@ -17796,9 +17796,9 @@ namespace nlohmann
         @throw type_error.312 if called on JSON values other than objects; example:
         `"cannot use update() with string"`
         @throw invalid_iterator.202 if iterator @a first or @a last does does not
-        point to an object; example: `"iterators first and last must point to
+        point to an object; example: `"iterators first && last must point to
         objects"`
-        @throw invalid_iterator.210 if @a first and @a last do not belong to the
+        @throw invalid_iterator.210 if @a first && @a last do not belong to the
         same JSON value; example: `"iterators do not fit"`
 
         @complexity O(N*log(size() + N)), where N is the number of elements to
@@ -17835,7 +17835,7 @@ namespace nlohmann
             if (JSON_UNLIKELY(not first.m_object->is_object()
                 or not last.m_object->is_object()))
             {
-                JSON_THROW(invalid_iterator::create(202, "iterators first and last must point to objects"));
+                JSON_THROW(invalid_iterator::create(202, "iterators first && last must point to objects"));
             }
 
             for (auto it = first; it != last; ++it)
@@ -17849,7 +17849,7 @@ namespace nlohmann
 
         Exchanges the contents of the JSON value with those of @a other. Does not
         invoke any move, copy, or swap operations on individual elements. All
-        iterators and references remain valid. The past-the-end iterator is
+        iterators && references remain valid. The past-the-end iterator is
         invalidated.
 
         @param[in,out] other JSON value to exchange the contents with
@@ -17862,9 +17862,9 @@ namespace nlohmann
         @since version 1.0.0
         */
         void swap(reference other) noexcept (
-            std::is_nothrow_move_constructible<value_t>::value and
-            std::is_nothrow_move_assignable<value_t>::value and
-            std::is_nothrow_move_constructible<json_value>::value and
+            std::is_nothrow_move_constructible<value_t>::value &&
+            std::is_nothrow_move_assignable<value_t>::value &&
+            std::is_nothrow_move_constructible<json_value>::value &&
             std::is_nothrow_move_assignable<json_value>::value
             )
         {
@@ -17878,7 +17878,7 @@ namespace nlohmann
 
         Exchanges the contents of a JSON array with those of @a other. Does not
         invoke any move, copy, or swap operations on individual elements. All
-        iterators and references remain valid. The past-the-end iterator is
+        iterators && references remain valid. The past-the-end iterator is
         invalidated.
 
         @param[in,out] other array to exchange the contents with
@@ -17911,7 +17911,7 @@ namespace nlohmann
 
         Exchanges the contents of a JSON object with those of @a other. Does not
         invoke any move, copy, or swap operations on individual elements. All
-        iterators and references remain valid. The past-the-end iterator is
+        iterators && references remain valid. The past-the-end iterator is
         invalidated.
 
         @param[in,out] other object to exchange the contents with
@@ -17944,7 +17944,7 @@ namespace nlohmann
 
         Exchanges the contents of a JSON string with those of @a other. Does not
         invoke any move, copy, or swap operations on individual elements. All
-        iterators and references remain valid. The past-the-end iterator is
+        iterators && references remain valid. The past-the-end iterator is
         invalidated.
 
         @param[in,out] other string to exchange the contents with
@@ -17986,10 +17986,10 @@ namespace nlohmann
         @brief comparison: equal
 
         Compares two JSON values for equality according to the following rules:
-        - Two JSON values are equal if (1) they are from the same type and (2)
+        - Two JSON values are equal if (1) they are from the same type && (2)
         their stored values are the same according to their respective
         `operator==`.
-        - Integer and floating-point numbers are automatically converted before
+        - Integer && floating-point numbers are automatically converted before
         comparison. Note than two NaN values are always treated as unequal.
         - Two JSON null values are equal.
 
@@ -18010,7 +18010,7 @@ namespace nlohmann
 
         @param[in] lhs  first JSON value to consider
         @param[in] rhs  second JSON value to consider
-        @return whether the values @a lhs and @a rhs are equal
+        @return whether the values @a lhs && @a rhs are equal
 
         @exceptionsafety No-throw guarantee: this function never throws exceptions.
 
@@ -18058,27 +18058,27 @@ namespace nlohmann
                     return false;
                 }
             }
-            else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
+            else if (lhs_type == value_t::number_integer && rhs_type == value_t::number_float)
             {
                 return (static_cast<number_float_t>(lhs.m_value.number_integer) == rhs.m_value.number_float);
             }
-            else if (lhs_type == value_t::number_float and rhs_type == value_t::number_integer)
+            else if (lhs_type == value_t::number_float && rhs_type == value_t::number_integer)
             {
                 return (lhs.m_value.number_float == static_cast<number_float_t>(rhs.m_value.number_integer));
             }
-            else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_float)
+            else if (lhs_type == value_t::number_unsigned && rhs_type == value_t::number_float)
             {
                 return (static_cast<number_float_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_float);
             }
-            else if (lhs_type == value_t::number_float and rhs_type == value_t::number_unsigned)
+            else if (lhs_type == value_t::number_float && rhs_type == value_t::number_unsigned)
             {
                 return (lhs.m_value.number_float == static_cast<number_float_t>(rhs.m_value.number_unsigned));
             }
-            else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_integer)
+            else if (lhs_type == value_t::number_unsigned && rhs_type == value_t::number_integer)
             {
                 return (static_cast<number_integer_t>(lhs.m_value.number_unsigned) == rhs.m_value.number_integer);
             }
-            else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_unsigned)
+            else if (lhs_type == value_t::number_integer && rhs_type == value_t::number_unsigned)
             {
                 return (lhs.m_value.number_integer == static_cast<number_integer_t>(rhs.m_value.number_unsigned));
             }
@@ -18115,7 +18115,7 @@ namespace nlohmann
 
         @param[in] lhs  first JSON value to consider
         @param[in] rhs  second JSON value to consider
-        @return whether the values @a lhs and @a rhs are not equal
+        @return whether the values @a lhs && @a rhs are not equal
 
         @complexity Linear.
 
@@ -18158,12 +18158,12 @@ namespace nlohmann
 
         Compares whether one JSON value @a lhs is less than another JSON value @a
         rhs according to the following rules:
-        - If @a lhs and @a rhs have the same type, the values are compared using
+        - If @a lhs && @a rhs have the same type, the values are compared using
         the default `<` operator.
-        - Integer and floating-point numbers are automatically converted before
+        - Integer && floating-point numbers are automatically converted before
         comparison
-        - In case @a lhs and @a rhs have different types, the values are ignored
-        and the order of the types is considered, see
+        - In case @a lhs && @a rhs have different types, the values are ignored
+        && the order of the types is considered, see
         @ref operator<(const value_t, const value_t).
 
         @param[in] lhs  first JSON value to consider
@@ -18216,27 +18216,27 @@ namespace nlohmann
                     return false;
                 }
             }
-            else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_float)
+            else if (lhs_type == value_t::number_integer && rhs_type == value_t::number_float)
             {
                 return static_cast<number_float_t>(lhs.m_value.number_integer) < rhs.m_value.number_float;
             }
-            else if (lhs_type == value_t::number_float and rhs_type == value_t::number_integer)
+            else if (lhs_type == value_t::number_float && rhs_type == value_t::number_integer)
             {
                 return lhs.m_value.number_float < static_cast<number_float_t>(rhs.m_value.number_integer);
             }
-            else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_float)
+            else if (lhs_type == value_t::number_unsigned && rhs_type == value_t::number_float)
             {
                 return static_cast<number_float_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_float;
             }
-            else if (lhs_type == value_t::number_float and rhs_type == value_t::number_unsigned)
+            else if (lhs_type == value_t::number_float && rhs_type == value_t::number_unsigned)
             {
                 return lhs.m_value.number_float < static_cast<number_float_t>(rhs.m_value.number_unsigned);
             }
-            else if (lhs_type == value_t::number_integer and rhs_type == value_t::number_unsigned)
+            else if (lhs_type == value_t::number_integer && rhs_type == value_t::number_unsigned)
             {
                 return lhs.m_value.number_integer < static_cast<number_integer_t>(rhs.m_value.number_unsigned);
             }
-            else if (lhs_type == value_t::number_unsigned and rhs_type == value_t::number_integer)
+            else if (lhs_type == value_t::number_unsigned && rhs_type == value_t::number_integer)
             {
                 return static_cast<number_integer_t>(lhs.m_value.number_unsigned) < rhs.m_value.number_integer;
             }
@@ -18424,7 +18424,7 @@ namespace nlohmann
 
         - The indentation of the output can be controlled with the member variable
         `width` of the output stream @a o. For instance, using the manipulator
-        `std::setw(4)` on @a o sets the indentation level to `4` and the
+        `std::setw(4)` on @a o sets the indentation level to `4` && the
         serialization result is the same as calling `dump(4)`.
 
         - The indentation character can be controlled with the member variable
@@ -18449,7 +18449,7 @@ namespace nlohmann
         */
         friend std::ostream& operator<<(std::ostream& o, const basic_json& j)
         {
-            // read width member and use it as indentation parameter if nonzero
+            // read width member && use it as indentation parameter if nonzero
             const bool pretty_print = (o.width() > 0);
             const auto indentation = (pretty_print ? o.width() : 0);
 
@@ -18464,7 +18464,7 @@ namespace nlohmann
 
         /*!
         @brief serialize to stream
-        @deprecated This stream operator is deprecated and will be removed in
+        @deprecated This stream operator is deprecated && will be removed in
         future 4.0.0 of the library. Please use
         @ref operator<<(std::ostream&, const basic_json&)
         instead; that is, replace calls like `j >> o;` with `o << j;`.
@@ -18495,10 +18495,10 @@ namespace nlohmann
         - input streams
         - container with contiguous storage of 1-byte values. Compatible container
         types include `std::vector`, `std::string`, `std::array`,
-        `std::valarray`, and `std::initializer_list`. Furthermore, C-style
+        `std::valarray`, && `std::initializer_list`. Furthermore, C-style
         arrays can be used with `std::begin()`/`std::end()`. User-defined
         containers can be used as long as they implement random-access iterators
-        and a contiguous storage.
+        && a contiguous storage.
 
         @pre Each element of the container has a size of 1 byte. Violating this
         precondition yields undefined behavior. **This precondition is enforced
@@ -18512,8 +18512,8 @@ namespace nlohmann
         with a static assertion.**
 
         @warning There is no way to enforce all preconditions at compile-time. If
-        the function is called with a noncompliant container and with
-        assertions switched off, the behavior is undefined and will most
+        the function is called with a noncompliant container && with
+        assertions switched off, the behavior is undefined && will most
         likely yield segmentation violation.
 
         @param[in] i  input to read from
@@ -18523,7 +18523,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -18542,10 +18542,10 @@ namespace nlohmann
         from an array.,parse__array__parser_callback_t}
 
         @liveexample{The example below demonstrates the `parse()` function with
-        and without callback function.,parse__string__parser_callback_t}
+        && without callback function.,parse__string__parser_callback_t}
 
         @liveexample{The example below demonstrates the `parse()` function with
-        and without callback function.,parse__istream__parser_callback_t}
+        && without callback function.,parse__istream__parser_callback_t}
 
         @liveexample{The example below demonstrates the `parse()` function reading
         from a contiguous container.,parse__contiguouscontainer__parser_callback_t}
@@ -18578,10 +18578,10 @@ namespace nlohmann
         - input streams
         - container with contiguous storage of 1-byte values. Compatible container
         types include `std::vector`, `std::string`, `std::array`,
-        `std::valarray`, and `std::initializer_list`. Furthermore, C-style
+        `std::valarray`, && `std::initializer_list`. Furthermore, C-style
         arrays can be used with `std::begin()`/`std::end()`. User-defined
         containers can be used as long as they implement random-access iterators
-        and a contiguous storage.
+        && a contiguous storage.
 
         @pre Each element of the container has a size of 1 byte. Violating this
         precondition yields undefined behavior. **This precondition is enforced
@@ -18595,8 +18595,8 @@ namespace nlohmann
         with a static assertion.**
 
         @warning There is no way to enforce all preconditions at compile-time. If
-        the function is called with a noncompliant container and with
-        assertions switched off, the behavior is undefined and will most
+        the function is called with a noncompliant container && with
+        assertions switched off, the behavior is undefined && will most
         likely yield segmentation violation.
 
         @param[in] i  input to read from
@@ -18618,7 +18618,7 @@ namespace nlohmann
         @note A UTF-8 byte order mark is silently ignored.
 
         @liveexample{The example below demonstrates the `sax_parse()` function
-        reading from string and processing the events with a user-defined SAX
+        reading from string && processing the events with a user-defined SAX
         event consumer.,sax_parse}
 
         @since version 3.2.0
@@ -18643,10 +18643,10 @@ namespace nlohmann
 
         This function reads from an iterator range of a container with contiguous
         storage of 1-byte values. Compatible container types include
-        `std::vector`, `std::string`, `std::array`, `std::valarray`, and
+        `std::vector`, `std::string`, `std::array`, `std::valarray`, &&
         `std::initializer_list`. Furthermore, C-style arrays can be used with
         `std::begin()`/`std::end()`. User-defined containers can be used as long
-        as they implement random-access iterators and a contiguous storage.
+        as they implement random-access iterators && a contiguous storage.
 
         @pre The iterator range is contiguous. Violating this precondition yields
         undefined behavior. **This precondition is enforced with an assertion.**
@@ -18655,8 +18655,8 @@ namespace nlohmann
         with a static assertion.**
 
         @warning There is no way to enforce all preconditions at compile-time. If
-        the function is called with noncompliant iterators and with
-        assertions switched off, the behavior is undefined and will most
+        the function is called with noncompliant iterators && with
+        assertions switched off, the behavior is undefined && will most
         likely yield segmentation violation.
 
         @tparam IteratorType iterator of container with contiguous storage
@@ -18668,7 +18668,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -18720,7 +18720,7 @@ namespace nlohmann
 
         /*!
         @brief deserialize from stream
-        @deprecated This stream operator is deprecated and will be removed in
+        @deprecated This stream operator is deprecated && will be removed in
         version 4.0.0 of the library. Please use
         @ref operator>>(std::istream&, basic_json&)
         instead; that is, replace calls like `j << i;` with `i >> j;`.
@@ -18796,7 +18796,7 @@ namespace nlohmann
         @sa @ref type() -- return the type of the JSON value
         @sa @ref operator value_t() -- return the type of the JSON value (implicit)
 
-        @since version 1.0.0, public since 2.1.0, `const char*` and `noexcept`
+        @since version 1.0.0, public since 2.1.0, `const char*` && `noexcept`
         since 3.0.0
         */
         const char* type_name() const noexcept
@@ -18910,7 +18910,7 @@ namespace nlohmann
         - expected conversions (0xD5..0xD7)
         - simple values (0xE0..0xF3, 0xF8)
         - undefined (0xF7)
-        - half and single-precision floats (0xF9-0xFA)
+        - half && single-precision floats (0xF9-0xFA)
         - break (0xFF)
 
         @param[in] j  JSON value to serialize
@@ -19095,9 +19095,9 @@ namespace nlohmann
         function which serializes NaN or Infinity to `null`.
 
         @note The optimized formats for containers are supported: Parameter
-        @a use_size adds size information to the beginning of a container and
+        @a use_size adds size information to the beginning of a container &&
         removes the closing marker. Parameter @a use_type further checks
-        whether all elements of a container have the same type and adds the
+        whether all elements of a container have the same type && adds the
         type marker to the beginning of the container. The @a use_type
         parameter must only be used together with @a use_size = true. Note
         that @a use_size = true alone may result in larger representations -
@@ -19146,7 +19146,7 @@ namespace nlohmann
 
 
         /*!
-        @brief Serializes the given JSON object `j` to BSON and returns a vector
+        @brief Serializes the given JSON object `j` to BSON && returns a vector
         containing the corresponding BSON-representation.
 
         BSON (Binary JSON) is a binary format in which zero or more ordered key/value pairs are
@@ -19169,10 +19169,10 @@ namespace nlohmann
         array           | *any value*                       | document    | 0x04
         object          | *any value*                       | document    | 0x03
 
-        @warning The mapping is **incomplete**, since only JSON-objects (and things
+        @warning The mapping is **incomplete**, since only JSON-objects (&& things
         contained therein) can be serialized to BSON.
         Also, integers larger than 9223372036854775807 cannot be serialized to BSON,
-        and the keys may not contain U+0000, since they are serialized a
+        && the keys may not contain U+0000, since they are serialized a
         zero-terminated c-strings.
 
         @throw out_of_range.407  if `j.is_number_unsigned() && j.get<std::uint64_t>() > 9223372036854775807`
@@ -19208,7 +19208,7 @@ namespace nlohmann
         }
 
         /*!
-        @brief Serializes the given JSON object `j` to BSON and forwards the
+        @brief Serializes the given JSON object `j` to BSON && forwards the
         corresponding BSON-representation to the given output_adapter `o`.
         @param j The JSON object to convert to BSON.
         @param o The output adapter that receives the binary BSON representation.
@@ -19277,7 +19277,7 @@ namespace nlohmann
 
         @warning The mapping is **incomplete** in the sense that not all CBOR
         types can be converted to a JSON value. The following CBOR types
-        are not supported and will yield parse errors (parse_error.112):
+        are not supported && will yield parse errors (parse_error.112):
         - byte strings (0x40..0x5F)
         - date/time (0xC0..0xC1)
         - bignum (0xC2..0xC3)
@@ -19301,7 +19301,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -19324,7 +19324,7 @@ namespace nlohmann
         related UBJSON format
 
         @since version 2.0.9; parameter @a start_index since 2.1.1; changed to
-        consume input adapters, removed start_index parameter, and added
+        consume input adapters, removed start_index parameter, && added
         @a strict parameter since 3.0.0; added @a allow_exceptions parameter
         since 3.2.0
         */
@@ -19393,7 +19393,7 @@ namespace nlohmann
 
         @warning The mapping is **incomplete** in the sense that not all
         MessagePack types can be converted to a JSON value. The following
-        MessagePack types are not supported and will yield parse errors:
+        MessagePack types are not supported && will yield parse errors:
         - bin 8 - bin 32 (0xC4..0xC6)
         - ext 8 - ext 32 (0xC7..0xC9)
         - fixext 1 - fixext 16 (0xD4..0xD8)
@@ -19408,7 +19408,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -19433,7 +19433,7 @@ namespace nlohmann
         the related BSON format
 
         @since version 2.0.9; parameter @a start_index since 2.1.1; changed to
-        consume input adapters, removed start_index parameter, and added
+        consume input adapters, removed start_index parameter, && added
         @a strict parameter since 3.0.0; added @a allow_exceptions parameter
         since 3.2.0
         */
@@ -19499,7 +19499,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -19592,7 +19592,7 @@ namespace nlohmann
         @param[in] allow_exceptions  whether to throw exceptions in case of a
         parse error (optional, true by default)
 
-        @return deserialized JSON value; in case of a parse error and
+        @return deserialized JSON value; in case of a parse error &&
         @a allow_exceptions set to `false`, the return value will be
         value_t::discarded.
 
@@ -19655,7 +19655,7 @@ namespace nlohmann
 
         Uses a JSON pointer to retrieve a reference to the respective JSON value.
         No bound checking is performed. Similar to @ref operator[](const typename
-        object_t::key_type&), `null` values are created in arrays and objects if
+        object_t::key_type&), `null` values are created in arrays && objects if
         necessary.
 
         In particular:
@@ -19664,7 +19664,7 @@ namespace nlohmann
         is returned.
         - If the JSON pointer points to an array index that does not exist, it
         is created an filled with a `null` value before a reference to it
-        is returned. All indices between the current maximum and the given
+        is returned. All indices between the current maximum && the given
         index are also filled with `null`.
         - The special value `-` is treated as a synonym for the index past the
         end.
@@ -19736,7 +19736,7 @@ namespace nlohmann
         is out of range. See example below.
 
         @throw out_of_range.402 if the array index '-' is used in the passed JSON
-        pointer @a ptr. As `at` provides checked access (and no elements are
+        pointer @a ptr. As `at` provides checked access (&& no elements are
         implicitly inserted), the index '-' is always invalid. See example below.
 
         @throw out_of_range.403 if the JSON pointer describes a key of an object
@@ -19779,7 +19779,7 @@ namespace nlohmann
         is out of range. See example below.
 
         @throw out_of_range.402 if the array index '-' is used in the passed JSON
-        pointer @a ptr. As `at` provides checked access (and no elements are
+        pointer @a ptr. As `at` provides checked access (&& no elements are
         implicitly inserted), the index '-' is always invalid. See example below.
 
         @throw out_of_range.403 if the JSON pointer describes a key of an object
@@ -19806,13 +19806,13 @@ namespace nlohmann
         @brief return flattened JSON value
 
         The function creates a JSON object whose keys are JSON pointers (see [RFC
-        6901](https://tools.ietf.org/html/rfc6901)) and whose values are all
+        6901](https://tools.ietf.org/html/rfc6901)) && whose values are all
         primitive. The original JSON value can be restored using the @ref
         unflatten() function.
 
         @return an object that maps JSON pointers to primitive values
 
-        @note Empty objects and arrays are flattened to `null` and will not be
+        @note Empty objects && arrays are flattened to `null` && will not be
         reconstructed correctly by the @ref unflatten() function.
 
         @complexity Linear in the size the JSON value.
@@ -19844,8 +19844,8 @@ namespace nlohmann
 
         @return the original JSON from a flattened version
 
-        @note Empty objects and arrays are flattened by @ref flatten() to `null`
-        values and can not unflattened to their original type. Apart from
+        @note Empty objects && arrays are flattened by @ref flatten() to `null`
+        values && can not unflattened to their original type. Apart from
         this example, for a JSON value `j`, the following is always true:
         `j == j.flatten().unflatten()`.
 
@@ -19887,7 +19887,7 @@ namespace nlohmann
         @return patched document
 
         @note The application of a patch is atomic: Either all operations succeed
-        and the patched document is returned or an exception is thrown. In
+        && the patched document is returned or an exception is thrown. In
         any case, the original value is not changed: the patch is applied
         to a copy of the value.
 
@@ -19908,7 +19908,7 @@ namespace nlohmann
 
         @throw other_error.501 if "test" operation was unsuccessful
 
-        @complexity Linear in the size of the JSON value and the length of the
+        @complexity Linear in the size of the JSON value && the length of the
         JSON patch. As usually only a fraction of the JSON value is affected by
         the patch, the complexity can usually be neglected.
 
@@ -20058,7 +20058,7 @@ namespace nlohmann
                 JSON_THROW(parse_error::create(104, 0, "JSON patch must be an array of objects"));
             }
 
-            // iterate and apply the operations
+            // iterate && apply the operations
             for (const auto& val : json_patch)
             {
                 // wrapper to get a value for an operation
@@ -20079,7 +20079,7 @@ namespace nlohmann
                     }
 
                     // check if result is of type string
-                    if (JSON_UNLIKELY(string_type and not it->second.is_string()))
+                    if (JSON_UNLIKELY(string_type && not it->second.is_string()))
                     {
                         JSON_THROW(parse_error::create(105, 0, error_msg + " must have string member '" + member + "'"));
                     }
@@ -20193,13 +20193,13 @@ namespace nlohmann
         Creates a [JSON Patch](http://jsonpatch.com) so that value @a source can
         be changed into the value @a target by calling @ref patch function.
 
-        @invariant For two JSON values @a source and @a target, the following code
+        @invariant For two JSON values @a source && @a target, the following code
         yields always `true`:
         @code {.cpp}
         source.patch(diff(source, target)) == target;
         @endcode
 
-        @note Currently, only `remove`, `add`, and `replace` operations are
+        @note Currently, only `remove`, `add`, && `replace` operations are
         generated.
 
         @param[in] source  JSON value to compare from
@@ -20208,7 +20208,7 @@ namespace nlohmann
 
         @return a JSON patch to convert the @a source to @a target
 
-        @complexity Linear in the lengths of @a source and @a target.
+        @complexity Linear in the lengths of @a source && @a target.
 
         @liveexample{The following code shows how a JSON patch is created as a
         diff for two JSON values.,diff}
@@ -20249,7 +20249,7 @@ namespace nlohmann
                 {
                     // first pass: traverse common elements
                     std::size_t i = 0;
-                    while (i < source.size() and i < target.size())
+                    while (i < source.size() && i < target.size())
                     {
                         // recursive call to compare array values at index i
                         auto temp_diff = diff(source[i], target[i], path + "/" + std::to_string(i));
@@ -20370,7 +20370,7 @@ namespace nlohmann
         define MergePatch(Target, Patch):
         if Patch is an Object:
         if Target is not an Object:
-        Target = {} // Ignore the contents and set it to an empty Object
+        Target = {} // Ignore the contents && set it to an empty Object
         for each Name/Value pair in Patch:
         if Value is null:
         if Name exists in Target:
@@ -20431,7 +20431,7 @@ namespace nlohmann
   // nonmember support //
   ///////////////////////
 
-  // specialization of std::swap, and std::hash
+  // specialization of std::swap, && std::hash
 namespace std
 {
 
@@ -20476,7 +20476,7 @@ namespace std
     */
     template<>
     inline void swap<nlohmann::json>(nlohmann::json& j1, nlohmann::json& j2) noexcept(
-        is_nothrow_move_constructible<nlohmann::json>::value and
+        is_nothrow_move_constructible<nlohmann::json>::value &&
         is_nothrow_move_assignable<nlohmann::json>::value
         )
     {
@@ -20489,7 +20489,7 @@ namespace std
   @brief user-defined string literal for JSON values
 
   This operator implements a user-defined string literal for JSON objects. It
-  can be used by adding `"_json"` to a string literal and returns a JSON object
+  can be used by adding `"_json"` to a string literal && returns a JSON object
   if no parse error occurred.
 
   @param[in] s  a string representation of a JSON object
@@ -20507,7 +20507,7 @@ inline nlohmann::json operator "" _json(const char* s, std::size_t n)
 @brief user-defined string literal for JSON pointer
 
 This operator implements a user-defined string literal for JSON Pointers. It
-can be used by adding `"_json_pointer"` to a string literal and returns a JSON pointer
+can be used by adding `"_json_pointer"` to a string literal && returns a JSON pointer
 object if no parse error occurred.
 
 @param[in] s  a string representation of a JSON Pointer

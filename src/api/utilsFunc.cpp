@@ -10,21 +10,17 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
     std::string newfilenames;
     // newfilenames = filenames.substr(0, filenames.length()-5)+"_user.pbrt";
     newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
+    std::ifstream infile(filenames);
+    std::ofstream outfile(newfilenames);
 
     int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
     int lineAfterCamera = 0;
     std::string temp;
     std::string templast;
     ChangeLookAt(RC,infile,outfile);
-    //解释：后边几个类似，原理是找到camera的位置，然后变成自己的camera，在所有信息都结束之后break出来
-    //因为有些不好给默认值，所以缺省参数为-1，用浮点数比较，比-0.9大的时候认为是用户在输入，此时在写入，否则不写入，让系统用默认值
-    //因为这些数一定不是负数，所以这样做是有效的。
-    //注意了，label是我自己加的，想要区分不同相机的参数，不能输入到.pbrt中
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         //first: judge the state,be sure findCamera will only be changed per line
         if("Camera"==temp.substr(0,6)){
             if(0 == findCamera){
@@ -34,17 +30,17 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
+        else if((1 == findCamera || 3 == findCamera) && ' '!=temp[0] && '"'!=temp[0])
         {
             findCamera = 2;
         }
 
         //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
+        if( (0 ==findCamera) || (2 == findCamera) ){
             outfile << temp << std::endl;
         }
         else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
+            //do not output f|| now, because I don't know why there would be two Camera setting
             continue;
         }
         else if (1 == findCamera)
@@ -88,7 +84,7 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
                 lineAfterCamera++;
                 outfile << temp << std::endl;
             }
-            //after output, delete other lines until all the original Camera msg is removed 
+            //after output, delete other lines until all the ||iginal Camera msg is removed 
             findCamera = 3;
         }
     }
@@ -100,8 +96,8 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
 
     std::string newfilenames;
     newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
+    std::ifstream infile(filenames);
+    std::ofstream outfile(newfilenames);
 
     int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
     int lineAfterCamera = 0;
@@ -109,7 +105,7 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
     std::string templast;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         //first: judge the state,be sure findCamera will only be changed per line
         if("Camera"==temp.substr(0,6)){
             if(0 == findCamera){
@@ -119,17 +115,17 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0]  and '"'!=temp[0])
+        else if((1 == findCamera || 3 == findCamera) && ' '!=temp[0]  && '"'!=temp[0])
         {
             findCamera = 2;
         }
 
         //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
+        if(0 ==findCamera || 2 == findCamera ){
             outfile << temp << std::endl;
         }
         else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
+            //do not output f|| now, because I don't know why there would be two Camera setting
             continue;
         }
         else if (1 == findCamera)
@@ -186,7 +182,7 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
                 lineAfterCamera++;
                 outfile << temp << std::endl;
             }
-            //after output, delete other lines until all the original Camera msg is removed 
+            //after output, delete other lines until all the ||iginal Camera msg is removed 
             findCamera = 3;
         }
     }
@@ -197,8 +193,8 @@ std::string generatePbrtFile(PerspectiveCameraParam PC, std::string filenames){
 std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
     std::string newfilenames;
     newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
+    std::ifstream infile(filenames);
+    std::ofstream outfile(newfilenames);
 
     int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
     int lineAfterCamera = 0;
@@ -206,7 +202,7 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
     std::string templast;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         //first: judge the state,be sure findCamera will only be changed per line
         if("Camera"==temp.substr(0,6)){
             if(0 == findCamera){
@@ -216,17 +212,17 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
+        else if((1 == findCamera || 3 == findCamera) && ' '!=temp[0] && '"'!=temp[0])
         {
             findCamera = 2;
         }
 
         //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
+        if(0 ==findCamera || 2 == findCamera ){
             outfile << temp << std::endl;
         }
         else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
+            //do not output f|| now, because I don't know why there would be two Camera setting
             continue;
         }
         else if (1 == findCamera)
@@ -234,7 +230,7 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
             //TODO, if you need to overload
             while(1){
                 if(0 == lineAfterCamera){
-                    temp = "Camera \"orthographic\"";
+                    temp = "Camera \"||thographic\"";
                 }
                 else if (1 == lineAfterCamera)
                 {
@@ -280,7 +276,7 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
                 outfile << temp << std::endl;
                 temp = "";
             }
-            //after output, delete other lines until all the original Camera msg is removed 
+            //after output, delete other lines until all the ||iginal Camera msg is removed 
             findCamera = 3;
         }
     }
@@ -291,8 +287,8 @@ std::string generatePbrtFile(OrthographicCameraParam OC, std::string filenames){
 std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
     std::string newfilenames;
     newfilenames = generateFilenames(filenames,"_user");
-    std::ifstream infile(filenames);//需要修改的文件。
-    std::ofstream outfile(newfilenames);//out.txt可以自动创建，每次运行自动覆盖。
+    std::ifstream infile(filenames);
+    std::ofstream outfile(newfilenames);
 
     int findCamera = 0;//0:have not findCamera 1:finding 2:have find 3:finding another Camera
     int lineAfterCamera = 0;
@@ -300,7 +296,7 @@ std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
     std::string templast;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         //first: judge the state,be sure findCamera will only be changed per line
         if("Camera"==temp.substr(0,6)){
             if(0 == findCamera){
@@ -310,17 +306,17 @@ std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
                 findCamera = 3;
             }
         }
-        else if((1 == findCamera or 3 == findCamera) and ' '!=temp[0] and '"'!=temp[0])
+        else if((1 == findCamera || 3 == findCamera) && ' '!=temp[0] && '"'!=temp[0])
         {
             findCamera = 2;
         }
 
         //then:output file
-        if(0 ==findCamera or 2 == findCamera ){
+        if(0 ==findCamera || 2 == findCamera ){
             outfile << temp << std::endl;
         }
         else if(3 == findCamera){
-            //do not output for now, because I don't know why there would be two Camera setting
+            //do not output f|| now, because I don't know why there would be two Camera setting
             continue;
         }
         else if (1 == findCamera)
@@ -352,7 +348,7 @@ std::string generatePbrtFile(SphericalCameraParam SC, std::string filenames){
                 lineAfterCamera++;
                 outfile << temp << std::endl;
             }
-            //after output, delete other lines until all the original Camera msg is removed 
+            //after output, delete other lines until all the ||iginal Camera msg is removed 
             findCamera = 3;
         }
     }
@@ -368,7 +364,7 @@ void ChangeLookAt(RealisticCameraParam RC,std::ifstream &infile,std::ofstream &o
     std::string temp;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         if("LookAt"==temp.substr(0,6)){
             outfile << RC.Look_at << std::endl;
             return;
@@ -383,7 +379,7 @@ void ChangeLookAt(OrthographicCameraParam RC,std::ifstream &infile,std::ofstream
     std::string temp;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         if("LookAt"==temp.substr(0,6)){
             outfile << RC.Look_at << std::endl;
             return;
@@ -398,7 +394,7 @@ void ChangeLookAt(SphericalCameraParam RC,std::ifstream &infile,std::ofstream &o
     std::string temp;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp); 
         if("LookAt"==temp.substr(0,6)){
             outfile << RC.Look_at << std::endl;
             return;
@@ -413,7 +409,7 @@ void ChangeLookAt(PerspectiveCameraParam RC,std::ifstream &infile,std::ofstream 
     std::string temp;
     while (!infile.eof())
     {
-        getline(infile,temp); //用string中的getline方法，获取infile中的一行，到temp变量中，getline()会去除最后的换行符。
+        getline(infile,temp);
         if("LookAt"==temp.substr(0,6)){
             outfile << RC.Look_at << std::endl;
             return;

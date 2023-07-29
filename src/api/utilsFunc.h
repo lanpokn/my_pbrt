@@ -4,6 +4,7 @@
 #include<api/render.h>
 #include <iostream>
 #include<fstream>
+#include<string>
 
 void ChangeLookAt(RealisticCameraParam RC,std::ifstream &infile,std::ofstream &outfile);
 void ChangeLookAt(PerspectiveCameraParam RC,std::ifstream &infile,std::ofstream &outfile);

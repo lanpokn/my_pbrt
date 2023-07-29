@@ -12,8 +12,9 @@ int main(){
     for(int i = 1;i<2;i++){
         PbrtConfig con;
         // con.AddRealCamera(0,3,"lenses/wide.22mm.dat");
-        con.AddRealCamera(0,3,"/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/lenses/big.dat");
-        con.scene_path = "/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/scene/cube1/cube10000"+to_string(i)+".pbrt";
+        //con.AddRealCamera(0,3,"C:/Users/admin/Documents/2023/PBES/my_pbrt/scene/lenses/dgauss.dat");
+        //con.scene_path = "C:\\Users\\admin\\Documents\\2023\\PBES\\my_pbrt\\scene\\cube1\\cube10000"+to_string(i)+".pbrt";
+        con.scene_path = "C:/Users/admin/Documents/2023/PBES/my_pbrt/scene/explosion/explosion.pbrt";
         cout<<con.scene_path<<endl;
         render.AddConfig(con);
     }
@@ -34,8 +35,8 @@ int main(){
     // //运行完成后，结果一律存储在ConfigList中！所以必须传递引用，否则用户那里拿不到返回数据，除非通过configlist再去拿
     // //vector 使用深拷贝，改成引用很难，除非使用指针，否则无法把值传回来，但是用引用还过于繁琐
     // //因此返回数据放在configlist中
-    // std::string name = "explosion.exr";
-    // render.Configlist.at(0).WriteExr(name);
+    std::string name = "explosion.exr";
+    render.Configlist.at(0).WriteExr(name);
     // std::string name2 = "explosion2.exr";
     // render.Configlist.at(1).WriteExr(name2);
 
