@@ -11,6 +11,7 @@ from typing import List
 
 class EventsData:
     def __init__(self):
+        #x,y,t,p
         self.events = []
         self.global_counter = 0
         self.global_max_t = 0
