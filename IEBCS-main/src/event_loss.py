@@ -11,30 +11,16 @@ import time
 
 ##loss 1
 def normalize_evs(evs):
-    """_summary_
+    """normalize evs data
 
     Args:
-        evs (_type_): _description_
+        evs (np array):events data1, should be the same as the format of EventsData().events[i]
 
     Returns:
-        _type_: _description_
+        evs_new: data after normalize
     """    
     evs_normalized = evs.copy()
     epsilon = 1e-8  # Small epsilon value to avoid division by zero
-    #不能归一化，两个点云的时间尺度很可能不同，归一化之后强行抹平了时间上的区别。因此t不能归一化，只能通过调整，让xypt尽量别差太多。对齐之后让t除以一个常数即可
-    #t真不好搞，怎样才是对的？怎样对t进行数据处理才是合理的？总之就是如何设计那个协方差矩阵，有没有数学上的指导？暂时trick一下吧
-    #因为目的是比较仿真与实际，t肯定对的上，大胆归一化
-    #先随机加噪声，是否噪声越多，loss越大。建议可以选几个指标，Event里边眼睛比loss好使。。。
-    # 找一个数值上合理的指标，证明自己的我的仿真比别人的更好。 度量水很深 在附录里边验证。
-    # 第一个维度可以只是证明自己的指标比别人的更好就行。第二个维度是我提出的指标需要证明，如正交，相加等，即证明自己可以作为度量
-    # 11月15号，三个半月时间，用chamfer loss，用小实验，证明噪声增加强度（参考师兄之前的实验），选几个有利的指标，要验证指标本身有用，再证明我的仿真器比别人的好
-    # 定下来之后就先不管了
-    # 原本的实验场景也要搭建，做场景和实物一一对应的（要五到六个序列左右），出了数据用loss度量（70%）。冲cvpr不太够，还需要再找下游任务体现这个东西更好（重构或者深度估计）（80%）
-    # 还要说这个未来可以做大规模数据集（20%），UE的3D模型是否能转成pbrt也要调研，这个直接问师兄
-    # 1. 魏老师能否给我3D模型 （小2. 找一个对自己有用的matrix） 3. 原始的五个真实序列的下游度量 4 3D模型可以自动生成深度图，能否兼容产生事件， 写作半个月到一个月
-    # 不可控性：魏老师那边能不能实现， 五个的下游验证（只用信号度量不靠谱）， 大规模如果能做，故事就很漂亮（不兼容就有风险）
-    # 这周把matrix（loss)定下来，下周就搞3D模型，低速高速低光高光等
-    # 1. 原始加噪声 2. 
     evs_normalized['x'] = ((evs['x'] - evs['x'].min()) * 100 / (evs['x'].max() - evs['x'].min() + epsilon)).astype(float)
     evs_normalized['y'] = ((evs['y'] - evs['y'].min()) * 100 / (evs['y'].max() - evs['y'].min() + epsilon)).astype(float)
     evs_normalized['p'] = ((evs['p'] - evs['p'].min()) * 100 / (evs['p'].max() - evs['p'].min() + epsilon)).astype(float)
@@ -47,15 +33,16 @@ def normalize_evs(evs):
     return evs_normalized
 
 def chamfer_distance_loss(evs1, evs2):
-    """_summary_
+    """use chamfer_distance to calculate the loss between two events data
 
     Args:
-        evs1 (_type_): _description_
-        evs2 (_type_): _description_
+        evs1 (dictionary): events data1, should be the same as the format of EventsData().events[i]
+        evs2 (dictionary): events data2, should be the same as the format of EventsData().events[i]
 
     Returns:
-        losss from 0 to 1
-    """    #默认输入的两个点云是同时开始的
+        chamfer distance
+    """
+    
     evs1_norm = normalize_evs(evs1)
     evs2_norm = normalize_evs(evs2)
     
@@ -87,11 +74,10 @@ def chamfer_distance_loss(evs1, evs2):
     return (np.mean(dists1)+np.mean(dists2))
 
 
-#TODO 此处可以再加上师兄的度量方法，与之前的完全不一样，可以考虑抄过来然后改编一下，只能说大开眼界，kd树不要了，数量一定对齐吗？
-# 学长没用kdtree，而是先将两个点云数据分成一个个cube，然后一个个cube之间进行对比，距离累加起来。多余的部分不要了
-#loss2
 def cubes_3d_kernel_method(events, new_events, x_sigma, y_sigma, t_sigma):
     """
+    comes from: https://github.com/jianing-li/asynchronous-spatio-temporal-spike-metric/tree/master
+    
     Computing inner product between spike cubes using 3d gaussian kernel method.
 
     Inputs:
@@ -129,6 +115,9 @@ def cubes_3d_kernel_method(events, new_events, x_sigma, y_sigma, t_sigma):
 
 def cubes_3d_kernel_distance(events, new_events, x_sigma, y_sigma, t_sigma):
     """
+    
+    comes from: https://github.com/jianing-li/asynchronous-spatio-temporal-spike-metric/tree/master
+    
     Computing distance between spike cubes using inner product in RKHS.
 
     Inputs:
@@ -155,6 +144,7 @@ def cubes_3d_kernel_distance(events, new_events, x_sigma, y_sigma, t_sigma):
 
 def events_to_spike_cubes(events, width, height, x_cube_size, y_cube_size, t_cube_size):
     """
+    comes from: https://github.com/jianing-li/asynchronous-spatio-temporal-spike-metric/tree/master
     events are split into spike cubes.
 
     Inputs:
@@ -185,7 +175,11 @@ def events_to_spike_cubes(events, width, height, x_cube_size, y_cube_size, t_cub
 
 ## this is the new loss!
 def kernel_method_spike_cubes_loss(events, new_events, width=128, height=128, x_cube_size=32, y_cube_size=32, t_cube_size=5000, x_sigma=5, y_sigma=5, t_sigma=5000):
-    """
+    """ 
+        comes from: https://github.com/jianing-li/asynchronous-spatio-temporal-spike-metric/tree/master
+        
+        change some code to use EVK3 data as input
+        
         3d gaussian kernel method  for spike cubes, such as polarity independent and polarity interference.
 
         Inputs:
@@ -237,6 +231,8 @@ def kernel_method_spike_cubes_loss(events, new_events, width=128, height=128, x_
     # change to [0  - 1]
 
 def main():
+    """use it to test functions
+    """    
     events_data = EventsData()
     #make sure the video is long enough, or it can't disolay normally
     events_data.read_real_events("C:/Users/admin/Documents/metavision/recordings/output1.hdf5", 1000000)
