@@ -245,12 +245,6 @@ class EventSimulatorNew:
                          np.array(buf["y"], dtype=np.uint16),
                          np.array(buf["p"], dtype=np.uint64),
                          100000)
-        ev = EventBuffer(1)
-        ev.add_array(np.array(buf["ts"], dtype=np.uint64),
-                         np.array(buf["x"], dtype=np.uint16),
-                         np.array(buf["y"], dtype=np.uint16),
-                         np.array(buf["p"], dtype=np.uint64),
-                         1000)
         # TODO esim's events memory is awful, I'd like to use ev to store events instead
         range = min(ev.get_ts().shape[0],config.max_events_per_frame)
         self.output_events["x"][:range] = ev.get_x()[:range]
