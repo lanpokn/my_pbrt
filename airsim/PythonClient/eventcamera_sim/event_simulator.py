@@ -2,6 +2,8 @@ from numba.np.ufunc import parallel
 import numpy as np
 from types import SimpleNamespace
 from numba import njit, prange, set_num_threads
+import dsi
+from extern.event_buffer import EventBuffer
 
 EVENT_TYPE = np.dtype(
     [("timestamp", "f8"), ("x", "u2"), ("y", "u2"), ("polarity", "b")], align=True
@@ -19,30 +21,6 @@ CONFIG = SimpleNamespace(
     }
 )
 
-##esim is the main simulator, we can change it to ICNS, PBES and so on
-# 10. The  esim  function iterates over each pixel of the image and performs the following steps: 
- 
-#    a. Calculates the difference in log intensity between the current and previous images. 
- 
-#    b. Checks if the absolute difference is below a predefined tolerance ( TOL ). If so, it continues to the next pixel. 
- 
-#    c. Determines the polarity (positive or negative) based on the sign of the intensity difference. 
- 
-#    d. Updates the crossing value based on polarity and tolerance. 
- 
-#    e. Calculates the lower and upper bounds for detecting spikes. 
- 
-#    f. Checks if the conditions for generating a spike are met (based on polarity and bounds). 
- 
-#    g. Updates the crossings and spikes arrays accordingly. 
- 
-#    h. Calculates the number of spikes based on the intensity difference and the check condition. 
- 
-#    i. Generates  spike_nums  number of events by assigning values to the corresponding fields of the  output_events  array. 
- 
-#    j. Updates the current time for each event. 
- 
-#    k. Checks if the maximum number of events per frame has been reached. If so, it returns the count. 
 @njit(parallel=True)
 def esim(
     x_end,
@@ -198,8 +176,19 @@ class EventSimulatorNew:
 
         # We ignore the 2D nature of the problem as it is not relevant here
         # It makes multi-core processing more straightforward
-        first_image = first_image.reshape(-1)
+        # first_image = first_image.reshape(-1)
 
+        lat = 100
+        jit = 10
+        ref = 100
+        tau = 300
+        th = 0.3
+        th_noise = 0.01
+        dsi.initSimu(int(first_image.shape[0]), int(first_image.shape[1]))
+        dsi.initLatency(lat, jit, ref, tau)
+        dsi.initContrast(th, th, th_noise)
+        dsi.initImg(first_image)
+        ev_full = EventBuffer(1)
         # Allocations
         self.last_image = first_image.copy()
         self.current_image = first_image.copy()
@@ -219,7 +208,7 @@ class EventSimulatorNew:
 
         assert new_time > 0
         assert new_image.shape == self.resolution
-        new_image = new_image.reshape(-1)  # Free operation
+        # new_image = new_image.reshape(-1)  # Free operation
 
         np.copyto(self.current_image, new_image)
 
@@ -232,26 +221,45 @@ class EventSimulatorNew:
         self.spikes = np.zeros((self.npix))
 
         self.crossings = self.last_image.copy()
-        self.event_count = esim(
-            self.current_image.size,
-            self.current_image,
-            self.last_image,
-            delta_time,
-            self.crossings,
-            self.last_time,
-            self.output_events,
-            self.spikes,
-            config.refractory_period_ns,
-            config.max_events_per_frame,
-            self.W,
-        )
-
+        # self.event_count = esim(
+        #     self.current_image.size,
+        #     self.current_image,
+        #     self.last_image,
+        #     delta_time,
+        #     self.crossings,
+        #     self.last_time,
+        #     self.output_events,
+        #     self.spikes,
+        #     config.refractory_period_ns,
+        #     config.max_events_per_frame,
+        #     self.W,
+        # )
+        buf = dsi.updateImg(self.current_image, delta_time)
+        ev = EventBuffer(1)
+        ev.add_array(np.array(buf["ts"], dtype=np.uint64),
+                         np.array(buf["x"], dtype=np.uint16),
+                         np.array(buf["y"], dtype=np.uint16),
+                         np.array(buf["p"], dtype=np.uint64),
+                         100000)
+        ev = EventBuffer(1)
+        ev.add_array(np.array(buf["ts"], dtype=np.uint64),
+                         np.array(buf["x"], dtype=np.uint16),
+                         np.array(buf["y"], dtype=np.uint16),
+                         np.array(buf["p"], dtype=np.uint64),
+                         1000)
+        count = 0
+        self.output_events[:].x = ev.get_x()
+        self.output_events[:].y = ev.get_y()
+        self.output_events[:].timestamp = ev.get_ts()
+        self.output_events[:].polarity = 1 if ev.get_p()[:] > 0 else -1
+        
+        for i in prange(np.array(buf["ts"], dtype=np.uint64)):
+            self.spikes[ev.get_y()[i]*self.W+ev.get_y()[i]] = 1 if ev.get_p()[:] > 0 else -1
+        
         np.copyto(self.last_image, self.current_image)
         self.last_time = new_time
 
         result = self.output_events[: self.event_count]
         result.sort(order=["timestamp"], axis=0)
 
-        #spikes 是每一个位置触发的次数，result是具体的每一个事件的信息。这里有一个假设，即Event被线性触发，因此缺少了很多考虑。换成更高级的仿真，用二次过渡，不应期等细化模型，只要也能给出spikes和results即可，接下来研究这个问题
-        #大概率只要引入dsi库，把输入的image给它即可，1x10000还是100x100应该问题不大
         return self.spikes, result

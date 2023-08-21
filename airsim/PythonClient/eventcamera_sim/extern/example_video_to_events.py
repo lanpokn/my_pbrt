@@ -23,7 +23,7 @@ cap = cv2.VideoCapture(filename)
 dsi.initSimu(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
 dsi.initLatency(lat, jit, ref, tau)
 dsi.initContrast(th, th, th_noise)
-# init_bgn_hist_cpp("/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy", "/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy")
+init_bgn_hist_cpp("/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy", "/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy")
 isInit = False
 # dt = 1000  # FPS must be 1 kHz,this means fps = dt, and it shows that it can capture high fpx, like bird wings.
            #however, I do not need so high frequency, if I can't output somany pitures 
