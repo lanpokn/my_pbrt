@@ -1,7 +1,7 @@
 # Damien JOUBERT 17-01-2020
 import numpy as np
 import os.path
-from dat_files import write_event_dat, write_event_csv, load_dat_event
+from extern.dat_files import write_event_dat, write_event_csv, load_dat_event
 
 
 class EventBuffer():

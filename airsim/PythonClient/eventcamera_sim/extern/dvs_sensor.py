@@ -1,7 +1,7 @@
 # Damien JOUBERT 17-01-2020
 import numpy as np
 import cv2
-from event_buffer import EventBuffer
+from extern.event_buffer import EventBuffer
 from tqdm import tqdm
 import dsi
 

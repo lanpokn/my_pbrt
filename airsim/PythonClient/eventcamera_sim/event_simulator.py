@@ -4,6 +4,8 @@ from types import SimpleNamespace
 from numba import njit, prange, set_num_threads
 import dsi
 from extern.event_buffer import EventBuffer
+from extern.event_display import EventDisplay
+from extern.dvs_sensor import init_bgn_hist_cpp
 
 EVENT_TYPE = np.dtype(
     [("timestamp", "f8"), ("x", "u2"), ("y", "u2"), ("polarity", "b")], align=True
@@ -188,7 +190,9 @@ class EventSimulatorNew:
         dsi.initLatency(lat, jit, ref, tau)
         dsi.initContrast(th, th, th_noise)
         dsi.initImg(first_image)
+        init_bgn_hist_cpp("C:/Users/admin/Documents/2023/PBES/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy", "C:/Users/admin/Documents/2023/PBES/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy")
         ev_full = EventBuffer(1)
+        # self.ed = EventDisplay("Events", int(first_image.shape[0]+1), int(first_image.shape[1]+1), 500000)
         # Allocations
         self.last_image = first_image.copy()
         self.current_image = first_image.copy()
@@ -234,7 +238,7 @@ class EventSimulatorNew:
         #     config.max_events_per_frame,
         #     self.W,
         # )
-        buf = dsi.updateImg(self.current_image, delta_time)
+        buf = dsi.updateImg(self.current_image, int(delta_time))
         ev = EventBuffer(1)
         ev.add_array(np.array(buf["ts"], dtype=np.uint64),
                          np.array(buf["x"], dtype=np.uint16),
@@ -247,19 +251,22 @@ class EventSimulatorNew:
                          np.array(buf["y"], dtype=np.uint16),
                          np.array(buf["p"], dtype=np.uint64),
                          1000)
-        count = 0
-        self.output_events[:].x = ev.get_x()
-        self.output_events[:].y = ev.get_y()
-        self.output_events[:].timestamp = ev.get_ts()
-        self.output_events[:].polarity = 1 if ev.get_p()[:] > 0 else -1
+        # TODO esim's events memory is awful, I'd like to use ev to store events instead
+        range = min(ev.get_ts().shape[0],config.max_events_per_frame)
+        self.output_events["x"][:range] = ev.get_x()[:range]
+        self.output_events["y"][:range] = ev.get_y()[:range]
+        self.output_events["timestamp"][:range] = ev.get_ts()[:range]
+        self.output_events["polarity"][:range] = np.where(ev.get_p()[:range] > 0, 1, -1)
         
-        for i in prange(np.array(buf["ts"], dtype=np.uint64)):
-            self.spikes[ev.get_y()[i]*self.W+ev.get_y()[i]] = 1 if ev.get_p()[:] > 0 else -1
+        # this is an important formula, give p value to the correseponding x in 1D spikes
+        for i in prange(range):
+            self.spikes[ev.get_y()[i]*self.W+ev.get_x()[i]] = 1 if ev.get_p()[i] > 0 else -1
         
         np.copyto(self.last_image, self.current_image)
         self.last_time = new_time
 
-        result = self.output_events[: self.event_count]
+        result = self.output_events[: range]
         result.sort(order=["timestamp"], axis=0)
 
+        # self.ed.update(ev, delta_time)
         return self.spikes, result
