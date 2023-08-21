@@ -48,6 +48,7 @@ class AirSimEventGen:
         plt.draw()
         plt.pause(0.01)
 
+    #visualization
     def convert_event_img_rgb(self, image):
         image = image.reshape(self.H, self.W)
         out = np.zeros((self.H, self.W, 3), dtype=np.uint8)
