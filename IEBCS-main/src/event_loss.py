@@ -7,8 +7,6 @@ from scipy.spatial import KDTree
 import math
 import time
 
-
-
 ##loss 1
 def normalize_evs(evs):
     """normalize evs data
@@ -234,11 +232,13 @@ def main():
     """use it to test functions
     """    
     events_data = EventsData()
+    events_data_IEBCS = EventsData()
     #make sure the video is long enough, or it can't disolay normally
-    events_data.read_real_events("C:/Users/admin/Documents/metavision/recordings/output1.hdf5", 1000000)
-
+    events_data.read_real_events("C:/Users/hhq/Documents/metavision/recordings/output.hdf5", 1000000)
+    events_data_IEBCS.read_IEBCS_events("D:/2023/计算成像与仿真/my_pbrt/IEBCS-main/ev_100_10_100_300_0.3_0.01.dat", 1000000)
+    
     ev_data0 = events_data.events[0]
-    ev_data1 = events_data.events[1]
+    ev_data1 = events_data_IEBCS.events[0]
     
     start_time = time.time()
     loss_same = kernel_method_spike_cubes_loss(ev_data0, ev_data0,events_data.width,events_data.height)
@@ -248,17 +248,13 @@ def main():
     # events_data.display_events(ev_data0,3000)
     # events_data.display_events(ev_data1,3000)
     
-    events_data_simi = EventsData()
-    events_data_simi.read_real_events("C:/Users/admin/Documents/metavision/recordings/output2.hdf5", 1000000)
-    ev_data0_simi = events_data_simi.events[0]
-    loss_simi = kernel_method_spike_cubes_loss(ev_data0, ev_data0_simi,events_data.width,events_data.height)
-    print(loss_simi)
     # events_data.display_events(ev_data0_simi,3000)
     
     end_time = time.time()
     total_time = end_time - start_time
     print("Total time of kernel method without kdtree: ", total_time)
     
+    #chamfer
     start_time = time.time()
     loss_same = chamfer_distance_loss(ev_data0, ev_data0)
     print(loss_same)
@@ -267,11 +263,6 @@ def main():
     # events_data.display_events(ev_data0,3000)
     # events_data.display_events(ev_data1,3000)
     
-    events_data_simi = EventsData()
-    events_data_simi.read_real_events("C:/Users/admin/Documents/metavision/recordings/output2.hdf5", 1000000)
-    ev_data0_simi = events_data_simi.events[0]
-    loss_simi = chamfer_distance_loss(ev_data0, ev_data0_simi)
-    print(loss_simi)
     # events_data.display_events(ev_data0_simi,3000)
     
     end_time = time.time()

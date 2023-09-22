@@ -10,3 +10,4 @@ build/
 scene/
 pbrt/
 *.dll
+v2e/
