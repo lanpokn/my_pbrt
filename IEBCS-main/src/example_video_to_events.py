@@ -51,7 +51,7 @@ while cap.isOpened():
                          np.array(buf["x"], dtype=np.uint16),
                          np.array(buf["y"], dtype=np.uint16),
                          np.array(buf["p"], dtype=np.uint64),
-                         1000)
+                         10000000)
         ed.update(ev, dt)
         ev_full.increase_ev(ev)
         time += dt
