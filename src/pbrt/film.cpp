@@ -940,7 +940,7 @@ Image GBufferFilm::GetImage(ImageMetadata *metadata, Float splatScale) {
                             0.99*L[16]+0.98*L[17]+0.98*L[18]+0.97*L[19]+0.95*L[20]+
                             0.94*L[21]+0.92*L[22]+0.92*L[23]+0.87*L[24]+0.86*L[25]+
                             0.85*L[26]+0.82*L[27]+0.79*L[28]+0.78*L[29]+0.76*L[30];
-                intensity = intensity*10;
+                intensity = intensity/31;//INTENSITY SHOULD SAME WITH L
                 image.SetChannels(pOffset,IntensityDesc,{intensity});
             }
             if (NSpectrumSamples==16)
