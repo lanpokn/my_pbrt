@@ -12,9 +12,10 @@
 #include<stdio.h>
 #include<vector>
 #include<fstream>
+#include<string>
 
 #include<api/pbrt_render.h>
 void test_cv();
-void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps = 1000);
+void GenerateIntensityVideo(pbrt_render render, int row, int column,std::string name);
 
 #endif
