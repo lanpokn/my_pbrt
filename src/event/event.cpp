@@ -1,5 +1,5 @@
 #include<event/event.h>
-
+#include<string>
 void test_cv(){
     cv::Mat img = cv::imread("/home/lanpokn/Documents/2022/pbrt/pbrt-v4/pbrt-v4/images/teaser-transparent-machines.png");
 	cv::imshow("test", img);
@@ -7,7 +7,7 @@ void test_cv(){
 	return;
 }
 
-void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps){
+void GenerateIntensityVideo(pbrt_render render, int row, int column, std::string name){
 	cv::VideoWriter writer;
  
     //单通道
@@ -45,7 +45,7 @@ void GenerateIntensityVideo(pbrt_render render, int row, int column,double fps){
     //         mono.SetChannel({x, y}, 0, avg);
     //     }
         cv::imshow("intensity", img);
-        cv::imwrite("exploasin.jpg",img);
+        cv::imwrite("name"+ std::to_string(j+120), img);
 		// writer.write(img);
 	}/**/
 	return;
