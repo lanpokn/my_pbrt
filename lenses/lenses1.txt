@@ -1,0 +1,22 @@
+# D-GAUSS F/2 22deg HFOV			
+# US patent 2,673,491 Tronnier"			
+# Moden Lens Design, p.312"			
+# Scaled to 50 mm from 100 mm			
+#    radius	 Thickness	Index of Refraction	aperture
+#左突为正
+#1-01
+-19 2.48  1      17
+90  3     1.7725 19
+#1-02
+47  4.6   1      19
+216 2     1.9460 19
+#光圈
+0      18.04 0             6.67
+#1-03
+25  0.5   1      10
+-7  3.5   1.7725 10
+#1-04
+-26 2     1.8501 14
+#0  27.03 1      14
+
+
