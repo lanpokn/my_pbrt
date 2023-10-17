@@ -22,6 +22,13 @@ std::string generatePbrtFile(RealisticCameraParam RC, std::string filenames){
     {
         getline(infile,temp); 
         //first: judge the state,be sure findCamera will only be changed per line
+        if("Film"==temp.substr(0,4)){
+            //special judge
+            std::string diagonal ="    \"float diagonal\" [ "+std::to_string(RC.diagonal)+" ]";
+            temp.append(diagonal);
+            outfile << temp << std::endl;
+            continue;
+        }
         if("Camera"==temp.substr(0,6)){
             if(0 == findCamera){
                 findCamera = 1;
