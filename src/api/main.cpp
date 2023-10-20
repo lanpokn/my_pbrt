@@ -9,12 +9,18 @@ int main(){
     PbrtConfig con;
     PbrtConfig con2;
     //give msg to config
-    for(int i = 1;i<2;i++){
+    int begin = 0;
+    int end = 1;
+    //std::string name = "Rotate_360";
+    std::string name_prefix = "slab_1mps";
+    for(int i = begin;i< end;i++){
         PbrtConfig con;
-        // con.AddRealCamera(0,3,"lenses/wide.22mm.dat");
-        //con.AddRealCamera(0,3,"C:/Users/admin/Documents/2023/PBES/my_pbrt/scene/lenses/dgauss.dat");
-        //con.scene_path = "C:\\Users\\admin\\Documents\\2023\\PBES\\my_pbrt\\scene\\cube1\\cube10000"+to_string(i)+".pbrt";
-        con.scene_path = "C:/Users/admin/Documents/2023/PBES/my_pbrt/scene/explosion/explosion.pbrt";
+        //con.AddRealCamera(0,30,"D:/2023/computional imaging/my_pbrt/lenses/lenses2.txt",7.14F,"",1.0F,1.56);
+        //0 is right not infinaty but why? why I'm wrong?
+ 
+        //con.scene_path = "C:/Users/hhq/Documents/blender/PBES_small/Rotate_360_pbrt/Rotate_360_pbrt00"+to_string(i+120)+ ".pbrt";
+        con.scene_path = "C:/Users/hhq/Documents/blender/PBES_small/slab_1mps_pbrt/"+ name_prefix +"_pbrt00" + to_string(i + 120) + ".pbrt";
+
         cout<<con.scene_path<<endl;
         render.AddConfig(con);
     }
@@ -35,10 +41,13 @@ int main(){
     // //运行完成后，结果一律存储在ConfigList中！所以必须传递引用，否则用户那里拿不到返回数据，除非通过configlist再去拿
     // //vector 使用深拷贝，改成引用很难，除非使用指针，否则无法把值传回来，但是用引用还过于繁琐
     // //因此返回数据放在configlist中
-    std::string name = "explosion.exr";
-    render.Configlist.at(0).WriteExr(name);
+    // TODO: output all needed exr, and later IEBCS directly use them via openexr in python
+    for (int i = 0; i < render.Configlist.size(); i++) {
+        std::string name = name_prefix +"_pbrt00"+to_string(i+120+begin)+".exr";
+        render.Configlist.at(i).WriteExr(name);
+    }
     // std::string name2 = "explosion2.exr";
     // render.Configlist.at(1).WriteExr(name2);
-
-    GenerateIntensityVideo(render,180,130);
+    //name = "Rotate_360_pbrt00";
+    //GenerateIntensityVideo(render,1281,721,name);
 }
