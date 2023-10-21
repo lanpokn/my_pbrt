@@ -385,8 +385,8 @@ int pbrt_render::pbrt_main(int argc, char *argv[]){
             ParseFiles(&builder, filenames);
             //avoid generate a lot pbrt
             filenames.clear();
-            if( iter++ != Configlist.end()){ 
-                filenames.push_back(iter->scene_path); 
+            if( (iter+1)!= Configlist.end()){ 
+                filenames.push_back((iter+1)->scene_path); 
             }
             // Render the scene
             if (Options->useGPU || Options->wavefront)
