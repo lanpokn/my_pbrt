@@ -6,7 +6,7 @@ import cv2
 #BrightScale 1 not change ,1000 muti 1000, because scene is easy, and exr has a wide range 
 # we can simply muti a number to get high img based on low img, so we only need to render low img
 # which can barely not seen
-def read_exr_channel(exr_file,channel_name,BrightScale = 1):
+def read_exr_channel(exr_file,channel_name,BrightScale):
     # Read the EXR file
     exr = OpenEXR.InputFile(exr_file)
 
@@ -19,6 +19,7 @@ def read_exr_channel(exr_file,channel_name,BrightScale = 1):
     height = header['dataWindow'].max.y + 1
 
     # Read the specified channel
+    #float is between 0 and 1
     channel_data = exr.channel(channel_name, Imath.PixelType(Imath.PixelType.FLOAT))
 
     # Convert the channel data to a NumPy array
@@ -32,11 +33,12 @@ def read_exr_channel(exr_file,channel_name,BrightScale = 1):
     cv_image[:, :] = channel_np * BrightScale
 
     # Display the CV image
-    cv2.imshow("Channel Image", cv_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow("Channel Image", cv_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    return cv_image
 
-# Example usage
-exr_file = "C:/Users/hhq/Desktop/exr_test/Rotate_360_pbrt00121exr"
-channel_name = "intensity"
-read_exr_channel(exr_file, channel_name)
+# # Example usage
+# exr_file = "C:/Users/hhq/Desktop/exr_test/Rotate_360_pbrt00121exr"
+# channel_name = "intensity"
+# read_exr_channel(exr_file, channel_name)
