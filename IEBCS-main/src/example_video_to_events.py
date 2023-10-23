@@ -12,7 +12,7 @@ from dvs_sensor import init_bgn_hist_cpp, DvsSensor
 from event_display import EventDisplay
 import dsi
 import numpy as np
-filename = "/home/lanpokn/Documents/2023/IEBCS-main/data/img/ball.mp4"
+filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
 lat = 100
 jit = 10
 ref = 100
@@ -23,11 +23,13 @@ cap = cv2.VideoCapture(filename)
 dsi.initSimu(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
 dsi.initLatency(lat, jit, ref, tau)
 dsi.initContrast(th, th, th_noise)
-# init_bgn_hist_cpp("/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy", "/home/lanpokn/Documents/2023/IEBCS-main/data/noise_pos_161lux.npy")
+print(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+print(int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))     
+init_bgn_hist_cpp("D:/2023/computional imaging/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy", "D:/2023/computional imaging/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy")
 isInit = False
 # dt = 1000  # FPS must be 1 kHz,this means fps = dt, and it shows that it can capture high fpx, like bird wings.
            #however, I do not need so high frequency, if I can't output somany pitures 
-dt = 1000
+dt = 2857
 ev_full = EventBuffer(1)
 ed = EventDisplay("Events", cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT), dt*2)
 time = 0
@@ -55,7 +57,7 @@ while cap.isOpened():
         ed.update(ev, dt)
         ev_full.increase_ev(ev)
         time += dt
-        if time > 0.1e6:
+        if time > 0.1e7:
             break
 out.release()
 cap.release()
