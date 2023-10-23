@@ -1,5 +1,8 @@
 #P 1 positive, 0 or -1 negative, it may different in different simulator
-#thus it's important to use 0.5 or =1 to deal with  
+#thus it's important to use 0.5 or =1 to deal with 
+#white positive
+#in real camera: 1280 in first dimen, 720 in second dim, height is 720(second dim)
+#in sim camera also 1280 first, 720 second
 from metavision_core.event_io import EventsIterator
 from metavision_sdk_core import PeriodicFrameGenerationAlgorithm
 from metavision_sdk_ui import EventLoop, BaseWindow, Window, UIAction, UIKeyEvent
@@ -129,13 +132,18 @@ class EventsData:
             
             self.events.append(evs)
             self.global_counter += counter
+        evs['t'] = evs['t']-self.global_min_t
+        self.global_max_t = self.global_max_t-self.global_min_t
+        self.global_min_t = 0
+        
     def read_IEBCS_events(self, input_path: str,delta_t_input:int):
         # input path should be xxx .dat
         """Process events and update EventsData object"""
         ts, x, y, p = load_dat_event(input_path)
         self.delta_t = delta_t_input
-        self.height = np.max(x) + 1  # Set self.height as the maximum value of x plus 1
-        self.width = np.max(y) + 1   # Set self.width as the maximum value of y plus 1
+        #x max is 
+        self.height = np.max(y) + 1  # Set self.height as the maximum value of x plus 1
+        self.width = np.max(x) + 1   # Set self.width as the maximum value of y plus 1
 
         start_time = ts[0]
         end_time = ts[-1]
@@ -146,7 +154,8 @@ class EventsData:
         for i in range(num_buffers):
             start_idx = np.searchsorted(ts, start_time + i * delta_t_input)
             end_idx = np.searchsorted(ts, start_time + (i + 1) * delta_t_input, side='right')
-            evs = np.zeros(end_idx - start_idx, dtype=[('x', 'int32'), ('y', 'int32'), ('t', 'int32'), ('p', 'int32')])
+            #evs = np.zeros(end_idx - start_idx, dtype=[('x', 'int32'), ('y', 'int32'), ('t', 'int32'), ('p', 'int32')])
+            evs = np.zeros(end_idx - start_idx, dtype=np.dtype({'names': ['x', 'y', 'p', 't'], 'formats': ['<u2', '<u2', '<i2', '<i8'], 'offsets': [0, 2, 4, 8], 'itemsize': 16}))            
             evs['x'] = x[start_idx:end_idx]
             evs['y'] = y[start_idx:end_idx]
             evs['t'] = ts[start_idx:end_idx]
@@ -156,7 +165,8 @@ class EventsData:
 
         remaining_events = ts[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
         if remaining_events.size > 0:
-            evs = np.zeros(remaining_events.size, dtype=[('x', 'int32'), ('y', 'int32'), ('t', 'int32'), ('p', 'int32')])
+            #evs = np.zeros(remaining_events.size, dtype=[('x', 'int32'), ('y', 'int32'), ('t', 'int32'), ('p', 'int32')])
+            evs = np.zeros(remaining_events.size, dtype=np.dtype({'names': ['x', 'y', 'p', 't'], 'formats': ['<u2', '<u2', '<i2', '<i8'], 'offsets': [0, 2, 4, 8], 'itemsize': 16}))            
             evs['x'] = x[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
             evs['y'] = y[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
             evs['t'] = ts[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
@@ -167,6 +177,9 @@ class EventsData:
         if self.global_min_t == -1:
             self.global_min_t = ts[0]
         self.global_max_t = ts[-1]
+        evs['t'] = evs['t']  -self.global_min_t
+        self.global_min_t = 0
+        self.global_max_t = self.global_max_t-self.global_min_t
         
 
     def display_events(self,evs,accumulation_time_us):
