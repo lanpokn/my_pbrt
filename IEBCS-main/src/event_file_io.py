@@ -135,7 +135,7 @@ class EventsData:
         evs['t'] = evs['t']-self.global_min_t
         self.global_max_t = self.global_max_t-self.global_min_t
         self.global_min_t = 0
-        
+
     def read_IEBCS_events(self, input_path: str,delta_t_input:int):
         # input path should be xxx .dat
         """Process events and update EventsData object"""
@@ -178,8 +178,8 @@ class EventsData:
             self.global_min_t = ts[0]
         self.global_max_t = ts[-1]
         evs['t'] = evs['t']  -self.global_min_t
-        self.global_min_t = 0
         self.global_max_t = self.global_max_t-self.global_min_t
+        self.global_min_t = 0
         
 
     def display_events(self,evs,accumulation_time_us):
