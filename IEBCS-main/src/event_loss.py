@@ -234,17 +234,17 @@ def main():
     events_data = EventsData()
     events_data_IEBCS = EventsData()
     #make sure the video is long enough, or it can't disolay normally
-    events_data.read_real_events("C:/Users/hhq/Documents/metavision/recordings/output.hdf5", 1000000)
-    events_data_IEBCS.read_IEBCS_events("D:/2023/计算成像与仿真/my_pbrt/IEBCS-main/ev_100_10_100_300_0.3_0.01.dat", 1000000)
+    events_data.read_real_events("D:/2023/computional imaging/my_pbrt/output/rotatea_360_highlight/High_360_120deg.hdf5", 1000000)
+    events_data_IEBCS.read_IEBCS_events("D:/2023/computional imaging/my_pbrt/evrotate_60_highlight_100_10_100_300_0.3_0.01.dat", 1000000)
     
     ev_data0 = events_data.events[0]
     ev_data1 = events_data_IEBCS.events[0]
     
     start_time = time.time()
-    loss_same = kernel_method_spike_cubes_loss(ev_data0, ev_data0,events_data.width,events_data.height)
-    print(loss_same)
-    loss_different = kernel_method_spike_cubes_loss(ev_data0, ev_data1,events_data.width,events_data.height)
-    print(loss_different)
+    # loss_same = kernel_method_spike_cubes_loss(ev_data0, ev_data0,events_data.width,events_data.height)
+    # print(loss_same)
+    # loss_different = kernel_method_spike_cubes_loss(ev_data0, ev_data1,events_data.width,events_data.height)
+    # print(loss_different)
     # events_data.display_events(ev_data0,3000)
     # events_data.display_events(ev_data1,3000)
     
@@ -256,12 +256,12 @@ def main():
     
     #chamfer
     start_time = time.time()
-    loss_same = chamfer_distance_loss(ev_data0, ev_data0)
-    print(loss_same)
-    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
-    print(loss_different)
-    # events_data.display_events(ev_data0,3000)
-    # events_data.display_events(ev_data1,3000)
+    # loss_same = chamfer_distance_loss(ev_data0, ev_data0)
+    # print(loss_same)
+    # loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    # print(loss_different)
+    # events_data.display_events_metavision(ev_data0,300)
+    events_data_IEBCS.display_events_metavision(ev_data1,100)
     
     # events_data.display_events(ev_data0_simi,3000)
     
