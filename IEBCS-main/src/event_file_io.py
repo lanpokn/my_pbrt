@@ -8,6 +8,7 @@ from metavision_sdk_core import PeriodicFrameGenerationAlgorithm
 from metavision_sdk_ui import EventLoop, BaseWindow, Window, UIAction, UIKeyEvent
 import cv2
 import numpy as np
+import open3d as o3d
 #We don’t provide any encoder for EVT3 format as its compressed nature makes it difficult to be re-created from an uncompressed CSV file
 # class EventData:
     
@@ -215,36 +216,51 @@ class EventsData:
             
             # if window.should_close():
             #     break
-    def display_events(self,evs,accumulation_time_us):
-        #TODO
-    # def make_color_histo(events, img=None, width=640, height=480):
-    # """
-    # simple display function that shows negative events as green dots and positive as red one
-    # on a white background
-    # args :
-    #     - events structured numpy array
-    #     - img (numpy array, height x width x 3) optional array to paint event on.
-    #     - width int
-    #     - height int
-    # return:
-    #     - img numpy array, height x width x 3)
-    # """
-    # if img is None:
-    #     img = 255 * np.ones((height, width, 3), dtype=np.uint8)
-    # else:
-    #     # if an array was already allocated just paint it grey
-    #     img[...] = 255
-    # if events.size:
-    #     assert events['x'].max() < width, "out of bound events: x = {}, w = {}".format(events['x'].max(), width)
-    #     assert events['y'].max() < height, "out of bound events: y = {}, h = {}".format(events['y'].max(), height)
+    def display_events(self,events,t_begin,t_end,width=1280, height=720):
+        img = 255 * np.ones((height, width, 3), dtype=np.uint8)
+        
+        events_filtered = events[(events['t'] >= t_begin) & (events['t'] <= t_end)]  # Filter events based on time
+        
+        if events_filtered.size:
+            assert events_filtered['x'].max() < width, "out of bound events: x = {}, w = {}".format(events_filtered['x'].max(), width)
+            assert events_filtered['y'].max() < height, "out of bound events: y = {}, h = {}".format(events_filtered['y'].max(), height)
+            
+            ON_index = np.where(events_filtered['p'] == 1)
+            img[events_filtered['y'][ON_index], events_filtered['x'][ON_index], :] = [30, 30, 220] * events_filtered['p'][ON_index][:, None]  # red [0, 0, 255]
+            
+            OFF_index = np.where(events_filtered['p'] == 0)
+            img[events_filtered['y'][OFF_index], events_filtered['x'][OFF_index], :] = [200, 30, 30] * (events_filtered['p'][OFF_index] + 1)[:, None]  # green [0, 255, 0], blue [255, 0, 0]
+        
+        return img
+    def display_events_3D(self,events,t_begin,t_end,width=1280, height=720):
+        # Create a point cloud object
+        point_cloud = o3d.geometry.PointCloud()
 
-    #     ON_index = np.where(events['p']==1)
-    #     img[events['y'][ON_index], events['x'][ON_index], :] = [30, 30, 220]* events['p'][ON_index][:, None] # red [0, 0, 255]
+        # Filter events based on time
+        events_filtered = events[(events['t'] >= t_begin) & (events['t'] <= t_end)]
 
-    #     OFF_index = np.where(events['p']==0)
-    #     img[events['y'][OFF_index], events['x'][OFF_index], :] = [200, 30, 30]* (events['p'][OFF_index]+1)[:, None] # green [0, 255, 0], blue [255, 0, 0]
+        if events_filtered.size:
+            # Set the points' positions and colors
+            t = events_filtered['t']
+            positions = np.column_stack((events_filtered['x'], events_filtered['y'], t))
+            colors = np.zeros(positions.shape)
+            colors[:, 0] = 30  # Set red color for ON events
+            colors[:, 2] = 220  # Set blue color for OFF events
 
-    # return img
+            # Set the points' colors based on p values
+            ON_index = np.where(events_filtered['p'] == 1)
+            colors[ON_index, :] = [30, 30, 220]  # Set red color for ON events
+
+            OFF_index = np.where(events_filtered['p'] == 0)
+            colors[OFF_index, :] = [200, 30, 30]  # Set green color for OFF events
+
+            # Assign positions and colors to the point cloud
+            point_cloud.points = o3d.utility.Vector3dVector(positions)
+            point_cloud.colors = o3d.utility.Vector3dVector(colors / 255.0)
+
+        # Visualize the point cloud
+        # o3d.visualization.draw_geometries([point_cloud])
+        return point_cloud
 
 
 
