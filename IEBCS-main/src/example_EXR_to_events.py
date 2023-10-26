@@ -29,6 +29,8 @@ th = 0.3
 th_noise = 0.01
 # cap = cv2.VideoCapture(filename)
 #only first is hw, other are wh
+
+#rotate_360_high, 100-10=100-3-0.3-0.01
 width = 1280
 height = 720
 dsi.initSimu(int(height), int(width))
