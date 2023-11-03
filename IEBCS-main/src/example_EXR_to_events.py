@@ -93,7 +93,8 @@ def Rotate_360_high():
                 break
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/evrotate_60_highlight.dat'.format(lat, jit, ref, tau, th, th_noise))
-
+def Rotate_360_high_ICNS():
+    TODO
 def View_3D(point_cloud):
     # Create a visualizer object
     vis = o3d.visualization.Visualizer()
