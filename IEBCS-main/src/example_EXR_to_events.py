@@ -13,16 +13,25 @@ import dsi
 import numpy as np
 from ExrRead import read_exr_channel
 
+from event_file_io import EventsData
+import numpy as np
+from scipy.spatial import KDTree
+import math
+import time
+import cv2
+from event_loss import *
+import open3d as o3d
 def Rotate_360_high():
+    #TODO,add formal ICNS here, deal v2e in other place
     # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
     #lower lat will get more active pixel(remain event)
-    lat = 100
+    lat = 1
     # higher jit will get blurer pixel and more active pixel , very obvious
     jit = 10
     #lower ref, higher active
     ref = 100
     #it's the trans func, higher tau , lowwer the event gen
-    tau = 3
+    tau = 400
     #just threshould, lower it can let it more realistic(not straight event)
     #very obvious!
     th = 0.3
@@ -83,8 +92,66 @@ def Rotate_360_high():
             if time > 0.1e7:
                 break
     out.release()
-    ev_full.write('evrotate_60_highlight_{}_{}_{}_{}_{}_{}.dat'.format(lat, jit, ref, tau, th, th_noise))
+    ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/evrotate_60_highlight.dat'.format(lat, jit, ref, tau, th, th_noise))
 
+def View_3D(point_cloud):
+    # Create a visualizer object
+    vis = o3d.visualization.Visualizer()
+    # Add the point cloud to the visualizer
+    vis.create_window()
+    vis.add_geometry(point_cloud)
+    # Get the view control object
+    view_control = vis.get_view_control()
 
+    # Set the viewpoint from the left
+    view_control.set_lookat([1, 0, 0])  # Look towards positive X-axis
+    view_control.set_front([-1, 0, 0])  # Set negative X-axis as the front direction
+
+    # Run the visualizer
+    vis.run()
+    # Destroy the visualizer window
+    vis.destroy_window()
+def Compare_Real_and_PBES(Realpath, simPath):
+    """use it to test functions
+    """    
+    events_data = EventsData()
+    events_data_IEBCS = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_real_events(Realpath, 100000)
+    events_data_IEBCS.read_IEBCS_events(simPath, 100000)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
+    ev_data1 = events_data_IEBCS.events[0]
+    point_cloud = events_data.display_events_3D(ev_data0,1500,2000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,1500,2000)
+    View_3D(point_cloud)
+    img1 = events_data.display_events(ev_data0,1500,3500)
+    cv2.imshow("real",img1)
+    cv2.waitKey()
+    img2 = events_data.display_events(ev_data1,1500,3500)
+    cv2.imshow("sim",img2)
+    cv2.waitKey()
+    #chamfer
+    start_time = time.time()
+    loss_same = chamfer_distance_loss(ev_data0, ev_data0)
+    print(loss_same)
+    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of chamfer method", total_time)
+    
+    #kernel
+    start_time = time.time()
+    loss_same = kernel_method_spike_cubes_loss(ev_data0, ev_data0,events_data.width,events_data.height)
+    print(loss_same)
+    loss_different = kernel_method_spike_cubes_loss(ev_data0, ev_data1,events_data.width,events_data.height)
+    print(loss_different)
+    
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of kernel method", total_time)
 
 Rotate_360_high()
+Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/evrotate_60_highlight.dat")
