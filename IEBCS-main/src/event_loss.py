@@ -6,8 +6,10 @@ import numpy as np
 from scipy.spatial import KDTree
 import math
 import time
+import cv2
 
 ##loss 1
+#do not use firt 2000 data!
 def normalize_evs(evs):
     """normalize evs data
 
@@ -206,7 +208,7 @@ def kernel_method_spike_cubes_loss(events, new_events, width=128, height=128, x_
     evs2_float[1, :] = new_events['t']
     evs2_float[2, :] = new_events['x']
     evs2_float[3, :] = new_events['y']
-    
+    t_intervel = evs2_float[1, :][-1]-evs2_float[1, :][0]
     # evs1_float = np.transpose(evs1_float)
     # evs2_float = np.transpose(evs2_float)
 
@@ -224,8 +226,8 @@ def kernel_method_spike_cubes_loss(events, new_events, width=128, height=128, x_
 
         else:
             distance += cubes_3d_kernel_distance(events_data, new_events_data, x_sigma, y_sigma, t_sigma)
-
-    return distance
+    #it's better to return distance/T_intervel
+    return distance/t_intervel
     # change to [0  - 1]
 
 def main():
@@ -261,8 +263,12 @@ def main():
     # loss_different = chamfer_distance_loss(ev_data0, ev_data1)
     # print(loss_different)
     # events_data.display_events_metavision(ev_data0,300)
-    events_data_IEBCS.display_events_metavision(ev_data1,100)
-    
+    # img = events_data_IEBCS.display_events(ev_data1,0,200)
+    # cv2.imshow("img",img)
+    # cv2.waitKey()
+    img = events_data.display_events(ev_data0,2400,3000)
+    cv2.imshow("img",img)
+    cv2.waitKey()
     # events_data.display_events(ev_data0_simi,3000)
     
     end_time = time.time()
