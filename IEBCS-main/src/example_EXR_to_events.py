@@ -21,7 +21,7 @@ import time
 import cv2
 from event_loss import *
 import open3d as o3d
-from skimage.transform import resize
+from skimage.transform import resize, rescale
 def Rotate_360_high():
     #TODO,add formal ICNS here, deal v2e in other place
     # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
@@ -435,7 +435,7 @@ def Trans_1mps_high():
     # if bigger than 2857*2, result is wrong, I don't know why
     # if try to look better, may be small dt in 360...
     #if you change dt, t total is longer, that's right!
-    dt = 2857
+    dt = 21153
     ev_full = EventBuffer(1)
     ed = EventDisplay("Events", width, height, dt)
     time = 0
@@ -444,8 +444,9 @@ def Trans_1mps_high():
     i = 0
     while i<53:
         filename = "D:/2023/computional imaging/my_pbrt/build/slab_1mps_pbrt001"+str(i+25)+".exr"
-        im = read_exr_channel(filename,"intensity",6000)
-        im = resize(im, (720, 1280))
+        im = read_exr_channel(filename,"intensity",3500)
+        im  = rescale(im, (0.6666, 0.6666), anti_aliasing=True)
+        #im = resize(im, (720, 1280))
         cv2.imshow("t", im)
         cv2.waitKey(1)
         im = im*750
