@@ -159,6 +159,7 @@ def events_to_spike_cubes(events, width, height, x_cube_size, y_cube_size, t_cub
     """
 
     num = int((width/x_cube_size)*(height/y_cube_size)*(math.ceil(max(events[1, :] / t_cube_size))))
+    #num = int((width/x_cube_size)*(height/y_cube_size)*(math.floor(max(events[1, :] / t_cube_size))))
     events_cube = [[] for _ in range(num)]
     #print('num={}'.format(num))
 
@@ -208,7 +209,8 @@ def kernel_method_spike_cubes_loss(events, new_events, width=128, height=128, x_
     evs2_float[1, :] = new_events['t']
     evs2_float[2, :] = new_events['x']
     evs2_float[3, :] = new_events['y']
-    t_intervel = evs2_float[1, :][-1]-evs2_float[1, :][0]
+    #t_intervel = evs2_float[1, :][-1]-evs2_float[1, :][0]+evs1_float[1, :][-1]-evs1_float[1, :][0]
+    t_intervel = len(evs2_float[1, :])+len(evs1_float[1, :])
     # evs1_float = np.transpose(evs1_float)
     # evs2_float = np.transpose(evs2_float)
 
