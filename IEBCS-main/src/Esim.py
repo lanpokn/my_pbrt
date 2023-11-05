@@ -205,7 +205,32 @@ class AirSimEventGen:
         sys.exit(0)
 
 # Open the video file
-video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+# # #360H
+# video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+# dt = 2857
+# divide = 1
+# output_path = 'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat'
+#360L
+# video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+# dt = 2857
+# divide = 0.1
+# output_path = 'D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/R_360_L_ESIM.dat'
+# 60H
+# video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+# dt = 2857*6
+# divide = 1
+# output_path = 'D:/2023/computional imaging/my_pbrt/output/Rotate_60_high/R_60_H_ESIM.dat'
+# # T1H
+# video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/25-77Eevee.avi"
+# dt = 21153
+# divide = 1
+# output_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_ESIM.dat"
+# T06H
+video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/25-77Eevee.avi"
+dt = 35478
+divide = 1
+output_path = "D:/2023/computional imaging/my_pbrt/output/trans_06mps_high/T_06_H_ESIM.dat"
+
 cap = cv2.VideoCapture(video_path)
 
 # Read the first frame
@@ -218,7 +243,6 @@ if not ret:
 frame_height, frame_width, _ = frame.shape
 W, H = frame_width, frame_height  # Set the desired width and height of the event output
 event_generator = AirSimEventGen(W, H)
-dt = 2857
 # Start processing the video frames
 ts = 0
 ev_full = EventBuffer(1)
@@ -235,11 +259,11 @@ while True:
     if event_generator.init:
         event_generator.start_ts = 0
         event_generator.init = False
-    
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # cv2.imshow("t",img)
     # cv2.waitKey()
     # Add small number to avoid issues with log(I)
+    img = img*divide
     img = cv2.add(img, 1)
     img = img.reshape(-1, 3)
 
@@ -268,7 +292,7 @@ while True:
     ev_full.increase_ev(ev)
 # out.release()
 cap.release()
-ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat')
+ev_full.write(output_path)
 
 # Release the video capture and close the event file
 cap.release()
