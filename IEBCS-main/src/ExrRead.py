@@ -52,7 +52,8 @@ def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
     channel_list = []
 
     # Read each channel individually
-    for i in range(31, 0, -1):
+    #for i in range(31, 0, -1):
+    for i in range(1, 32):
         channel_name = f"Radiance.C{i:02d}"
         channel_data = exr.channel(channel_name, Imath.PixelType(Imath.PixelType.FLOAT))
         temp = np.frombuffer(channel_data, dtype=np.float32)
@@ -61,7 +62,7 @@ def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
 
     # Create a CV data type with the same size as the channel data
     cv_image = np.zeros((height, width), dtype=np.float32)
-    cv2.waitKey()
+    # cv2.waitKey()
     # Assign the channel data to the CV image with weighted sum
     if channel_number == 31:
         cv_image[:, :] = (
