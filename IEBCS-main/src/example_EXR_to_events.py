@@ -22,6 +22,7 @@ import cv2
 from event_loss import *
 import open3d as o3d
 from skimage.transform import resize, rescale
+import random
 def Rotate_360_high(C = 100):
     #TODO,add formal ICNS here, deal v2e in other place
     # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
@@ -819,7 +820,7 @@ def View_3D(point_cloud):
     vis.run()
     # Destroy the visualizer window
     vis.destroy_window()
-def Compare_Real_and_PBES(Realpath, simPath,time_intervel = 100000):
+def Compare_Real_and_PBES(Realpath, simPath,time_intervel = 100000,C=100,N=31):
     """use it to test functions
     """    
     events_data = EventsData()
@@ -835,34 +836,35 @@ def Compare_Real_and_PBES(Realpath, simPath,time_intervel = 100000):
     point_cloud = events_data.display_events_3D(ev_data0,11000,12000)
     View_3D(point_cloud)
     point_cloud = events_data.display_events_3D(ev_data1,11000,12000)
-    View_3D(point_cloud)
+    View_3D(point_cloud)    
     img1 = events_data.display_events(ev_data0,11000,12000)
-    cv2.imshow("real",img1)
-    cv2.waitKey()
+    # cv2.imshow("real",img1)
+    # cv2.waitKey()
     img2 = events_data.display_events(ev_data1,11000,12000)
-    cv2.imshow("sim",img2)
-    cv2.waitKey()
+    # cv2.imshow("sim",img2)
+    # cv2.waitKey()
+    #cv2.imwrite('D:/2023/computional imaging/my_pbrt/output/change_of_C/2Dshow_{}_{}.jpg'.format(C,N), img2)
 
 
     #chamfer
-    start_time = time.time()
-    loss_same = chamfer_distance_loss(ev_data0, ev_data0)
-    print(loss_same)
-    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
-    print(loss_different)
-    end_time = time.time()
-    total_time = end_time - start_time
-    print("Total time of chamfer method", total_time)
-    # gausian
-    start_time = time.time()
-    loss_same = gaussian_distance_loss(ev_data0, ev_data0)
-    print(loss_same)
-    loss_different = gaussian_distance_loss(ev_data0, ev_data1)
-    print(loss_different)
+    # start_time = time.time()
+    # loss_same = chamfer_distance_loss(ev_data0, ev_data0)
+    # print(loss_same)
+    # loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    # print(loss_different)
+    # end_time = time.time()
+    # total_time = end_time - start_time
+    # print("Total time of chamfer method", total_time)
+    # # gausian
+    # start_time = time.time()
+    # loss_same = gaussian_distance_loss(ev_data0, ev_data0)
+    # print(loss_same)
+    # loss_different = gaussian_distance_loss(ev_data0, ev_data1)
+    # print(loss_different)
     
-    end_time = time.time()
-    total_time = end_time - start_time
-    print("Total time of gausian method", total_time)
+    # end_time = time.time()
+    # total_time = end_time - start_time
+    # print("Total time of gausian method", total_time)
 
     # kernel
     # start_time = time.time()
@@ -886,14 +888,14 @@ def Compare_Real_and_V2E(Realpath, simPath,time_intervel = 100000):
     ev_data1 = events_data_V2E.events[0]
 
 
-    # point_cloud = events_data.display_events_3D(ev_data0,240000,270000)
-    # View_3D(point_cloud)
-    # point_cloud = events_data.display_events_3D(ev_data1,240000,270000)
-    # View_3D(point_cloud)
-    # img1 = events_data.display_events(ev_data0,240000,270000)
-    # cv2.imshow("real",img1)
-    # cv2.waitKey()
-    # img2 = events_data.display_events(ev_data1,240000,270000)
+    point_cloud = events_data.display_events_3D(ev_data0,240000,270000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,240000,270000)
+    View_3D(point_cloud)
+    img1 = events_data.display_events(ev_data0,240000,270000)
+    cv2.imshow("real",img1)
+    cv2.waitKey()
+    img2 = events_data.display_events(ev_data1,240000,270000)
     # cv2.imshow("sim",img2)
     # cv2.waitKey()
 
@@ -927,7 +929,7 @@ def Compare_Real_and_V2E(Realpath, simPath,time_intervel = 100000):
     # total_time = end_time - start_time
     # print("Total time of kernel method", total_time)
 
-def Rotate_360_high_Ctest(C = 100):
+def Rotate_360_high_Ctest(C = 100,N=31):
     #TODO,add formal ICNS here, deal v2e in other place
     # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
     #lower lat will get more active pixel(remain event)
@@ -972,7 +974,10 @@ def Rotate_360_high_Ctest(C = 100):
     i = 0
     while i<20:
         filename = "D:/2023/computional imaging/my_pbrt/build/Rotate_360_pbrt001"+str(i+20)+"exr"
-        im = calculate_intensity_from_spetral(filename,31,C)
+        if N==31:
+            im = read_exr_channel(filename,"intensity",C)
+        else:
+            im = calculate_intensity_from_spetral(filename,N,C)
         cv2.imshow("t", im)
         cv2.waitKey(1)
         im = im*750
@@ -1000,20 +1005,174 @@ def Rotate_360_high_Ctest(C = 100):
             if time > 0.1e7:
                 break
     out.release()
-    ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_PBES_CTEST.dat'.format(lat, jit, ref, tau, th, th_noise))
-def Get_Result_Of_DIfferent_C(C = 100):
-    Rotate_360_high_Ctest(C)
-    Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_PBES_CTEST",100000)
+    ev_full.write('D:/2023/computional imaging/my_pbrt/output/change_of_C/R_360_H_PBES_CTEST_{}_{}.dat'.format(C,N))
+def Get_Result_Of_DIfferent_C_N(C = 100,N=31):
+    #print(C)
+    #Rotate_360_high_Ctest(C,N)
+    Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/change_of_C/R_360_H_PBES_CTEST_{}_{}.dat".format(C,N),100000,C,N)
+
+def Compare_Real_and_PBES_biast(Realpath,time_intervel = 100000,bias = 1000,C=100,N=31):
+    events_data = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_real_events(Realpath, time_intervel)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
 
 
-Get_Result_Of_DIfferent_C(100) 
+    # Calculate the increasing bias for each event in ev_data0
+    num_events = ev_data0.size
+    t_bias = np.linspace(0, bias, num_events)
+    # Shift ev_data0 by bias on the t axis to obtain ev_data1
+    ev_data1 = ev_data0.copy()
+    ev_data1['t'] += t_bias.astype(np.int64)
+
+    #View
+    point_cloud = events_data.display_events_3D(ev_data0,0,100000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,0,100000)
+    View_3D(point_cloud)    
+    #chamfer
+
+    print("Bias of t is", bias)
+    start_time = time.time()
+    loss_same = chamfer_distance_loss(ev_data0, ev_data0)
+    print(loss_same)
+    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of chamfer method", total_time)
+    # gausian
+    start_time = time.time()
+    loss_same = gaussian_distance_loss(ev_data0, ev_data0)
+    print(loss_same)
+    loss_different = gaussian_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+
+def Compare_Real_and_PBES_biast(Realpath,time_intervel = 100000,bias = 1000,C=100,N=31):
+    events_data = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_real_events(Realpath, time_intervel)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
 
 
+    # Calculate the increasing bias for each event in ev_data0
+    num_events = ev_data0.size
+    t_bias = np.linspace(0, bias, num_events)
+    # Shift ev_data0 by bias on the t axis to obtain ev_data1
+    ev_data1 = ev_data0.copy()
+    ev_data1['t'] += t_bias.astype(np.int64)
+
+    #View
+    point_cloud = events_data.display_events_3D(ev_data0,0,100000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,0,100000)
+    View_3D(point_cloud)    
+    #chamfer
+
+    print("Bias of t is", bias)
+    start_time = time.time()
+    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of chamfer method", total_time)
+    # gausian
+    start_time = time.time()
+    loss_different = gaussian_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+
+def Compare_Real_and_PBES_noise(Realpath,time_intervel = 100000,noise_number = 1000,C=100,N=31):
+    events_data = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_real_events(Realpath, time_intervel)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
+
+
+
+    # Generate noise points on x, y, and t axes
+    num_events = ev_data0.size
+    ev_data1 = np.empty(num_events + noise_number, dtype=ev_data0.dtype)
+    ev_data1[:num_events] = ev_data0
+
+    step = num_events // noise_number
+
+    min_x = 0
+    max_x = events_data.width - 1
+    min_y = 0
+    max_y = events_data.height - 1
+    for point in range(noise_number):
+        ev_data1[num_events + point]['x'] = random.randint(min_x, max_x)
+        ev_data1[num_events + point]['y'] = random.randint(min_y, max_y)
+        ev_data1[num_events + point]['t'] = ev_data0[point * step]['t']
+        ev_data1[num_events + point]['p'] = point % 2  # Alternate between p=0 and p=1
+
+    # Combine ev_data0 and noise_points to create ev_data1
+    point_cloud = events_data.display_events_3D(ev_data0,0,5000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,0,5000)
+    View_3D(point_cloud)    
+    #chamfer
+
+    print("Noise point number is", noise_number)
+    start_time = time.time()
+    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of chamfer method", total_time)
+    # gausian
+    start_time = time.time()
+    loss_different = gaussian_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,0)
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10)
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,100)
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,1000)
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10000)
+# Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,100000)
+
+# Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,0)
+Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10)
+Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,100)
+Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,1000)
+Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10000)
+Compare_Real_and_PBES_noise("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,100000)
+
+# Get_Result_Of_DIfferent_C_N(8,31)
+# Get_Result_Of_DIfferent_C_N(10,31)
+# Get_Result_Of_DIfferent_C_N(30,31)
+# Get_Result_Of_DIfferent_C_N(60,31) 
+# Get_Result_Of_DIfferent_C_N(80,31) 
+# Get_Result_Of_DIfferent_C_N(100,31) 
+# Get_Result_Of_DIfferent_C_N(120,31) 
+# Get_Result_Of_DIfferent_C_N(140,31)
+# Get_Result_Of_DIfferent_C_N(160,31)
+# Get_Result_Of_DIfferent_C_N(180,31)   
+# Get_Result_Of_DIfferent_C_N(220,31)
+# Get_Result_Of_DIfferent_C_N(240,31)
+# Get_Result_Of_DIfferent_C_N(260,31)
+# Get_Result_Of_DIfferent_C_N(300,31)
+# Get_Result_Of_DIfferent_C_N(480,31)
+# Get_Result_Of_DIfferent_C_N(1000,31)
+# Get_Result_Of_DIfferent_C_N(1920,31)
+# Get_Result_Of_DIfferent_C_N(100000,31)
+
+#N
+# Get_Result_Of_DIfferent_C_N(100,31)
+# Get_Result_Of_DIfferent_C_N(100,16)
+# Get_Result_Of_DIfferent_C_N(100,11)
+# Get_Result_Of_DIfferent_C_N(100,7)
+# Get_Result_Of_DIfferent_C_N(100,6) 
+#8，30，120，480，1920
 #Rotate_360_high()
 #Rotate_360_high_ICNS()
 #Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_PBES.dat",100000)
-# Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ICNS.dat',20000)
-# Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat',10000)
+# Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ICNS.dat',100000)
+# Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat',100000)
 # Compare_Real_and_V2E("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_V2E.txt')
 
 # Rotate_360_low()
@@ -1035,7 +1194,7 @@ Get_Result_Of_DIfferent_C(100)
 # Trans_1mps_high_ICNS()
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5","D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_PBES.dat",200000)
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_ICNS.dat',200000)
-Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_ESIM.dat',300000)
+#Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_ESIM.dat',300000)
 # Compare_Real_and_V2E("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_v2e.txt',200000)
 
 
