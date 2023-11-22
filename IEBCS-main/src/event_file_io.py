@@ -286,6 +286,19 @@ class EventsData:
             img[events_filtered['y'][OFF_index], events_filtered['x'][OFF_index], :] = [200, 30, 30] * (events_filtered['p'][OFF_index] + 1)[:, None]  # green [0, 255, 0], blue [255, 0, 0]
         
         return img
+    def generate_video(self, events, t_begin, t_end, dt=2857*2,video_name = "default",cycles = 1,width=1280, height=720):
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Define codec for video writer
+        video = cv2.VideoWriter(video_name, fourcc, 30, (width, height))  # Create video writer object
+        loop = cycles
+        while loop > 0:
+            t_current = t_begin
+            while t_current <= t_end:
+                img = self.display_events(events, t_current, t_current + dt, width, height)  # Generate frame using display_events function
+                video.write(img)  # Write frame to video
+                t_current += dt
+            loop = loop-1
+
+        video.release()  # Release video writer object
     def display_events_3D(self,events,t_begin,t_end,width=1280, height=720):
         # Create a point cloud object
         point_cloud = o3d.geometry.PointCloud()
