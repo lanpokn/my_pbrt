@@ -320,12 +320,20 @@ class EventsData:
             ret_ESIM, frame_ESIM = cap_ESIM.read()
             # Resize frames to l2rx360
             if ret_rgb and ret_real and ret_PECS:
+                frame_rgb = cv2.copyMakeBorder(frame_rgb, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                frame_real = cv2.copyMakeBorder(frame_real, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                frame_PECS = cv2.copyMakeBorder(frame_PECS, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                frame_ICNS = cv2.copyMakeBorder(frame_ICNS, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                frame_V2E = cv2.copyMakeBorder(frame_V2E, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                frame_ESIM = cv2.copyMakeBorder(frame_ESIM, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                
                 frame_rgb = cv2.resize(frame_rgb, (l2r, h2l))
                 frame_real = cv2.resize(frame_real, (l2r, h2l))
                 frame_PECS = cv2.resize(frame_PECS, (l2r, h2l))
                 frame_ICNS = cv2.resize(frame_ICNS, (l2r, h2l))
                 frame_V2E = cv2.resize(frame_V2E, (l2r, h2l))
                 frame_ESIM = cv2.resize(frame_ESIM, (l2r, h2l))
+
                 first_column_image = np.hstack((frame_rgb, frame_real))
                 second_column_image = np.hstack((frame_PECS, frame_ICNS))
                 third_column_image = np.hstack((frame_V2E, frame_ESIM))
