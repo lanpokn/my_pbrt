@@ -23,10 +23,68 @@ from event_loss import *
 import open3d as o3d
 from skimage.transform import resize, rescale
 import random
+def Various_scene_gene(video_input,dat_output):
+    start_time = time.time()
+    filename = video_input
+    lat = 100
+    jit = 10
+    ref = 100
+    tau = 300
+    th = 0.3
+    th_noise = 0.01
+    cap = cv2.VideoCapture(filename)
+    dsi.initSimu(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
+    dsi.initLatency(lat, jit, ref, tau)
+    dsi.initContrast(th, th, th_noise)
+    print(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    print(int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))     
+    init_bgn_hist_cpp("D:/2023/computional imaging/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy", "D:/2023/computional imaging/my_pbrt/IEBCS-main/data/noise_neg_161lux.npy")
+    isInit = False
+    # dt = 1000  # FPS must be 1 kHz,this means fps = dt, and it shows that it can capture high fpx, like bird wings.
+            #however, I do not need so high frequency, if I can't output somany pitures 
+    dt = 1000
+    ev_full = EventBuffer(1)
+    ed = EventDisplay("Events", cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT), dt*2)
+    time_event = 0
+    out = cv2.VideoWriter('video_{}_{}_{}_{}_{}_{}_nonoise.avi'.format(lat, jit, ref, tau, th, th_noise),
+        cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20.0, (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    while cap.isOpened():
+        ret, im = cap.read()
+        out.write(im)
+        if im is None:
+            break
+        im = cv2.cvtColor(im, cv2.COLOR_RGB2LUV)[:, :, 0]*1
+        cv2.imshow("t", im)
+        cv2.waitKey(1)
+        if not isInit:
+            dsi.initImg(im)
+            isInit = True
+        else:
+            buf = dsi.updateImg(im, dt)
+            ev = EventBuffer(1)
+            ev.add_array(np.array(buf["ts"], dtype=np.uint64),
+                            np.array(buf["x"], dtype=np.uint16),
+                            np.array(buf["y"], dtype=np.uint16),
+                            np.array(buf["p"], dtype=np.uint64),
+                            10000000)
+            ed.update(ev, dt)
+            ev_full.increase_ev(ev)
+            time_event += dt
+            if time_event > 0.1e7:
+                break
+    out.release()
+    cap.release()
+    ev_full.write(dat_output.format(lat, jit, ref, tau, th, th_noise))
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of ICNS", total_time)
+
+
 def Rotate_360_high(C = 100):
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
+    start_time = time.time()
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
     jit = 10
@@ -62,7 +120,7 @@ def Rotate_360_high(C = 100):
     dt = 2857
     ev_full = EventBuffer(1)
     ed = EventDisplay("Events", width, height, dt)
-    time = 0
+    time_event = 0
     out = cv2.VideoWriter('rotate_360_highlight_{}_{}_{}_{}_{}_{}_nonoise.avi'.format(lat, jit, ref, tau, th, th_noise),
         cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20.0, (int(width), int(height)))
     i = 0
@@ -92,12 +150,16 @@ def Rotate_360_high(C = 100):
                             1000000)
             ed.update(ev, dt)
             ev_full.increase_ev(ev)
-            time += dt
-            if time > 0.1e7:
+            time_event += dt
+            if time_event > 0.1e7:
                 break
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_PBES.dat'.format(lat, jit, ref, tau, th, th_noise))
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of PBES", total_time)
 def Rotate_360_high_ICNS():
+    start_time = time.time()
     filename = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
     lat = 100
     jit = 10
@@ -118,7 +180,7 @@ def Rotate_360_high_ICNS():
     dt = 2857
     ev_full = EventBuffer(1)
     ed = EventDisplay("Events", cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT), dt*2)
-    time = 0
+    time_event = 0
     out = cv2.VideoWriter('video_{}_{}_{}_{}_{}_{}_nonoise.avi'.format(lat, jit, ref, tau, th, th_noise),
         cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20.0, (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
     while cap.isOpened():
@@ -142,15 +204,19 @@ def Rotate_360_high_ICNS():
                             10000000)
             ed.update(ev, dt)
             ev_full.increase_ev(ev)
-            time += dt
-            if time > 0.1e7:
+            time_event += dt
+            if time_event > 0.1e7:
                 break
     out.release()
     cap.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ICNS.dat'.format(lat, jit, ref, tau, th, th_noise))
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of ICNS", total_time)
+
 def Rotate_360_high_video(C = 100):
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -224,7 +290,7 @@ def Rotate_360_high_video(C = 100):
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.dat'.format(lat, jit, ref, tau, th, th_noise))
 def Rotate_360_high_ICNS_video():
-    filename = "D:/2023/computional imaging/my_pbrt/output/Video/0028-0060.mkv"
+    filename = "D:/2023/computional imaging/my_pbrt/output/Video/0028-0060.mp4v"
     lat = 100
     jit = 10
     ref = 100
@@ -278,7 +344,7 @@ def Rotate_360_high_ICNS_video():
 
 def Rotate_360_low():
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -351,7 +417,7 @@ def Rotate_360_low():
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/R_360_L_PBES.dat'.format(lat, jit, ref, tau, th, th_noise))
 def Rotate_360_low_ICNS():
-    filename = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+    filename = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mp4v"
     lat = 100
     jit = 10000
     ref = 100
@@ -404,7 +470,7 @@ def Rotate_360_low_ICNS():
 
 def Rotate_60_high():
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -477,7 +543,7 @@ def Rotate_60_high():
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/Rotate_60_high/R_60_H_PBES.dat'.format(lat, jit, ref, tau, th, th_noise))
 def Rotate_60_high_ICNS():
-    filename = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+    filename = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mp4v"
     lat = 100
     jit = 5000
     ref = 100
@@ -530,7 +596,7 @@ def Rotate_60_high_ICNS():
 
 def Trans_1mps_high():
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -661,7 +727,7 @@ def Trans_1mps_high_ICNS():
 
 def Trans_06mps_high():
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -798,7 +864,7 @@ def Trans_06mps_high_ICNS():
 
 def Trans_1mps_low():
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -966,12 +1032,12 @@ def Compare_Real_and_PBES(Realpath, simPath,time_intervel = 100000,C=100,N=31):
     point_cloud = events_data.display_events_3D(ev_data1,11000,12000)
     View_3D(point_cloud)    
     img1 = events_data.display_events(ev_data0,11000,12000)
-    # cv2.imshow("real",img1)
-    # cv2.waitKey()
+    cv2.imshow("real",img1)
+    cv2.waitKey()
     img2 = events_data.display_events(ev_data1,11000,12000)
-    # cv2.imshow("sim",img2)
-    # cv2.waitKey()
-    #cv2.imwrite('D:/2023/computional imaging/my_pbrt/output/change_of_C/2Dshow_{}_{}.jpg'.format(C,N), img2)
+    cv2.imshow("sim",img2)
+    cv2.waitKey()
+    cv2.imwrite('D:/2023/computional imaging/my_pbrt/output/change_of_C/2Dshow_{}_{}.jpg'.format(C,N), img2)
 
 
     #chamfer
@@ -1059,7 +1125,7 @@ def Compare_Real_and_V2E(Realpath, simPath,time_intervel = 100000):
 
 def Rotate_360_high_Ctest(C = 100,N=31):
     #TODO,add formal ICNS here, deal v2e in other place
-    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mkv"
+    # filename = "C:/Users/hhq/Documents/blender/PBES_small/rotate_360/0000-0060.mp4v"
     #lower lat will get more active pixel(remain event)
     lat = 10
     # higher jit will get blurer pixel and more active pixel , very obvious
@@ -1100,9 +1166,9 @@ def Rotate_360_high_Ctest(C = 100,N=31):
     out = cv2.VideoWriter('rotate_360_highlight_{}_{}_{}_{}_{}_{}_nonoise.avi'.format(lat, jit, ref, tau, th, th_noise),
         cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 20.0, (int(width), int(height)))
     i = 0
-    while i<20:
-        filename = "D:/2023/computional imaging/my_pbrt/build/Rotate_360_pbrt001"+str(i+20)+"exr"
-        if N==31:
+    while i<10:
+        filename = "D:/2023/computional imaging/my_pbrt/build/Rotate_360_pbrt001"+str(i+20)+".exr"
+        if N==32:
             im = read_exr_channel(filename,"intensity",C)
         else:
             im = calculate_intensity_from_spetral(filename,N,C)
@@ -1135,9 +1201,13 @@ def Rotate_360_high_Ctest(C = 100,N=31):
     out.release()
     ev_full.write('D:/2023/computional imaging/my_pbrt/output/change_of_C/R_360_H_PBES_CTEST_{}_{}.dat'.format(C,N))
 def Get_Result_Of_DIfferent_C_N(C = 100,N=31):
-    #print(C)
-    #Rotate_360_high_Ctest(C,N)
-    Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/change_of_C/R_360_H_PBES_CTEST_{}_{}.dat".format(C,N),100000,C,N)
+    print(N)
+    # start_time = time.time()
+    Rotate_360_high_Ctest(C,N)
+    # end_time = time.time()
+    # total_time = end_time - start_time
+    # print("Total time of N hyper", total_time)
+    #Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/change_of_C/R_360_H_PBES_CTEST_{}_{}.dat".format(C,N),100000,C,N)
 
 def Compare_Real_and_PBES_biast(Realpath,time_intervel = 100000,bias = 1000,C=100,N=31):
     events_data = EventsData()
@@ -1224,22 +1294,46 @@ def Generate_display_video(Realpath,VideoName,time_intervel = 100000):
     events_data.read_IEBCS_events(Realpath, time_intervel)
     #3D output is the best way to calibrate
     ev_data0 = events_data.events[0]
-    events_data.generate_video(ev_data0,0,events_data.global_max_t-2857*2,2857/1.1,VideoName,10)
+    events_data.generate_video(ev_data0,2857,events_data.global_max_t-2857*3,2857/1,VideoName,5)
+def Generate_display_video_v2e(Realpath,VideoName,time_intervel = 100000):
+    events_data = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_V2E_events(Realpath, time_intervel)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
+    events_data.generate_video(ev_data0,2857,events_data.global_max_t-2857*3,2857/1,VideoName,5)
+
 def Generate_display_video_real(Realpath,VideoName,time_intervel = 100000):
     events_data = EventsData()
     #make sure the video is long enough, or it can't disolay normally
     events_data.read_real_events(Realpath, time_intervel)
     #3D output is the best way to calibrate
     ev_data0 = events_data.events[0]
-    events_data.generate_video(ev_data0,2857*2,events_data.global_max_t-2857*2,2857/1.1,VideoName,10)
+    events_data.generate_video(ev_data0,2857*2.5,events_data.global_max_t-2857*0.5,2857/1.02,VideoName,5)
 
-# Rotate_360_high_video()
+def Generate_display_video_final(VideoFolder):
+    events_data = EventsData()
+    events_data.generate_display_video(VideoFolder,20)
+
+# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.dat")
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.mp4v",100000)
+# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat")
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mp4v",100000)
+# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.dat")
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.mp4v",100000)
+# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.dat")
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.mp4v",100000)
+
+
+#Rotate_360_high_video()
 #Rotate_360_high_ICNS_video()
 
 Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/High_360_360.hdf5","D:/2023/computional imaging/my_pbrt/output/Video/High_360_360deg.mp4v",100000)
-Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.mp4v",100000)
-Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.mp4v",100000)
-
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.mp4v",100000)
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.mp4v",100000)
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.mp4v",100000)
+# Generate_display_video_v2e("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_V2E.txt","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_V2E.mp4v",100000)
+Generate_display_video_final("D:/2023/computional imaging/my_pbrt/output/Video/")
 
 # Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,0)
 # Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10)
@@ -1281,8 +1375,8 @@ Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H
 # Get_Result_Of_DIfferent_C_N(100,7)
 # Get_Result_Of_DIfferent_C_N(100,6) 
 #8，30，120，480，1920
-#Rotate_360_high()
-#Rotate_360_high_ICNS()
+# Rotate_360_high()
+# Rotate_360_high_ICNS()
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5","D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_PBES.dat",100000)
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ICNS.dat',100000)
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat',100000)

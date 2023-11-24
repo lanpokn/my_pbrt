@@ -6,6 +6,7 @@
 from metavision_core.event_io import EventsIterator
 from metavision_sdk_core import PeriodicFrameGenerationAlgorithm
 from metavision_sdk_ui import EventLoop, BaseWindow, Window, UIAction, UIKeyEvent
+import os
 import cv2
 import numpy as np
 import open3d as o3d
@@ -287,7 +288,7 @@ class EventsData:
         
         return img
     def generate_video(self, events, t_begin, t_end, dt=2857*2,video_name = "default",cycles = 1,width=1280, height=720):
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Define codec for video writer
+        fourcc = cv2.VideoWriter_fourcc(*'H264')  # Define codec for video writer
         video = cv2.VideoWriter(video_name, fourcc, 30, (width, height))  # Create video writer object
         loop = cycles
         while loop > 0:
@@ -299,6 +300,53 @@ class EventsData:
             loop = loop-1
 
         video.release()  # Release video writer object
+    def generate_display_video(self,videoPath, fps):
+        cap_rgb = cv2.VideoCapture(videoPath+"0000-0120.mkv")
+        cap_real = cv2.VideoCapture(videoPath+"High_360_360deg.mp4v")
+        cap_PECS = cv2.VideoCapture(videoPath+"R_360_H_PBES.mp4v")
+        cap_ICNS = cv2.VideoCapture(videoPath+"R_360_H_ICNS.mp4v")
+        cap_V2E = cv2.VideoCapture(videoPath+"R_360_H_V2E.mp4v")
+        cap_ESIM = cv2.VideoCapture(videoPath+"R_360_H_ESIM.mp4v")
+        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
+        l2r = 640
+        h2l = 360
+        videoWriter = cv2.VideoWriter(videoPath+"display.avi", fourcc, fps, (l2r*2, h2l*3), True)
+        while cap_rgb.isOpened() and cap_real.isOpened() and cap_PECS.isOpened():
+            ret_rgb, frame_rgb = cap_rgb.read()
+            ret_real, frame_real = cap_real.read()
+            ret_PECS, frame_PECS = cap_PECS.read()
+            ret_ICNS, frame_ICNS = cap_ICNS.read()
+            ret_V2E, frame_V2E = cap_V2E.read()
+            ret_ESIM, frame_ESIM = cap_ESIM.read()
+            # Resize frames to l2rx360
+            if ret_rgb and ret_real and ret_PECS:
+                frame_rgb = cv2.resize(frame_rgb, (l2r, h2l))
+                frame_real = cv2.resize(frame_real, (l2r, h2l))
+                frame_PECS = cv2.resize(frame_PECS, (l2r, h2l))
+                frame_ICNS = cv2.resize(frame_ICNS, (l2r, h2l))
+                frame_V2E = cv2.resize(frame_V2E, (l2r, h2l))
+                frame_ESIM = cv2.resize(frame_ESIM, (l2r, h2l))
+                first_column_image = np.hstack((frame_rgb, frame_real))
+                second_column_image = np.hstack((frame_PECS, frame_ICNS))
+                third_column_image = np.hstack((frame_V2E, frame_ESIM))
+                all_frame = np.vstack((first_column_image,second_column_image,third_column_image))
+                cv2.putText(all_frame, 'RGB image', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                cv2.putText(all_frame, 'Real Event in EVK4', (l2r+10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                cv2.putText(all_frame, 'our PECS', (10, 30+h2l), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                cv2.putText(all_frame, 'ICNS', (l2r+10, 30+h2l), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                cv2.putText(all_frame, 'V2E', (10, 30+h2l*2), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                cv2.putText(all_frame, 'ESIM', (l2r+10, 30+h2l*2), cv2.FONT_HERSHEY_SIMPLEX, 1.10, (0, 0, 255), 2)
+                # print(all_frame[0])
+                videoWriter.write(all_frame)
+            else:
+                break
+        cap_rgb.release()
+        cap_ESIM.release()
+        cap_PECS.release()
+        cap_ICNS.release()
+        cap_V2E.release()
+        cap_real.release()
+        videoWriter.release()
     def display_events_3D(self,events,t_begin,t_end,width=1280, height=720):
         # Create a point cloud object
         point_cloud = o3d.geometry.PointCloud()
