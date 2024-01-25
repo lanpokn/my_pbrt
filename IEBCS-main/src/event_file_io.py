@@ -237,7 +237,7 @@ class EventsData:
         evs['t'] = evs['t'] - self.global_min_t
         self.global_max_t = self.global_max_t - self.global_min_t
         self.global_min_t = 0
-    def read_Voltmeter_events(self, input_path: str, delta_t_input: int):
+    def read_Volt_events(self, input_path: str, delta_t_input: int):
         # max size: 5000000, if you need more, delete that code
         with open(input_path, 'r') as file:
             lines = file.readlines()

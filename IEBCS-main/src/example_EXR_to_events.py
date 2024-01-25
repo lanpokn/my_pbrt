@@ -1082,14 +1082,14 @@ def Compare_Real_and_V2E(Realpath, simPath,time_intervel = 100000):
     ev_data1 = events_data_V2E.events[0]
 
 
-    point_cloud = events_data.display_events_3D(ev_data0,240000,270000)
-    View_3D(point_cloud)
-    point_cloud = events_data.display_events_3D(ev_data1,240000,270000)
-    View_3D(point_cloud)
-    img1 = events_data.display_events(ev_data0,240000,270000)
-    cv2.imshow("real",img1)
-    cv2.waitKey()
-    img2 = events_data.display_events(ev_data1,240000,270000)
+    # point_cloud = events_data.display_events_3D(ev_data0,24000,27000)
+    # View_3D(point_cloud)
+    # point_cloud = events_data.display_events_3D(ev_data1,24000,27000)
+    # View_3D(point_cloud)
+    # img1 = events_data.display_events(ev_data0,24000,27000)
+    # cv2.imshow("real",img1)
+    # cv2.waitKey()
+    # img2 = events_data.display_events(ev_data1,24000,27000)
     # cv2.imshow("sim",img2)
     # cv2.waitKey()
 
@@ -1114,14 +1114,50 @@ def Compare_Real_and_V2E(Realpath, simPath,time_intervel = 100000):
     total_time = end_time - start_time
     print("Total time of gausian method", total_time)
 
-    # kernel
-    # start_time = time.time()
-    # loss_different = kernel_method_spike_cubes_loss(ev_data0, ev_data1,events_data.width,events_data.height)
-    # print(loss_different)
+def Compare_Real_and_Volt(Realpath, simPath,time_intervel = 100000):
+    """use it to test functions
+    """    
+    events_data = EventsData()
+    events_data_V2E = EventsData()
+    #make sure the video is long enough, or it can't disolay normally
+    events_data.read_real_events(Realpath, time_intervel)
+    events_data_V2E.read_Volt_events(simPath, time_intervel)
+    #3D output is the best way to calibrate
+    ev_data0 = events_data.events[0]
+    ev_data1 = events_data_V2E.events[0]
+
+
+    point_cloud = events_data.display_events_3D(ev_data0,11000,12000)
+    View_3D(point_cloud)
+    point_cloud = events_data.display_events_3D(ev_data1,11000,12000)
+    View_3D(point_cloud)
+    img1 = events_data.display_events(ev_data0,11000,12000)
+    cv2.imshow("real",img1)
+    cv2.waitKey()
+    img2 = events_data.display_events(ev_data1,11000,12000)
+    cv2.imshow("sim",img2)
+    cv2.waitKey()
+
+
+    #chamfer
+    start_time = time.time()
+    loss_same = chamfer_distance_loss(ev_data0, ev_data0)
+    print(loss_same)
+    loss_different = chamfer_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of chamfer method", total_time)
+    # gausian
+    start_time = time.time()
+    loss_same = gaussian_distance_loss(ev_data0, ev_data0)
+    print(loss_same)
+    loss_different = gaussian_distance_loss(ev_data0, ev_data1)
+    print(loss_different)
     
-    # end_time = time.time()
-    # total_time = end_time - start_time
-    # print("Total time of kernel method", total_time)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of gausian method", total_time)
 
 def Rotate_360_high_Ctest(C = 100,N=31):
     #TODO,add formal ICNS here, deal v2e in other place
@@ -1330,7 +1366,7 @@ def Generate_display_video_final(VideoFolder):
 #Rotate_360_high_video()
 #Rotate_360_high_ICNS_video()
 
-Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/High_360_360.hdf5","D:/2023/computional imaging/my_pbrt/output/Video/High_360_360deg2.mp4v",100000)
+# Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/High_360_360.hdf5","D:/2023/computional imaging/my_pbrt/output/Video/High_360_360deg2.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.mp4v",100000)
@@ -1420,3 +1456,8 @@ Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/Hi
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/trans_1mps_L.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/T_1_L_ICNS.dat',200000)
 # Compare_Real_and_PBES("D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/trans_1mps_L.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/T_1_L_ESIM.dat',200000)
 # Compare_Real_and_V2E("D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/trans_1mps_L.hdf5",'D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/T_1_L_v2e.txt',200000)
+
+
+#addition experiment
+# Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_Volt.txt')
+Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/LOW_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/Rotate_360_low_Volt.txt')
