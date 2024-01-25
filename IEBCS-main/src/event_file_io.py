@@ -237,6 +237,60 @@ class EventsData:
         evs['t'] = evs['t'] - self.global_min_t
         self.global_max_t = self.global_max_t - self.global_min_t
         self.global_min_t = 0
+    def read_Voltmeter_events(self, input_path: str, delta_t_input: int):
+        # max size: 5000000, if you need more, delete that code
+        with open(input_path, 'r') as file:
+            lines = file.readlines()
+
+        ts, x, y, p = [], [], [], []
+        i = 0
+        for line in lines:
+            if line.startswith('#') or line.startswith('('):
+                continue
+            values = line.strip().split()
+            ts.append(int(float(values[0])))
+            x.append(int(values[1]))
+            y.append(int(values[2]))
+            p.append(int(values[3]))
+            i=i+1
+            if i>5000000:
+                break
+
+        self.delta_t = delta_t_input
+        self.height = np.max(y) + 1
+        self.width = np.max(x) + 1
+        start_time = ts[0]
+        end_time = ts[-1]
+        time_duration = end_time - start_time
+        num_buffers = time_duration // delta_t_input
+
+        for i in range(num_buffers):
+            start_idx = np.searchsorted(ts, start_time + i * delta_t_input)
+            end_idx = np.searchsorted(ts, start_time + (i + 1) * delta_t_input, side='right')
+            evs = np.zeros(end_idx - start_idx, dtype=np.dtype({'names': ['x', 'y', 'p', 't'], 'formats': ['<u2', '<u2', '<i2', '<i8'], 'offsets': [0, 2, 4, 8], 'itemsize': 16}))
+            evs['x'] = x[start_idx:end_idx]
+            evs['y'] = y[start_idx:end_idx]
+            evs['t'] = ts[start_idx:end_idx]
+            evs['p'] = p[start_idx:end_idx]
+            self.events.append(evs)
+            self.global_counter += evs.size
+
+        remaining_events = ts[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
+        if len(remaining_events) > 0:
+            evs = np.zeros(len(remaining_events), dtype=np.dtype({'names': ['x', 'y', 'p', 't'], 'formats': ['<u2', '<u2', '<i2', '<i8'], 'offsets': [0, 2, 4, 8], 'itemsize': 16}))
+            evs['x'] = x[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
+            evs['y'] = y[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
+            evs['t'] = ts[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
+            evs['p'] = p[np.searchsorted(ts, start_time + num_buffers * delta_t_input):]
+            self.events.append(evs)
+            self.global_counter += len(evs)
+
+        if self.global_min_t == -1:
+            self.global_min_t = ts[0]
+        self.global_max_t = ts[-1]
+        evs['t'] = evs['t'] - self.global_min_t
+        self.global_max_t = self.global_max_t - self.global_min_t
+        self.global_min_t = 0
 
     def display_events_metavision(self,evs,accumulation_time_us):
         # Window - Graphical User Interface

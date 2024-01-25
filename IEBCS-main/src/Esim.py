@@ -200,16 +200,17 @@ class AirSimEventGen:
         return out
 
     def _stop_event_gen(self, signal, frame):
-        print("\nCtrl+C received. Stopping event sim...")
+        print("/nCtrl+C received. Stopping event sim...")
         self.event_file.close()
         sys.exit(0)
 
+start_time = time.time()
 # Open the video file
 # # #360H
-# video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
-# dt = 2857
-# divide = 1
-# output_path = 'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat'
+video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
+dt = 2857
+divide = 1
+output_path = 'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_ESIM.dat'
 #360L
 # video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
 # dt = 2857
@@ -225,11 +226,16 @@ class AirSimEventGen:
 # dt = 21153
 # divide = 1
 # output_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/T_1_H_ESIM.dat"
-# T06H
-video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/25-77Eevee.avi"
-dt = 35478
+# T1H
+video_path = "D:/2023/computional imaging/my_pbrt/output/Video/0028-0060.mkv"
+dt = 2857
 divide = 1
-output_path = "D:/2023/computional imaging/my_pbrt/output/trans_06mps_high/T_06_H_ESIM.dat"
+output_path = "D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.dat"
+# T06H
+# video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/25-77Eevee.avi"
+# dt = 35478
+# divide = 1
+# output_path = "D:/2023/computional imaging/my_pbrt/output/trans_06mps_high/T_06_H_ESIM.dat"
 
 cap = cv2.VideoCapture(video_path)
 
@@ -296,3 +302,7 @@ ev_full.write(output_path)
 
 # Release the video capture and close the event file
 cap.release()
+
+end_time = time.time()
+total_time = end_time - start_time
+print("Total time of ESIM", total_time)

@@ -1,5 +1,10 @@
 import numpy as np
 import cv2
+# Specify the path to the OpenCV library
+opencv_path = "C:/Users/hhq/Desktop/code/opencv/build/x64/vc15/bin"
+import os
+# Add the library path
+
 import sgrb2lum
 
 # Load an SRGB image

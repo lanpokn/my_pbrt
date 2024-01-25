@@ -73,6 +73,49 @@ def chamfer_distance_loss(evs1, evs2):
     # Return the sum of distances
     return (np.mean(dists1)+np.mean(dists2))
 
+def gaussian_distance_loss(evs1, evs2,sigma = 0.4):
+    """use chamfer_distance to calculate the loss between two events data
+
+    Args:
+        evs1 (dictionary): events data1, should be the same as the format of EventsData().events[i]
+        evs2 (dictionary): events data2, should be the same as the format of EventsData().events[i]
+
+    Returns:
+        chamfer distance
+    """
+    
+    evs1_norm = normalize_evs(evs1)
+    evs2_norm = normalize_evs(evs2)
+    
+    evs1_float = np.zeros((evs1_norm.shape[0], 4), dtype=np.float64)
+    evs2_float = np.zeros((evs2_norm.shape[0], 4), dtype=np.float64)
+    
+    evs1_float[:, 0] = evs1_norm['x']
+    evs1_float[:, 1] = evs1_norm['y']
+    evs1_float[:, 2] = evs1_norm['p']
+    evs1_float[:, 3] = evs1_norm['t']
+    
+    evs2_float[:, 0] = evs2_norm['x']
+    evs2_float[:, 1] = evs2_norm['y']
+    evs2_float[:, 2] = evs2_norm['p']
+    evs2_float[:, 3] = evs2_norm['t']
+    
+    # Create KDTree using evs2_float as points
+    tree1 = KDTree(evs1_float)
+    tree2 = KDTree(evs2_float)
+
+    # Query the tree with evs1_float as points
+    # use log to avoid some point too far away
+    dists1, _ = tree2.query(evs1_float)
+    dists1 = 1 - np.exp(-dists1 * dists1 / sigma)  # modify the calculation f
+
+    dists2, _ = tree1.query(evs2_float)
+    dists2 = 1 - np.exp(-dists2 * dists2 / sigma)  # modify the calculation for dists2
+
+    # dists2 = np.exp(10*dists2+1)
+
+    # Return the sum of distances
+    return (np.mean(dists1)+np.mean(dists2))
 
 def cubes_3d_kernel_method(events, new_events, x_sigma, y_sigma, t_sigma):
     """

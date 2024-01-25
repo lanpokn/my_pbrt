@@ -1141,11 +1141,89 @@ using namespace cv;
     /*gammaNature[1023] = */ Point3f(1.000000e+00, 1.000000e+00, 1.000000e+00) };
 
 //输入图片一律使用srgb
+// #define L(i) energy.at(i).at<float>(r, c) 
+// Mat SGRB2Luminance(Mat srgb)
+// {
+//     std::vector<float> waveDst;
+//         std::cout<<"1";
+//     if (waveDst.empty())
+//     {
+//         waveDst.resize(31);
+//         for (int i = 0; i < 31; i++)
+//         {
+//             waveDst[i] = 400.0f + 10.0f * i;
+//         }
+//     }
+//     // calculate spdNature in accordance with waveDst
+//     std::vector<Point3f> spdDst;
+//     if (waveDst == waveNature)
+//     {
+//         spdDst = spdNature;
+//     }
+//     // convert non-srgb to srgb
+//     //formal is rgb, bgr 2 rgb
+//         std::cout<<"1";
+//     for (int i = 0; i<srgb.rows; i++)
+// 	{
+// 		for (int j = 0; j<srgb.cols; j++)
+// 		{
+//             srgb.at<Vec3f>(i, j)[2] *= 1.0 / 255;
+//             srgb.at<Vec3f>(i, j)[1] *= 1.0 / 255;
+//             srgb.at<Vec3f>(i, j)[0] *= 1.0 / 255;
+// 		}
+// 	}
+//         std::cout<<"1";
+//     int rows = srgb.rows;
+//     int cols = srgb.cols;
+//     // cal spectral radiance according to the display
+//      int bandNum = waveDst.size();
+//      int gammaNum = (int)gammaNature.size();
+//     std::vector<Mat> energy(bandNum);
+//     int gIdx = 0;
+//     std::cout<<"1";
+// #if NDEBUG
+// #pragma omp parallel for
+// #endif
+//     for (int b = 0; b < bandNum; b++)
+//     {
+//         Mat curBand = Mat::zeros(rows, cols, CV_32FC1);
+//         for (int r = 0; r < rows; r++)
+//         {
+//             for (int c = 0; c < cols; c++)
+//             {
+//                 float tmp = 0.0f;
+//                 gIdx = round(std::min(srgb.at<Vec3f>(r, c)[2], 1.0f) * (gammaNum - 1));
+//                 tmp += spdDst[b].x * gammaNature[gIdx].x;
+//                 gIdx = round(std::min(srgb.at<Vec3f>(r, c)[1], 1.0f) * (gammaNum - 1));
+//                 tmp += spdDst[b].y * gammaNature[gIdx].y;
+//                 gIdx = round(std::min(srgb.at<Vec3f>(r, c)[0], 1.0f) * (gammaNum - 1));
+//                 tmp += spdDst[b].z * gammaNature[gIdx].z;
+//                 curBand.at<float>(r, c) = tmp*1000000000000000000.0;
+//             }
+//         }
+//         energy[b] = curBand;
+//     }
+//     Mat spec = Mat::zeros(rows, cols, CV_32FC1);
+//     for (int r = 0; r < rows; r++)
+//     {
+//         for (int c = 0; c < cols; c++)
+//         {
+//             spec.at<float>(r, c) = 
+//                         0.82*L(0)+0.85*L(1)+0.87*L(2)+0.88*L(3)+0.92*L(4)+
+//                         0.95*L(5)+0.96*L(6)+0.96*L(7)+0.98*L(8)+1*L(9)+0.99*L(10)+
+//                         1*L(11)+0.99*L(12)+1*L(13)+0.99*L(14)+1*L(15)+
+//                         0.99*L(16)+0.98*L(17)+0.98*L(18)+0.97*L(19)+0.95*L(20)+
+//                         0.94*L(21)+0.92*L(22)+0.92*L(23)+0.87*L(24)+0.86*L(25)+
+//                         0.85*L(26)+0.82*L(27)+0.79*L(28)+0.78*L(29)+0.76*L(30);
+//         }
+//     }
+//     return spec;
+// }
 #define L(i) energy.at(i).at<float>(r, c) 
-Mat SGRB2Luminance(Mat srgb)
+Mat SGRB2Luminance(Mat srgb, int channelNumber)
 {
     std::vector<float> waveDst;
-        std::cout<<"1";
+    std::cout<<"1";
     if (waveDst.empty())
     {
         waveDst.resize(31);
@@ -1161,23 +1239,23 @@ Mat SGRB2Luminance(Mat srgb)
         spdDst = spdNature;
     }
     // convert non-srgb to srgb
-    //formal is rgb, bgr 2 rgb
-        std::cout<<"1";
+    // formal is rgb, bgr 2 rgb
+    std::cout<<"1";
     for (int i = 0; i<srgb.rows; i++)
-	{
-		for (int j = 0; j<srgb.cols; j++)
-		{
+    {
+        for (int j = 0; j<srgb.cols; j++)
+        {
             srgb.at<Vec3f>(i, j)[2] *= 1.0 / 255;
             srgb.at<Vec3f>(i, j)[1] *= 1.0 / 255;
             srgb.at<Vec3f>(i, j)[0] *= 1.0 / 255;
-		}
-	}
-        std::cout<<"1";
+        }
+    }
+    std::cout<<"1";
     int rows = srgb.rows;
     int cols = srgb.cols;
     // cal spectral radiance according to the display
-     int bandNum = waveDst.size();
-     int gammaNum = (int)gammaNature.size();
+    int bandNum = waveDst.size();
+    int gammaNum = (int)gammaNature.size();
     std::vector<Mat> energy(bandNum);
     int gIdx = 0;
     std::cout<<"1";
@@ -1208,17 +1286,54 @@ Mat SGRB2Luminance(Mat srgb)
     {
         for (int c = 0; c < cols; c++)
         {
-            spec.at<float>(r, c) = 
-                        0.82*L(0)+0.85*L(1)+0.87*L(2)+0.88*L(3)+0.92*L(4)+
-                        0.95*L(5)+0.96*L(6)+0.96*L(7)+0.98*L(8)+1*L(9)+0.99*L(10)+
-                        1*L(11)+0.99*L(12)+1*L(13)+0.99*L(14)+1*L(15)+
-                        0.99*L(16)+0.98*L(17)+0.98*L(18)+0.97*L(19)+0.95*L(20)+
-                        0.94*L(21)+0.92*L(22)+0.92*L(23)+0.87*L(24)+0.86*L(25)+
-                        0.85*L(26)+0.82*L(27)+0.79*L(28)+0.78*L(29)+0.76*L(30);
+            if (channelNumber == 31)
+            {
+                spec.at<float>(r, c) = 
+                    0.82*L(0)+0.85*L(1)+0.87*L(2)+0.88*L(3)+0.92*L(4)+
+                    0.95*L(5)+0.96*L(6)+0.96*L(7)+0.98*L(8)+1*L(9)+0.99*L(10)+
+                    1*L(11)+0.99*L(12)+1*L(13)+0.99*L(14)+1*L(15)+
+                    0.99*L(16)+0.98*L(17)+0.98*L(18)+0.97*L(19)+0.95*L(20)+
+                    0.94*L(21)+0.92*L(22)+0.92*L(23)+0.87*L(24)+0.86*L(25)+
+                    0.85*L(26)+0.82*L(27)+0.79*L(28)+0.78*L(29)+0.76*L(30);
+            }
+            else if (channelNumber == 16)
+            {
+                spec.at<float>(r, c) = 
+                    2*(0.82*L(0)+0.87*L(2)+0.92*L(4)+
+                    0.96*L(6)+0.98*L(8)+0.99*L(10)+
+                    1*L(12)+0.99*L(14)+
+                    0.99*L(16)+0.98*L(18)+0.97*L(20)+
+                    0.94*L(22)+0.87*L(24)+
+                    0.85*L(26)+0.79*L(28)+0.76*L(30));
+            }
+            else if (channelNumber == 11)
+            {
+                spec.at<float>(r, c) = 
+                    3*(0.82*L(0)+0.88*L(3)+0.95*L(6)+0.96*L(9)+
+                    1*L(12)+1*L(15)+0.99*L(18)+
+                    0.99*L(21)+0.94*L(24)+
+                    0.85*L(27)+0.78*L(30));
+            }
+            else if (channelNumber == 7)
+            {
+                spec.at<float>(r, c) = 
+                    5*(0.82*L(0)+0.92*L(5)+1*L(10)+0.99*L(15)+
+                    0.99*L(20)+0.92*L(25)+0.85*L(30));
+            }
+            else if (channelNumber == 6)
+            {
+                spec.at<float>(r, c) = 
+                    6*(0.82*L(0)+0.95*L(6)+1*L(12)+
+                    0.99*L(18)+0.94*L(24)+0.85*L(30));
+            }
+            else{
+                printf("wrong input, channelNumber only support 6,7,11,16,31");
+            }
         }
     }
     return spec;
 }
+
 
 // int main(){
 //     Mat srgb_in,srgb_out;
@@ -1250,8 +1365,8 @@ PyObject* SGRB2Luminance_py(PyObject* self, PyObject* args) {
     cols = PyArray_DIM(srgb_array, 1);
     
     Mat srgb(rows, cols, CV_32FC3, PyArray_DATA(srgb_array));
-    
-    Mat spec = SGRB2Luminance(srgb);
+    int channelNumber=31;
+    Mat spec = SGRB2Luminance(srgb,channelNumber);
     std::cout<<"1";
     npy_intp spec_size[2] = {spec.rows, spec.cols};  // convert cv::MatSize to npy_intp pointer
     

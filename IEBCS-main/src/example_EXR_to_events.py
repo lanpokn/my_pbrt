@@ -1294,7 +1294,8 @@ def Generate_display_video(Realpath,VideoName,time_intervel = 100000):
     events_data.read_IEBCS_events(Realpath, time_intervel)
     #3D output is the best way to calibrate
     ev_data0 = events_data.events[0]
-    events_data.generate_video(ev_data0,2857,events_data.global_max_t-2857*3,2857/1,VideoName,5)
+    # events_data.generate_video(ev_data0,2857,events_data.global_max_t-2857*3,2857/1,VideoName,5)
+    events_data.generate_video(ev_data0,1000,events_data.global_max_t-1000*3,1000,VideoName,1)
 def Generate_display_video_v2e(Realpath,VideoName,time_intervel = 100000):
     events_data = EventsData()
     #make sure the video is long enough, or it can't disolay normally
@@ -1316,24 +1317,25 @@ def Generate_display_video_final(VideoFolder):
     events_data.generate_display_video(VideoFolder,20)
 
 # Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.dat")
-# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.mp4v",100000)
-# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat")
-# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mp4v",100000)
+#Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/dragon_0000-0078.mp4v",100000)
+#Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat")
+#Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city2_0001-0060.mp4v",100000)
 # Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.dat")
-# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.mp4v",100000)
+#Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/city0001-0060.mp4v",100000)
 # Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.dat")
-# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.mp4v",100000)
-
+#Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/tree.mp4v",100000)
+# Various_scene_gene("D:/2023/computional imaging/my_pbrt/output/Various_Scene/bike0001-0040.mkv","D:/2023/computional imaging/my_pbrt/output/Various_Scene/bike0001-0040.dat")
+# Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Various_Scene/bike0001-0040.dat","D:/2023/computional imaging/my_pbrt/output/Various_Scene/bike0001-0040.mp4v",100000)
 
 #Rotate_360_high_video()
 #Rotate_360_high_ICNS_video()
 
-# Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/High_360_360.hdf5","D:/2023/computional imaging/my_pbrt/output/Video/High_360_360deg.mp4v",100000)
+Generate_display_video_real("D:/2023/computional imaging/my_pbrt/output/Video/High_360_360.hdf5","D:/2023/computional imaging/my_pbrt/output/Video/High_360_360deg2.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_PBES.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ICNS.mp4v",100000)
 # Generate_display_video("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.dat","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_ESIM.mp4v",100000)
 # Generate_display_video_v2e("D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_V2E.txt","D:/2023/computional imaging/my_pbrt/output/Video/R_360_H_V2E.mp4v",100000)
-Generate_display_video_final("D:/2023/computional imaging/my_pbrt/output/Video/")
+#Generate_display_video_final("D:/2023/computional imaging/my_pbrt/output/Video/")
 
 # Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,0)
 # Compare_Real_and_PBES_biast("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",10000,10)

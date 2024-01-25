@@ -4,12 +4,12 @@ import cv2
 
 # These paths should be changed to your own paths
 module = Extension("sgrb2lum",
-                   sources=["C:/Users/admin/Documents/2023/PBES/my_pbrt/IEBCS-main/cpp/utils/display.cpp"],
-                   include_dirs=[numpy.get_include(), "C:/Users/admin/Desktop/code/opencv/build/include/"],
-                   library_dirs=["C:/Users/admin/Desktop/code/opencv/build/x64/vc16/bin/", "C:/Users/admin/Desktop/code/opencv/build/x64/vc16/lib/", "C:/Users/admin/Desktop/code/opencv/build/x64/vc16/"],
-                   libraries=["opencv_world470d"],
+                   sources=["D:/2023/computional imaging/my_pbrt/IEBCS-main/cpp/utils/display.cpp"],
+                   include_dirs=[numpy.get_include(), "C:/Users/hhq/Desktop/code/opencv/build/include"],
+                   library_dirs=["C:/Users/hhq/Desktop/code/opencv/build/x64/vc16/bin", "C:/Users/hhq/Desktop/code/opencv/build/x64/vc16/lib"],
+                   libraries=["opencv_world480"],
                   #  extra_compile_args=["/std:c++11"],
-                  #  extra_link_args=["/NODEFAULTLIB:MSVCRT", "/NODEFAULTLIB:LIBCMT", "/MT"],
+                  #  extra_link_args=["/NODEFAULTLIB:MSVCRT", "/NODEFAULTLIB:LIBCMT"],
                    language="c++")
 
 setup(

@@ -2,6 +2,7 @@ import OpenEXR
 import Imath
 import numpy as np
 import cv2
+import time
 
 #BrightScale 1 not change ,1000 muti 1000, because scene is easy, and exr has a wide range 
 # we can simply muti a number to get high img based on low img, so we only need to render low img
@@ -40,6 +41,7 @@ def read_exr_channel(exr_file,channel_name,BrightScale):
 
 def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
     # Read the EXR file
+    start_time = time.time()
     exr = OpenEXR.InputFile(exr_file)
     # Get the image header and channel information
     header = exr.header()
@@ -52,6 +54,8 @@ def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
     channel_list = []
 
     # Read each channel individually
+    # here I read all 32 channel for arbitary N
+    # In the view of algorithm analysis, reading channel is decided by chanel number!
     #for i in range(31, 0, -1):
     for i in range(1, 32):
         channel_name = f"Radiance.C{i:02d}"
@@ -60,6 +64,10 @@ def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
         temp = np.reshape(temp, (height, width))
         channel_list.append(temp)
 
+    
+    end_time = time.time()
+    total_time = end_time - start_time
+    print("Total time of N hyper", total_time*channel_number/32)
     # Create a CV data type with the same size as the channel data
     cv_image = np.zeros((height, width), dtype=np.float32)
     # cv2.waitKey()
