@@ -1126,15 +1126,16 @@ def Compare_Real_and_Volt(Realpath, simPath,time_intervel = 100000):
     ev_data0 = events_data.events[0]
     ev_data1 = events_data_V2E.events[0]
 
-
-    point_cloud = events_data.display_events_3D(ev_data0,11000,12000)
-    View_3D(point_cloud)
-    point_cloud = events_data.display_events_3D(ev_data1,11000,12000)
-    View_3D(point_cloud)
-    img1 = events_data.display_events(ev_data0,11000,12000)
+    factor = int(10)
+    base = 100000
+    # point_cloud = events_data.display_events_3D(ev_data0,11000*factor,12000*factor)
+    # View_3D(point_cloud)
+    # point_cloud = events_data.display_events_3D(ev_data1,11000*factor,12000*factor)
+    # View_3D(point_cloud)
+    img1 = events_data.display_events(ev_data0,base+11000*factor,base+12000*factor)
     cv2.imshow("real",img1)
     cv2.waitKey()
-    img2 = events_data.display_events(ev_data1,11000,12000)
+    img2 = events_data.display_events(ev_data1,base+11000*factor,base+12000*factor)
     cv2.imshow("sim",img2)
     cv2.waitKey()
 
@@ -1460,4 +1461,8 @@ def Generate_display_video_final(VideoFolder):
 
 #addition experiment
 # Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/High_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/R_360_H_Volt.txt')
-Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/LOW_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/Rotate_360_low_Volt.txt')
+# Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/LOW_360_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/Rotate_360_low_Volt.txt')
+# Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/Rotate_60_high/High_60_120deg.hdf5",'D:/2023/computional imaging/my_pbrt/DVS-Voltmeter-main/data_samples/output/R_60_H_Volt.txt',600000)
+# Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/trans_1mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/DVS-Voltmeter-main/data_samples/output/T_1_H_Volt.txt' , 300000)
+Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/trans_1mps_L.hdf5",'D:/2023/computional imaging/my_pbrt/DVS-Voltmeter-main/data_samples/output/T_1_L_Volt.txt',300000)
+# Compare_Real_and_Volt("D:/2023/computional imaging/my_pbrt/output/trans_06mps_high/trans_06mps_H.hdf5",'D:/2023/computional imaging/my_pbrt/DVS-Voltmeter-main/data_samples/output/T_0.6_H_Volt.txt',300000)

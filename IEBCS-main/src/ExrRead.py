@@ -39,6 +39,21 @@ def read_exr_channel(exr_file,channel_name,BrightScale):
     # cv2.destroyAllWindows()
     return cv_image
 
+#MonteCarlo sample by precalculated read
+#pre_weight is equal spaced from 400 to 700
+#impliciteFunc[i] is energy density in length i, i should not out of 400 to 700
+#NOTE if you are using a finite channel to express spectral, no need to use it
+def MonteCarlo_read(impliciteFunc, pre_weight):
+    photocurrent = 0
+    
+    #generate p(i), i from 400 to 700, according to pre_weight, by linear interpolation of c(j) = probabilty(i<j) and normalize it
+
+    #sample N  point of i from 400 to 700 according to p(i)
+
+    #calculate sum(impliciteFunc[i] / p(i)), i comes from sampled N point
+
+    return photocurrent
+
 def calculate_intensity_from_spetral(exr_file, channel_number, BrightScale):
     # Read the EXR file
     start_time = time.time()
