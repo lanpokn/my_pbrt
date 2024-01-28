@@ -85,7 +85,7 @@ def process_video_frames(cfg,video_path,dt=2857):
 
     cap.release()
     events = np.concatenate(events, axis=0)
-    name = "Rotate_360_high"
+    name = "T_0.6_H_Volt"
     np.savetxt("D:/2023/computional imaging/my_pbrt/DVS-Voltmeter-main/data_samples/output/" +name+ '.txt', events, fmt='%1.0f')
     sim.reset()
 
@@ -146,5 +146,11 @@ if __name__ == "__main__":
     cfg = integrate_cfg(cfg, args)
     # video_list = sorted(os.listdir(cfg.DIR.IN_PATH))
     video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_high/20_eevee.mkv"
-    dt = 2857
+    # video_path = "D:/2023/computional imaging/my_pbrt/output/Rotate_360_low/0000-0020.mkv"
+    video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_high/25-77Eevee.avi"
+    # video_path = "D:/2023/computional imaging/my_pbrt/output/trans_1mps_low/0125-0177.mkv"
+
+    # dt = 2857 * 6
+    dt = 35478
+    # dt = 21153
     process_video_frames(cfg, video_path, dt)
